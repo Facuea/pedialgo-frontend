@@ -37,16 +37,18 @@ function DashboardPage() {
     }
   }, [localId]);
 
-  // FIX WEBSOCKETS: Genera la ruta ws:// o wss:// directo de tu API_URL. Adiós al F5.
-  useEffect(() => {
-    if (!localId || !API_URL) return;
 
-    const wsUrl = API_URL.replace(/^http/, 'ws') + '/websocket';
+useEffect(() => {
+    if (!localId) return;
+
+    const wsBaseUrl = import.meta.env.VITE_WS_URL || import.meta.env.VITE_API_URL.replace('/api/v1', '');
+    const wsUrl = wsBaseUrl.replace('http', 'ws') + '/websocket';
 
     const stompClient = new Client({
       brokerURL: wsUrl,
       reconnectDelay: 5000,
       onConnect: () => {
+        console.log("Conectado a WebSockets correctamente"); 
         stompClient.subscribe(`/topic/locales/${localId}/pedidos`, (mensaje) => {
           const pedidoNuevo = JSON.parse(mensaje.body);
           setPedidos(prev => [pedidoNuevo, ...prev]);
@@ -54,9 +56,12 @@ function DashboardPage() {
           setTimeout(() => setNotificacion(false), 4000);
           try {
             const audio = new Audio('/notificacion-pedialgo.mp3');
-            audio.play().catch(e => console.log("Bloqueo de audio", e));
+            audio.play().catch(e => console.log("Bloqueo de audio del navegador", e));
           } catch (e) {}
         });
+      },
+      onStompError: (frame) => {
+        console.error('Error de WebSockets:', frame.headers['message']);
       }
     });
 
