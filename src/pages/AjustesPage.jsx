@@ -561,7 +561,7 @@ function AjustesPage() {
               <div className="flex-1 space-y-4">
                 <div>
                   <label className="block text-[11px] font-bold text-gray-500 uppercase tracking-widest mb-1.5">Número de WhatsApp</label>
-                  <input type="tel" value={redes.whatsapp} onChange={(e) => { let val = e.target.value; if (val.length < 6) val = "+54 9 "; else if (!val.startsWith("+54 9 ")) val = "+54 9 " + val.replace(/\D/g, ""); setRedes({...redes, whatsapp: val}); setErroresInfo({...erroresInfo, whatsapp: null}); }} placeholder="Ej: 3511234567" className={`w-full p-2.5 rounded-lg border text-sm font-medium outline-none focus:ring-1 bg-gray-50 ${erroresInfo.whatsapp ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-orange-400 focus:ring-orange-400'}`} />
+                  <input type="tel" value={redes.whatsapp} onChange={(e) => { let val = e.target.value; if (val.length < 6) val = "+54 9 "; else if (val && !val.startsWith("+54 9 ")) val = "+54 9 " + (val.replace(/\D/g, "") || ""); setRedes({...redes, whatsapp: val}); setErroresInfo({...erroresInfo, whatsapp: null}); }} placeholder="Ej: 3511234567" className={`w-full p-2.5 rounded-lg border text-sm font-medium outline-none focus:ring-1 bg-gray-50 ${erroresInfo.whatsapp ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-orange-400 focus:ring-orange-400'}`} />
                   {erroresInfo.whatsapp && <p className="text-red-500 text-[11px] mt-1 font-semibold px-1">{erroresInfo.whatsapp}</p>}
                 </div>
                 <div>

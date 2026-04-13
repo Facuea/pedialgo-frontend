@@ -48,7 +48,7 @@ function MenuPage() {
         limpiarProductosInactivos(idsValidos);
 
         if (data.tema?.fuente) {
-          const fuenteURL = data.tema.fuente.replace(/\s+/g, "+");
+          const fuenteURL = data?.tema?.fuente?.replace(/\s+/g, "+");
           const linkId = "font-dinamica";
           let link = document.getElementById(linkId);
           if (!link) {

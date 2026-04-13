@@ -42,7 +42,7 @@ function DashboardPage() {
     if (!localId) return;
 
     const stompClient = new Client({
-      brokerURL: import.meta.env.VITE_WS_URL.replace('http', 'ws') + '/websocket', 
+      brokerURL: (import.meta.env.VITE_WS_URL?.replace('http', 'ws') || 'ws://localhost:8080') + '/websocket',
       reconnectDelay: 5000,
       onConnect: () => {
         stompClient.subscribe(`/topic/locales/${localId}/pedidos`, (mensaje) => {
