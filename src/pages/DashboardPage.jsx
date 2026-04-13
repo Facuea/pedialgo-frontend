@@ -38,17 +38,17 @@ function DashboardPage() {
   }, [localId]);
 
 
-useEffect(() => {
-    if (!localId) return;
+  useEffect(() => {
+    if (!localId || !API_URL) return;
 
-    const wsBaseUrl = import.meta.env.VITE_WS_URL || import.meta.env.VITE_API_URL.replace('/api/v1', '');
-    const wsUrl = wsBaseUrl.replace('http', 'ws') + '/websocket';
+    const baseDomain = API_URL.replace('/api/v1', ''); 
+    const wsUrl = baseDomain.replace(/^http/, 'ws') + '/ws-pedidos/websocket';
 
     const stompClient = new Client({
       brokerURL: wsUrl,
       reconnectDelay: 5000,
       onConnect: () => {
-        console.log("Conectado a WebSockets correctamente"); 
+        console.log("¡CONECTADO AL SERVIDOR EN TIEMPO REAL!"); 
         stompClient.subscribe(`/topic/locales/${localId}/pedidos`, (mensaje) => {
           const pedidoNuevo = JSON.parse(mensaje.body);
           setPedidos(prev => [pedidoNuevo, ...prev]);
@@ -56,12 +56,12 @@ useEffect(() => {
           setTimeout(() => setNotificacion(false), 4000);
           try {
             const audio = new Audio('/notificacion-pedialgo.mp3');
-            audio.play().catch(e => console.log("Bloqueo de audio del navegador", e));
+            audio.play().catch(e => console.log("Bloqueo de audio", e));
           } catch (e) {}
         });
       },
-      onStompError: (frame) => {
-        console.error('Error de WebSockets:', frame.headers['message']);
+      onWebSocketError: (event) => {
+        console.error("Error de conexión del WebSocket:", event);
       }
     });
 
