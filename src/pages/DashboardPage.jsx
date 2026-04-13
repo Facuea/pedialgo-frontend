@@ -7,7 +7,6 @@ import { fetchPrivado } from "../services/apiConfig";
 const API_URL = import.meta.env.VITE_API_URL;
 
 function DashboardPage() {
-  // SECCIÓN: Estados iniciales
   const COLOR_PRIMARIO = "#F1A139"; 
   
   const localActivo = JSON.parse(localStorage.getItem("localActivo")) || {};
@@ -19,11 +18,11 @@ function DashboardPage() {
   const [filtroActivo, setFiltroActivo] = useState("RECIBIDO");
   const [pedidoAImprimir, setPedidoAImprimir] = useState(null);
   const [notificacion, setNotificacion] = useState(false); 
+  const [pedidoACancelar, setPedidoACancelar] = useState(null); // Nuevo estado para seguridad
 
   const nombreLocal = local?.nombre || "Cargando..."; 
   const urlMenu = local ? `${window.location.origin}/${local.slug}` : "Cargando..."; 
   
-  // SECCIÓN: Efectos
   useEffect(() => {
     if (localId) {
       fetchPrivado(`/admin/locales/${localId}`)
@@ -38,11 +37,14 @@ function DashboardPage() {
     }
   }, [localId]);
 
+  // FIX WEBSOCKETS: Genera la ruta ws:// o wss:// directo de tu API_URL. Adiós al F5.
   useEffect(() => {
-    if (!localId) return;
+    if (!localId || !API_URL) return;
+
+    const wsUrl = API_URL.replace(/^http/, 'ws') + '/websocket';
 
     const stompClient = new Client({
-      brokerURL: (import.meta.env.VITE_WS_URL?.replace('http', 'ws') || 'ws://localhost:8080') + '/websocket',
+      brokerURL: wsUrl,
       reconnectDelay: 5000,
       onConnect: () => {
         stompClient.subscribe(`/topic/locales/${localId}/pedidos`, (mensaje) => {
@@ -62,7 +64,6 @@ function DashboardPage() {
     return () => stompClient.deactivate();
   }, [localId]);
 
-  // SECCIÓN: Funciones de carga de datos
   const cargarPedidosDeHoy = async () => {
     try {
       const response = await fetchPrivado(`/admin/locales/${localId}/pedidos/hoy`);
@@ -75,7 +76,6 @@ function DashboardPage() {
     }
   };
 
-  // SECCIÓN: Funciones de manejo de pedidos
   const handleCambiarEstado = async (pedidoId, nuevoEstado) => {
     try {
       const response = await fetchPrivado(`/admin/locales/${localId}/pedidos/${pedidoId}/estado`, {
@@ -101,7 +101,6 @@ function DashboardPage() {
     setTimeout(() => window.print(), 100);
   };
 
-  // SECCIÓN: Constantes y utilidades
   const coloresEstado = {
     RECIBIDO: "bg-amber-50 text-amber-700 border-amber-200",
     EN_PREPARACION: "bg-blue-50 text-blue-700 border-blue-200",
@@ -124,7 +123,6 @@ function DashboardPage() {
 
   const btnTabClass = "px-5 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 cursor-pointer hover:shadow-md hover:-translate-y-0.5";
 
-  // SECCIÓN: Renderizado principal
   return (
     <>
       <div className="print:hidden">
@@ -137,7 +135,6 @@ function DashboardPage() {
               </div>
             )}
 
-            {/* HEADER */}
             <div className="bg-white rounded-2xl p-6 lg:p-8 shadow-sm border border-gray-100 mb-8 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
               <div>
                 <h1 className="text-2xl font-bold text-gray-800 tracking-tight mb-1">Monitor de Pedidos</h1>
@@ -145,19 +142,16 @@ function DashboardPage() {
               </div>
 
               <div className="w-full lg:w-auto bg-white border border-gray-200 rounded-xl p-2 flex items-center gap-3 shadow-sm">
-                
                 <div 
                   className="w-10 h-10 rounded-lg font-black flex items-center justify-center shrink-0 text-lg border border-white/20 text-white shadow-sm"
                   style={{ backgroundColor: COLOR_PRIMARIO }}
                 >
                   {nombreLocal[0]} 
                 </div>
-                
                 <div className="flex-1 overflow-hidden min-w-50 pl-1">
                   <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-widest mb-0.5">Tu Menú Digital</p>
                   <p className="text-sm font-medium text-gray-800 truncate">{urlMenu}</p>
                 </div>
-                
                 <button 
                   onClick={handleCopiarLink}
                   title="Copiar enlace"
@@ -168,7 +162,6 @@ function DashboardPage() {
               </div>
             </div>
 
-            {/* PESTAÑAS */}
             <div className="flex flex-wrap gap-3 mb-8">
               <button onClick={() => setFiltroActivo("RECIBIDO")} className={`${btnTabClass} ${filtroActivo === "RECIBIDO" ? 'bg-amber-50 text-amber-800 border border-amber-200' : 'bg-white text-gray-500 border border-gray-200'}`}>
                 Nuevos <span className="ml-1 opacity-70 font-semibold">({pedidos.filter(p => p.estado === "RECIBIDO").length})</span>
@@ -190,28 +183,39 @@ function DashboardPage() {
               </button>
             </div>
             
-            {/* GRILLA */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
               {pedidosAMostrar.map((pedido) => (
                 <div key={pedido.id} className="bg-white rounded-xl border border-gray-200 shadow-sm flex flex-col overflow-hidden">
                   
-                  {/* HEADER DEL PEDIDO  */}
                   <div className="p-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
                     <div className="flex flex-col">
                       <span className="text-lg font-bold text-gray-700">#{pedido.id}</span>
                       <span className="text-[11px] font-medium text-gray-400 mt-0.5">{pedido.fecha ? `${pedido.fecha.split("T")[1].substring(0,5)} hs` : ""}</span>
                     </div>
-                    {/* Badge de Estado Visual */}
                     <span className={`text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-lg border ${coloresEstado[pedido.estado]}`}>
                       {nombresEstado[pedido.estado]}
                     </span>
                   </div>
 
-                  {/* INFO DEL CLIENTE Y COMANDA */}
                   <div className="p-4 flex-1">
                     <div className="mb-4">
                       <p className="font-semibold text-gray-800 text-base">{pedido.nombreCliente}</p>
-                      <p className="text-xs font-medium text-gray-500 mt-0.5">Cel: {pedido.telefono}</p>
+                      
+                      {/* FIX: Link de Contactar en azul */}
+                      <p className="text-xs font-medium text-gray-500 mt-0.5 flex items-center">
+                        Cel: {pedido.telefono}
+                        {pedido.telefono && (
+                          <a 
+                            href={`https://wa.me/${pedido.telefono.replace(/\D/g, '')}`} 
+                            target="_blank" 
+                            rel="noreferrer" 
+                            className="text-blue-500 hover:text-blue-700 underline ml-2 font-bold tracking-wide cursor-pointer text-[11px]"
+                          >
+                            Contactar
+                          </a>
+                        )}
+                      </p>
+                      
                       <p className="text-xs font-medium text-gray-600 mt-2 bg-gray-50 border border-gray-100 inline-block px-2.5 py-1 rounded-md">{pedido.direccion ? `Dir: ${pedido.direccion}` : "Retiro en local"}</p>
                     </div>
                     <div className="border-t border-dashed border-gray-200 pt-3">
@@ -227,7 +231,6 @@ function DashboardPage() {
                     </div>
                   </div>
 
-                  {/* FOOTER: TOTAL, IMPRESIÓN Y BOTONES RÁPIDOS */}
                   <div className="p-4 border-t border-gray-100 bg-white flex flex-col gap-3">
                     <div className="flex items-center justify-between mb-1">
                       <div>
@@ -244,10 +247,8 @@ function DashboardPage() {
                       </button>
                     </div>
 
-                    {/* SECCIÓN DE BOTONES DE FLUJO DE TRABAJO */}
                     <div className="flex gap-2 w-full mt-1">
                       
-                      {/* Botón Principal */}
                       {pedido.estado === "RECIBIDO" && (
                         <button onClick={() => handleCambiarEstado(pedido.id, "EN_PREPARACION")} className="flex-1 py-3 bg-blue-500 hover:bg-blue-600 text-white text-xs font-bold rounded-lg uppercase tracking-wider transition-all active:scale-95 shadow-sm cursor-pointer">
                           Aceptar y Cocinar
@@ -266,18 +267,25 @@ function DashboardPage() {
                         </button>
                       )}
 
-                      {/* Botones de Cancelar y Deshacer */}
+                      {/* FIX: Confirmación de Cancelación de Seguridad */}
                       {pedido.estado !== "ENTREGADO" && pedido.estado !== "CANCELADO" && (
-                        <button 
-                          onClick={() => handleCambiarEstado(pedido.id, "CANCELADO")} 
-                          className="px-3 py-3 bg-rose-50 hover:bg-rose-100 text-rose-600 text-xs font-bold rounded-lg transition-all cursor-pointer active:scale-95"
-                          title="Cancelar Pedido"
-                        >
-                          ✕
-                        </button>
+                        pedidoACancelar === pedido.id ? (
+                          <div className="flex items-center gap-2 bg-rose-50 p-2 rounded-lg flex-1">
+                            <span className="text-[10px] font-bold text-rose-700 flex-1 text-center">¿Seguro?</span>
+                            <button onClick={() => { handleCambiarEstado(pedido.id, "CANCELADO"); setPedidoACancelar(null); }} className="px-4 py-1.5 bg-rose-500 hover:bg-rose-600 text-white rounded text-[11px] font-bold cursor-pointer shadow-sm">Sí</button>
+                            <button onClick={() => setPedidoACancelar(null)} className="px-4 py-1.5 bg-gray-300 hover:bg-gray-400 text-gray-700 rounded text-[11px] font-bold cursor-pointer">No</button>
+                          </div>
+                        ) : (
+                          <button 
+                            onClick={() => setPedidoACancelar(pedido.id)} 
+                            className="px-3 py-3 bg-rose-50 hover:bg-rose-100 text-rose-600 text-xs font-bold rounded-lg transition-all cursor-pointer active:scale-95 border border-rose-100"
+                            title="Cancelar Pedido"
+                          >
+                            ✕
+                          </button>
+                        )
                       )}
 
-                      {/* Si se equivocó y lo canceló, le dejamos un botón para volver atrás */}
                       {pedido.estado === "CANCELADO" && (
                         <button 
                           onClick={() => handleCambiarEstado(pedido.id, "RECIBIDO")} 
@@ -287,7 +295,6 @@ function DashboardPage() {
                         </button>
                       )}
                     </div>
-
                   </div>
                 </div>
               ))}
