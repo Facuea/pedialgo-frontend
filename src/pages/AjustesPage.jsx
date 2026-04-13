@@ -342,8 +342,20 @@ function AjustesPage() {
         body: JSON.stringify({ passwordActual: modalPassword.passwordActual, passwordNueva: modalPassword.passwordNueva })
       });
       if (res.ok) {
-        mostrarNotificacion("Contraseña actualizada correctamente.");
-        setModalPassword({ abierto: false, usuarioId: null, email: "", passwordActual: "", passwordNueva: "", error: "" });
+        const usuarioLogueadoId = JSON.parse(localStorage.getItem("usuario"))?.id;
+
+        if (modalPassword.usuarioId === usuarioLogueadoId) {
+            mostrarNotificacion("Contraseña actualizada. Cerrando sesión por seguridad...");
+            setTimeout(() => {
+                localStorage.removeItem("usuario");
+                localStorage.removeItem("localActivo");
+                window.location.href = "/login";
+            }, 2500);
+        } else {
+            // Si un Admin le cambió la clave a un empleado, solo cerramos el modal
+            mostrarNotificacion("Contraseña del empleado actualizada correctamente.");
+            setModalPassword({ abierto: false, usuarioId: null, email: "", passwordActual: "", passwordNueva: "", error: "" });
+        }
       } else {
         setModalPassword(prev => ({ ...prev, error: "La contraseña actual es incorrecta." })); 
       }
