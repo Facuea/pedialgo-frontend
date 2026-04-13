@@ -1,0 +1,205 @@
+import { useState, useEffect } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { fetchPrivado } from "../services/apiConfig";
+
+const API_URL = import.meta.env.VITE_API_URL;
+
+function AdminLayout({ children }) {
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const COLOR_PRIMARIO = "#F1A139"; 
+
+  const usuarioInfo = JSON.parse(localStorage.getItem("usuario")) || { email: "usuario@pedialgo.com", rol: "EMPLEADO", locales: [] };
+  const localActivo = JSON.parse(localStorage.getItem("localActivo")) || {};
+  
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [menuLocalesAbierto, setMenuLocalesAbierto] = useState(false);
+  const [nombreLocal, setNombreLocal] = useState("Cargando...");
+
+  useEffect(() => {
+    if (localActivo.id) {
+      fetchPrivado(`/admin/locales/${localActivo.id}`)
+        .then(res => res.json())
+        .then(data => setNombreLocal(data.nombre))
+        .catch(err => {
+          console.error("Error al cargar local:", err);
+          setNombreLocal("Mi Local");
+        });
+    }
+  }, [localActivo.id]);
+
+
+  useEffect(() => {
+    if (!localActivo.id) return;
+
+    const intervalId = setInterval(() => {
+
+      fetchPrivado(`/admin/locales/${localActivo.id}`)
+        .catch(() => {
+
+        });
+    }, 5000); 
+    return () => clearInterval(intervalId);
+  }, [localActivo.id]);
+
+  const handleLogout = () => {
+    localStorage.removeItem("usuario");
+    localStorage.removeItem("localActivo");
+    navigate("/login");
+  };
+
+  const handleCambiarLocal = (local) => {
+    localStorage.setItem("localActivo", JSON.stringify(local));
+    setMenuLocalesAbierto(false);
+    window.location.reload(); 
+  };
+
+  const menuItems = [
+    { path: "/admin/dashboard", label: "Monitor de Pedidos", roles: ["ADMIN", "EMPLEADO"] },
+    { path: "/admin/finanzas", label: "Resumen Financiero", roles: ["ADMIN"] },
+    { path: "/admin/categorias", label: "Categorías", roles: ["ADMIN"] },
+    { path: "/admin/productos", label: "Mis Productos", roles: ["ADMIN", "EMPLEADO"] },
+    { path: "/admin/ajustes", label: "Ajustes del Local", roles: ["ADMIN"] },
+  ];
+
+  const menuFiltrado = menuItems.filter(item => item.roles.includes(usuarioInfo.rol));
+  const localesDisponibles = usuarioInfo.locales || [];
+  const tieneMultiplesLocales = localesDisponibles.length > 1;
+
+  const abrirSoporte = () => {
+    const msg = encodeURIComponent("Hola PediAlgo, necesito ayuda con el sistema de gestión.");
+    window.open(`https://wa.me/5493585148782?text=${msg}`, '_blank');
+  };
+
+  return (
+    <div className="flex h-screen bg-[#f4f7f6] overflow-hidden text-gray-900" style={{ fontFamily: "'Poppins', sans-serif" }}>
+      
+      {isMobileMenuOpen && (
+        <div className="fixed inset-0 bg-black/50 z-20 md:hidden" onClick={() => setIsMobileMenuOpen(false)} />
+      )}
+
+      <aside className={`fixed md:static inset-y-0 left-0 w-72 bg-white border-r border-gray-100 flex flex-col z-30 transform transition-transform duration-300 ease-in-out ${isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0`}>
+        
+        <div className="h-32 flex items-center justify-center border-b border-gray-50/80 px-4 shrink-0">
+          <img 
+            src="https://res.cloudinary.com/dca2psqfg/image/upload/v1774900350/logo-largo-pedialgo_u7snto.png" 
+            alt="PediAlgo" 
+            className="h-18 w-auto object-contain"
+          />
+        </div>
+
+        <div className="p-5 pb-2 shrink-0 relative">
+          <p className="text-[10px] uppercase tracking-widest font-black text-gray-400 mb-2">Local Activo</p>
+          
+          <button 
+            onClick={() => setMenuLocalesAbierto(!menuLocalesAbierto)}
+            disabled={!tieneMultiplesLocales}
+            className={`w-full bg-orange-50 border border-orange-100 text-sm font-bold text-orange-700 rounded-lg p-3 flex items-center justify-between transition-colors ${tieneMultiplesLocales ? 'cursor-pointer hover:bg-orange-100' : 'cursor-default opacity-90'}`}
+          >
+            <div className="flex items-center gap-2 truncate">
+              <span className="w-2 h-2 rounded-full bg-orange-500 shrink-0"></span>
+              <span className="truncate">{nombreLocal}</span>
+            </div>
+            {tieneMultiplesLocales && (
+              <span className={`text-orange-400 shrink-0 ml-2 text-xs transition-transform ${menuLocalesAbierto ? 'rotate-180' : ''}`}>▼</span>
+            )}
+          </button>
+
+          {menuLocalesAbierto && tieneMultiplesLocales && (
+            <>
+              <div className="fixed inset-0 z-40" onClick={() => setMenuLocalesAbierto(false)}></div>
+              <div className="absolute top-full left-5 right-5 mt-1 bg-white border border-gray-100 shadow-xl rounded-xl overflow-hidden z-50 animate-fade-in">
+                <div className="max-h-48 overflow-y-auto">
+                  {localesDisponibles.map(l => (
+                    <button 
+                      key={l.id}
+                      onClick={() => handleCambiarLocal(l)}
+                      className={`w-full text-left px-4 py-3 text-sm font-bold transition-colors border-b border-gray-50 last:border-0 truncate cursor-pointer ${l.id === localActivo.id ? 'bg-orange-500 text-white' : 'text-gray-700 hover:bg-orange-50 hover:text-orange-600'}`}
+                    >
+                      {l.nombre}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </>
+          )}
+        </div>
+
+        <nav className="flex-1 px-4 py-4 space-y-1.5 overflow-y-auto no-scrollbar relative z-10">
+          <p className="px-4 text-[10px] uppercase tracking-widest font-black text-gray-400 mb-3">Menú Principal</p>
+          
+          {menuFiltrado.map((item) => {
+            const isActive = location.pathname.includes(item.path);
+            return (
+              <Link
+                key={item.path}
+                to={item.path}
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="flex items-center gap-3.5 px-4 py-3 rounded-xl font-bold transition-all hover:bg-gray-50"
+                style={{
+                  backgroundColor: isActive ? `${COLOR_PRIMARIO}15` : "transparent",
+                  color: isActive ? COLOR_PRIMARIO : "#6B7280",
+                }}
+              >
+                <span className="text-sm tracking-tight">{item.label}</span>
+              </Link>
+            );
+          })}
+
+          {/* LINK DE AYUDA SIMPLE */}
+          <div className="pt-4 mt-4 border-t border-gray-50">
+            <button
+              onClick={abrirSoporte}
+              className="flex items-center gap-3.5 w-full px-4 py-3 rounded-xl font-bold text-gray-400 hover:bg-orange-50 hover:text-orange-600 transition-all cursor-pointer group"
+            >
+              <span className="text-sm tracking-tight flex items-center gap-2">
+                <span className="grayscale group-hover:grayscale-0 transition-all"></span> ¿Necesitás ayuda?
+              </span>
+            </button>
+          </div>
+        </nav>
+
+        <div className="p-4 border-t border-gray-50/80 shrink-0 bg-gray-50/30">
+          <div className="px-4 mb-4">
+             <p className="text-[10px] uppercase tracking-widest font-black text-gray-400 mb-1">Mi Cuenta</p>
+             <p className="font-bold text-sm text-gray-800 truncate">
+               {usuarioInfo.nombreCompleto || "Usuario"}
+             </p>
+             <p className="font-medium text-xs text-gray-500 truncate mb-2">
+               {usuarioInfo.email}
+             </p>
+             <span className={`inline-block px-2 py-0.5 rounded text-[9px] font-black uppercase tracking-widest shadow-sm ${usuarioInfo.rol === 'ADMIN' ? 'bg-blue-100 text-blue-700 border border-blue-200' : 'bg-purple-100 text-purple-700 border border-purple-200'}`}>
+                {usuarioInfo.rol}
+             </span>
+          </div>
+          <button
+            onClick={handleLogout}
+            className="flex items-center justify-center gap-3.5 w-full px-4 py-2.5 rounded-lg font-bold text-red-500 hover:bg-red-50 hover:text-red-600 text-xs transition-colors cursor-pointer border border-transparent hover:border-red-100"
+          >
+            Cerrar Sesión
+          </button>
+        </div>
+      </aside>
+
+      <main className="flex-1 flex flex-col relative overflow-hidden w-full z-0">
+        <header className="h-16 bg-white border-b border-gray-100 flex items-center justify-between px-6 md:hidden shadow-sm z-10 shrink-0">
+          <img 
+            src="https://res.cloudinary.com/dca2psqfg/image/upload/v1774900350/logo-largo-pedialgo_u7snto.png" 
+            alt="PediAlgo" 
+            className="h-10 object-contain"
+          />
+          <button onClick={() => setIsMobileMenuOpen(true)} className="text-2xl text-gray-700 p-2 cursor-pointer">
+            ☰
+          </button>
+        </header>
+
+        <div className="flex-1 overflow-y-auto p-4 md:p-10 no-scrollbar relative w-full print:p-0">
+          {children}
+        </div>
+      </main>
+    </div>
+  );
+}
+
+export default AdminLayout;
