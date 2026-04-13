@@ -18,7 +18,7 @@ function DashboardPage() {
   const [filtroActivo, setFiltroActivo] = useState("RECIBIDO");
   const [pedidoAImprimir, setPedidoAImprimir] = useState(null);
   const [notificacion, setNotificacion] = useState(false); 
-  const [pedidoACancelar, setPedidoACancelar] = useState(null); // Nuevo estado para seguridad
+  const [pedidoACancelar, setPedidoACancelar] = useState(null); 
 
   const nombreLocal = local?.nombre || "Cargando..."; 
   const urlMenu = local ? `${window.location.origin}/${local.slug}` : "Cargando..."; 
@@ -38,7 +38,7 @@ function DashboardPage() {
   }, [localId]);
 
 
-  useEffect(() => {
+useEffect(() => {
     if (!localId || !API_URL) return;
 
     const baseDomain = API_URL.replace('/api/v1', ''); 
@@ -48,7 +48,6 @@ function DashboardPage() {
       brokerURL: wsUrl,
       reconnectDelay: 5000,
       onConnect: () => {
-        console.log("¡CONECTADO AL SERVIDOR EN TIEMPO REAL!"); 
         stompClient.subscribe(`/topic/locales/${localId}/pedidos`, (mensaje) => {
           const pedidoNuevo = JSON.parse(mensaje.body);
           setPedidos(prev => [pedidoNuevo, ...prev]);
@@ -56,12 +55,9 @@ function DashboardPage() {
           setTimeout(() => setNotificacion(false), 4000);
           try {
             const audio = new Audio('/notificacion-pedialgo.mp3');
-            audio.play().catch(e => console.log("Bloqueo de audio", e));
+            audio.play().catch(() => {}); 
           } catch (e) {}
         });
-      },
-      onWebSocketError: (event) => {
-        console.error("Error de conexión del WebSocket:", event);
       }
     });
 
