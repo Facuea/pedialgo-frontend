@@ -438,6 +438,19 @@ function MenuPage() {
         numeroWhatsApp={whatsapp}
         slug={slug}
       />
+      <footer className="py-8 text-center opacity-60">
+  <p className="text-xs font-medium">
+    Desarrollado por{" "}
+    <a 
+      href="https://pedialgoar.com" 
+      target="_blank" 
+      rel="noreferrer"
+      className="font-bold hover:text-orange-500 transition-colors"
+    >
+      pedialgoar.com
+    </a>
+  </p>
+</footer>
     </div>
   );
 }
