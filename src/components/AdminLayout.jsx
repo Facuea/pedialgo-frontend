@@ -11,6 +11,8 @@ function AdminLayout({ children }) {
   const localActivo = JSON.parse(localStorage.getItem("localActivo")) || {};
   
   const urlMenu = `${window.location.origin}/${localActivo.slug}`;
+  
+  // Función para descargar el QR
   const descargarQR = () => {
     const canvas = document.getElementById("qr-sidebar");
     if (!canvas) return;
@@ -34,6 +36,7 @@ function AdminLayout({ children }) {
   const [menuLocalesAbierto, setMenuLocalesAbierto] = useState(false);
   const [nombreLocal, setNombreLocal] = useState("Cargando...");
 
+  // Carga inicial del nombre del local
   useEffect(() => {
     if (localActivo.id) {
       fetchPrivado(`/admin/locales/${localActivo.id}`)
@@ -46,16 +49,13 @@ function AdminLayout({ children }) {
     }
   }, [localActivo.id]);
 
-
+  // Polling silencioso para verificar sesión activa
   useEffect(() => {
     if (!localActivo.id) return;
 
     const intervalId = setInterval(() => {
-
       fetchPrivado(`/admin/locales/${localActivo.id}`)
-        .catch(() => {
-
-        });
+        .catch(() => {});
     }, 5000); 
     return () => clearInterval(intervalId);
   }, [localActivo.id]);
@@ -72,6 +72,7 @@ function AdminLayout({ children }) {
     window.location.reload(); 
   };
 
+  // Lista de items del menú de navegación
   const menuItems = [
     { path: "/admin/dashboard", label: "Monitor de Pedidos", roles: ["ADMIN", "EMPLEADO"] },
     { path: "/admin/finanzas", label: "Resumen Financiero", roles: ["ADMIN"] },
@@ -92,12 +93,15 @@ function AdminLayout({ children }) {
   return (
     <div className="flex h-screen bg-[#f4f7f6] overflow-hidden text-gray-900" style={{ fontFamily: "'Poppins', sans-serif" }}>
       
+      {/* Overlay oscuro para menú móvil */}
       {isMobileMenuOpen && (
         <div className="fixed inset-0 bg-black/50 z-20 md:hidden" onClick={() => setIsMobileMenuOpen(false)} />
       )}
 
+      {/* --- INICIO DEL MENÚ LATERAL (SIDEBAR) --- */}
       <aside className={`fixed md:static inset-y-0 left-0 w-72 bg-white border-r border-gray-100 flex flex-col z-30 transform transition-transform duration-300 ease-in-out ${isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0`}>
         
+        {/* LOGO */}
         <div className="h-32 flex items-center justify-center border-b border-gray-50/80 px-4 shrink-0">
           <img 
             src="https://res.cloudinary.com/dca2psqfg/image/upload/v1774900350/logo-largo-pedialgo_u7snto.png" 
@@ -106,9 +110,9 @@ function AdminLayout({ children }) {
           />
         </div>
 
+        {/* SELECTOR DE LOCAL */}
         <div className="p-5 pb-2 shrink-0 relative">
           <p className="text-[10px] uppercase tracking-widest font-black text-gray-400 mb-2">Local Activo</p>
-          
           <button 
             onClick={() => setMenuLocalesAbierto(!menuLocalesAbierto)}
             disabled={!tieneMultiplesLocales}
@@ -122,7 +126,8 @@ function AdminLayout({ children }) {
               <span className={`text-orange-400 shrink-0 ml-2 text-xs transition-transform ${menuLocalesAbierto ? 'rotate-180' : ''}`}>▼</span>
             )}
           </button>
-
+          
+          {/* Dropdown de sucursales */}
           {menuLocalesAbierto && tieneMultiplesLocales && (
             <>
               <div className="fixed inset-0 z-40" onClick={() => setMenuLocalesAbierto(false)}></div>
@@ -143,9 +148,11 @@ function AdminLayout({ children }) {
           )}
         </div>
 
+        {/* NAVEGACIÓN PRINCIPAL */}
         <nav className="flex-1 px-4 py-4 space-y-1.5 overflow-y-auto no-scrollbar relative z-10">
           <p className="px-4 text-[10px] uppercase tracking-widest font-black text-gray-400 mb-3">Menú Principal</p>
           
+          {/* Mapeo de links (Dashboard, Productos, etc.) */}
           {menuFiltrado.map((item) => {
             const isActive = location.pathname.includes(item.path);
             return (
@@ -164,8 +171,20 @@ function AdminLayout({ children }) {
             );
           })}
 
-          {/* LINK DE AYUDA SIMPLE */}
           <div className="pt-4 mt-4 border-t border-gray-50">
+            {/* --- NUEVO BOTÓN: LINK / QR EN EL MENÚ --- */}
+            <button
+              onClick={() => setMostrarQR(true)}
+              className="flex items-center gap-3.5 w-full px-4 py-3 rounded-xl font-bold text-gray-600 hover:bg-gray-100 transition-all cursor-pointer group mb-1"
+            >
+               <span className="text-sm tracking-tight flex items-center gap-2">
+                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><rect x="7" y="7" width="3" height="3"></rect><rect x="14" y="7" width="3" height="3"></rect><rect x="7" y="14" width="3" height="3"></rect><rect x="14" y="14" width="3" height="3"></rect></svg>
+                 Link / QR del Menú
+               </span>
+            </button>
+            {/* -------------------------------------- */}
+
+            {/* BOTÓN DE AYUDA (SOPORTE) */}
             <button
               onClick={abrirSoporte}
               className="flex items-center gap-3.5 w-full px-4 py-3 rounded-xl font-bold text-gray-400 hover:bg-orange-50 hover:text-orange-600 transition-all cursor-pointer group"
@@ -177,6 +196,7 @@ function AdminLayout({ children }) {
           </div>
         </nav>
 
+        {/* INFO DEL USUARIO LOGUEADO */}
         <div className="p-4 border-t border-gray-50/80 shrink-0 bg-gray-50/30">
           <div className="px-4 mb-4">
              <p className="text-[10px] uppercase tracking-widest font-black text-gray-400 mb-1">Mi Cuenta</p>
@@ -198,8 +218,12 @@ function AdminLayout({ children }) {
           </button>
         </div>
       </aside>
+      {/* --- FIN DEL MENÚ LATERAL --- */}
 
+      {/* --- INICIO ÁREA PRINCIPAL (MAIN) --- */}
       <main className="flex-1 flex flex-col relative overflow-hidden w-full z-0">
+        
+        {/* CABECERA MÓVIL */}
         <header className="h-16 bg-white border-b border-gray-100 flex items-center justify-between px-6 md:hidden shadow-sm z-10 shrink-0">
           <img 
             src="https://res.cloudinary.com/dca2psqfg/image/upload/v1774900350/logo-largo-pedialgo_u7snto.png" 
@@ -211,67 +235,64 @@ function AdminLayout({ children }) {
           </button>
         </header>
 
+        {/* CONTENIDO (AQUÍ SE INYECTAN LAS OTRAS PÁGINAS) */}
         <div className="flex-1 overflow-y-auto p-4 md:p-10 no-scrollbar relative w-full print:p-0">
           {children}
         </div>
 
-        {/*  Panel del QR --- */}
-        <div className="fixed bottom-6 right-6 z-50 print:hidden">
-          <button 
-            onClick={() => setMostrarQR(!mostrarQR)}
-            className="w-14 h-14 bg-white border border-gray-200 shadow-xl rounded-full flex items-center justify-center hover:scale-110 transition-all cursor-pointer"
-            title="Ver mi QR y Link"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-gray-600"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
-          </button>
-
-          {mostrarQR && (
-            <div className="absolute bottom-16 right-0 w-64 bg-white rounded-2xl shadow-2xl border border-gray-100 p-5 animate-in fade-in slide-in-from-bottom-4">
-              <div className="flex justify-between items-center mb-4">
-                <p className="font-bold text-sm text-gray-800">Tu Menú Digital</p>
-                <button onClick={() => setMostrarQR(false)} className="text-gray-400 hover:text-gray-600 text-lg cursor-pointer">×</button>
+        {/* --- MODAL DEL QR (Aparece cuando mostrarQR es true) --- */}
+        {mostrarQR && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
+            <div className="bg-white rounded-2xl shadow-2xl border border-gray-100 p-6 max-w-sm w-full animate-in fade-in zoom-in-95">
+              <div className="flex justify-between items-center mb-6">
+                <p className="font-bold text-lg text-gray-800">Comparte tu Menú</p>
+                <button onClick={() => setMostrarQR(false)} className="text-gray-400 hover:text-gray-600 text-2xl cursor-pointer leading-none">&times;</button>
               </div>
               
-              <div className="bg-gray-50 p-3 rounded-xl flex flex-col items-center border border-gray-100 mb-4">
+              <div className="bg-gray-50 p-4 rounded-xl flex flex-col items-center border border-gray-200 mb-6">
                 <QRCodeCanvas 
                   id="qr-sidebar" 
                   value={urlMenu} 
-                  size={140} 
+                  size={180} 
                   level={"H"} 
                   includeMargin={true} 
+                  className="rounded-lg"
                 />
                 <button 
                   onClick={descargarQR}
-                  className="mt-3 text-[10px] font-bold text-blue-600 hover:underline cursor-pointer"
+                  className="mt-4 px-4 py-2 bg-gray-800 text-white rounded-lg text-xs font-bold hover:bg-black transition-colors cursor-pointer"
                 >
-                  Descargar imagen PNG
+                  Descargar Código QR
                 </button>
               </div>
 
               <div className="space-y-2">
-                <p className="text-[10px] text-gray-400 uppercase font-bold tracking-widest">Link de tu local</p>
+                <p className="text-[10px] text-gray-400 uppercase font-bold tracking-widest">Link directo</p>
                 <div className="flex gap-2">
                   <input 
                     readOnly 
                     value={urlMenu} 
-                    className="flex-1 bg-gray-100 p-2 rounded-lg text-[11px] border-none text-gray-600 outline-none" 
+                    className="flex-1 bg-gray-100 p-3 rounded-lg text-xs border border-gray-200 text-gray-600 outline-none" 
                   />
                   <button 
                     onClick={() => {
                       navigator.clipboard.writeText(urlMenu);
-                      alert("¡Link copiado!");
+                      alert("¡Link copiado al portapapeles!");
                     }}
-                    className="bg-gray-200 px-2 rounded-lg text-xs cursor-pointer hover:bg-gray-300 transition-colors"
+                    className="bg-gray-800 text-white px-3 rounded-lg text-sm cursor-pointer hover:bg-black transition-colors"
                     title="Copiar Link"
                   >
-                    📋
+                    Copiar
                   </button>
                 </div>
               </div>
             </div>
-          )}
-        </div>
+          </div>
+        )}
+        {/* --- FIN MODAL QR --- */}
+
       </main>
+      {/* --- FIN ÁREA PRINCIPAL --- */}
     </div>
   );
 }
