@@ -272,7 +272,7 @@ export default function LandingPage() {
       <section id="contacto" className="py-24 px-6 bg-[#1A1A1A] text-white">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="font-pedialgo text-4xl lg:text-5xl mb-6" style={{ fontFamily: 'FontPediAlgo' }}>Contacto</h2>
-          <p className="text-slate-400 mb-10 text-lg font-medium">Sumá tu local a la red de PediAlgo.</p>
+          <p className="text-slate-400 mb-10 text-lg font-medium">Explorá nuestras redes.</p>
           
           <div className="flex justify-center gap-6 mb-20">
             <a href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent('Hola, quiero sumar mi local a PediAlgo.')}`} target="_blank" rel="noreferrer" className="w-16 h-16 flex items-center justify-center bg-green-600 hover:bg-green-500 rounded-full transition-all hover:scale-110 shadow-lg p-3">
