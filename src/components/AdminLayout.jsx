@@ -36,6 +36,7 @@ function AdminLayout({ children }) {
   const [menuLocalesAbierto, setMenuLocalesAbierto] = useState(false);
   const [nombreLocal, setNombreLocal] = useState("Cargando...");
 
+  // Carga inicial del nombre del local
   useEffect(() => {
     if (localActivo.id) {
       fetchPrivado(`/admin/locales/${localActivo.id}`)
@@ -48,10 +49,13 @@ function AdminLayout({ children }) {
     }
   }, [localActivo.id]);
 
+  // Polling silencioso para verificar sesión activa
   useEffect(() => {
     if (!localActivo.id) return;
+
     const intervalId = setInterval(() => {
-      fetchPrivado(`/admin/locales/${localActivo.id}`).catch(() => {});
+      fetchPrivado(`/admin/locales/${localActivo.id}`)
+        .catch(() => {});
     }, 5000); 
     return () => clearInterval(intervalId);
   }, [localActivo.id]);
@@ -68,6 +72,7 @@ function AdminLayout({ children }) {
     window.location.reload(); 
   };
 
+  // Lista de items del menú de navegación
   const menuItems = [
     { path: "/admin/dashboard", label: "Monitor de Pedidos", roles: ["ADMIN", "EMPLEADO"] },
     { path: "/admin/finanzas", label: "Resumen Financiero", roles: ["ADMIN"] },
@@ -88,13 +93,15 @@ function AdminLayout({ children }) {
   return (
     <div className="flex h-screen bg-[#f4f7f6] overflow-hidden text-gray-900" style={{ fontFamily: "'Poppins', sans-serif" }}>
       
+      {/* Overlay oscuro para menú móvil */}
       {isMobileMenuOpen && (
         <div className="fixed inset-0 bg-black/50 z-20 md:hidden" onClick={() => setIsMobileMenuOpen(false)} />
       )}
 
-      {/* --- INICIO DEL MENÚ LATERAL --- */}
+      {/* --- INICIO DEL MENÚ LATERAL (SIDEBAR) --- */}
       <aside className={`fixed md:static inset-y-0 left-0 w-72 bg-white border-r border-gray-100 flex flex-col z-30 transform transition-transform duration-300 ease-in-out ${isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0`}>
         
+        {/* LOGO */}
         <div className="h-32 flex items-center justify-center border-b border-gray-50/80 px-4 shrink-0">
           <img 
             src="https://res.cloudinary.com/dca2psqfg/image/upload/v1774900350/logo-largo-pedialgo_u7snto.png" 
@@ -103,6 +110,7 @@ function AdminLayout({ children }) {
           />
         </div>
 
+        {/* SELECTOR DE LOCAL */}
         <div className="p-5 pb-2 shrink-0 relative">
           <p className="text-[10px] uppercase tracking-widest font-black text-gray-400 mb-2">Local Activo</p>
           <button 
@@ -119,6 +127,7 @@ function AdminLayout({ children }) {
             )}
           </button>
           
+          {/* Dropdown de sucursales */}
           {menuLocalesAbierto && tieneMultiplesLocales && (
             <>
               <div className="fixed inset-0 z-40" onClick={() => setMenuLocalesAbierto(false)}></div>
@@ -139,9 +148,11 @@ function AdminLayout({ children }) {
           )}
         </div>
 
+        {/* NAVEGACIÓN PRINCIPAL */}
         <nav className="flex-1 px-4 py-4 space-y-1.5 overflow-y-auto no-scrollbar relative z-10">
           <p className="px-4 text-[10px] uppercase tracking-widest font-black text-gray-400 mb-3">Menú Principal</p>
           
+          {/* Mapeo de links (Dashboard, Productos, etc.) */}
           {menuFiltrado.map((item) => {
             const isActive = location.pathname.includes(item.path);
             return (
@@ -161,21 +172,10 @@ function AdminLayout({ children }) {
           })}
 
           <div className="pt-4 mt-4 border-t border-gray-50">
-            {/* BOTÓN: NOVEDADES (Apunta a la página nueva con estilo neutral) */}
-            <Link
-              to="/admin/novedades"
-              onClick={() => setIsMobileMenuOpen(false)}
-              className={`flex items-center gap-3.5 w-full px-4 py-3 rounded-xl font-bold transition-all hover:bg-gray-50 mb-1 ${location.pathname.includes("/admin/novedades") ? 'text-orange-500 bg-orange-50/50' : 'text-gray-600'}`}
-            >
-               <span className="text-sm tracking-tight flex items-center gap-2">
-                Novedades
-               </span>
-            </Link>
-
-            {/* BOTÓN: LINK / QR */}
+            {/* BOTÓN: LINK / QR (Ahora con hover en tonos naranjas) */}
             <button
               onClick={() => setMostrarQR(true)}
-              className="flex items-center gap-3.5 w-full px-4 py-3 rounded-xl font-bold text-gray-600 hover:bg-gray-50 transition-all cursor-pointer group mb-1"
+              className="flex items-center gap-3.5 w-full px-4 py-3 rounded-xl font-bold text-gray-600 hover:text-orange-600 hover:bg-orange-50 transition-all cursor-pointer group mb-1"
             >
                <span className="text-sm tracking-tight flex items-center gap-2">
                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><rect x="7" y="7" width="3" height="3"></rect><rect x="14" y="7" width="3" height="3"></rect><rect x="7" y="14" width="3" height="3"></rect><rect x="14" y="14" width="3" height="3"></rect></svg>
@@ -186,7 +186,7 @@ function AdminLayout({ children }) {
             {/* BOTÓN DE AYUDA (SOPORTE) */}
             <button
               onClick={abrirSoporte}
-              className="flex items-center gap-3.5 w-full px-4 py-3 rounded-xl font-bold text-gray-400 hover:bg-orange-50 hover:text-orange-500 transition-all cursor-pointer group"
+              className="flex items-center gap-3.5 w-full px-4 py-3 rounded-xl font-bold text-gray-400 hover:bg-orange-50 hover:text-orange-600 transition-all cursor-pointer group"
             >
               <span className="text-sm tracking-tight flex items-center gap-2">
                 <span className="grayscale group-hover:grayscale-0 transition-all"></span> ¿Necesitás ayuda?
@@ -195,6 +195,7 @@ function AdminLayout({ children }) {
           </div>
         </nav>
 
+        {/* INFO DEL USUARIO LOGUEADO */}
         <div className="p-4 border-t border-gray-50/80 shrink-0 bg-gray-50/30">
           <div className="px-4 mb-4">
              <p className="text-[10px] uppercase tracking-widest font-black text-gray-400 mb-1">Mi Cuenta</p>
@@ -221,6 +222,7 @@ function AdminLayout({ children }) {
       {/* --- INICIO ÁREA PRINCIPAL (MAIN) --- */}
       <main className="flex-1 flex flex-col relative overflow-hidden w-full z-0">
         
+        {/* CABECERA MÓVIL */}
         <header className="h-16 bg-white border-b border-gray-100 flex items-center justify-between px-6 md:hidden shadow-sm z-10 shrink-0">
           <img 
             src="https://res.cloudinary.com/dca2psqfg/image/upload/v1774900350/logo-largo-pedialgo_u7snto.png" 
@@ -232,11 +234,12 @@ function AdminLayout({ children }) {
           </button>
         </header>
 
+        {/* CONTENIDO (AQUÍ SE INYECTAN LAS OTRAS PÁGINAS) */}
         <div className="flex-1 overflow-y-auto p-4 md:p-10 no-scrollbar relative w-full print:p-0">
           {children}
         </div>
 
-        {/* --- MODAL DEL QR (Mantenemos el modal central para el QR) --- */}
+        {/* --- MODAL DEL QR (Con detalles naranjas) --- */}
         {mostrarQR && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
             <div className="bg-white rounded-2xl shadow-2xl border border-gray-100 p-6 max-w-sm w-full animate-in fade-in zoom-in-95">
@@ -256,7 +259,8 @@ function AdminLayout({ children }) {
                 />
                 <button 
                   onClick={descargarQR}
-                  className="mt-4 px-4 py-2 bg-gray-800 text-white rounded-lg text-xs font-bold hover:bg-black transition-colors cursor-pointer"
+                  className="mt-4 px-4 py-2 text-white rounded-lg text-xs font-bold transition-colors cursor-pointer opacity-90 hover:opacity-100"
+                  style={{ backgroundColor: COLOR_PRIMARIO }}
                 >
                   Descargar Código QR
                 </button>
@@ -275,7 +279,8 @@ function AdminLayout({ children }) {
                       navigator.clipboard.writeText(urlMenu);
                       alert("¡Link copiado al portapapeles!");
                     }}
-                    className="bg-gray-800 text-white px-3 rounded-lg text-sm cursor-pointer hover:bg-black transition-colors"
+                    className="text-white px-3 rounded-lg text-sm cursor-pointer transition-colors opacity-90 hover:opacity-100"
+                    style={{ backgroundColor: COLOR_PRIMARIO }}
                     title="Copiar Link"
                   >
                     Copiar
@@ -285,8 +290,10 @@ function AdminLayout({ children }) {
             </div>
           </div>
         )}
+        {/* --- FIN MODAL QR --- */}
 
       </main>
+      {/* --- FIN ÁREA PRINCIPAL --- */}
     </div>
   );
 }

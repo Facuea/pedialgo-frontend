@@ -12,7 +12,6 @@ import ProductosPage from "./pages/ProductosPage";
 import AjustesPage from "./pages/AjustesPage";
 import FinanzasPage from "./pages/FinanzasPage";
 import SeleccionarLocalPage from "./pages/admin/SeleccionarLocalPage";
-import NovedadesPage from "./pages/NovedadesPage";
 
 // Páginas de SuperAdmin (Plataforma)
 import SuperAdminLocalesPage from "./pages/superadmin/SuperAdminLocalesPage";
@@ -46,7 +45,6 @@ function App() {
           <Route path="/admin/dashboard" element={<DashboardPage />} />
           <Route path="/admin/productos" element={<ProductosPage />} />
           <Route path="/admin/seleccionar-local" element={<SeleccionarLocalPage />} />
-          <Route path="/admin/novedades" element={<NovedadesPage />} />
         </Route>
 
         {/* ==========================================
