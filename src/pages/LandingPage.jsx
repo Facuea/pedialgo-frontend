@@ -115,7 +115,7 @@ export default function LandingPage() {
             <div className="flex flex-col sm:flex-row gap-3 justify-start">
               <button 
                 onClick={() => handleWhatsApp("¡Hola! Vengo de la web y quiero crear mi cuenta gratis por 7 días.")}
-                className="px-6 py-3.5 bg-[#E43D4E] text-white font-bold text-sm rounded-xl shadow-[0_4px_12px_rgba(228,61,78,0.3)] hover:bg-[#d63544] active:scale-95 transition-all flex items-center justify-center gap-2 group w-fit"
+                className="px-6 py-3.5 bg-[#E43D4E] text-white font-bold text-sm rounded-xl hover:bg-[#d63544] active:scale-95 transition-all flex items-center justify-center gap-2 group w-fit"
               >
                 Crear cuenta gratis
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
