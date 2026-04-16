@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-
+// Paginas de publicidad / CLiente
+import LandingPage from './pages/LandingPage';
 // Páginas de Usuario / Cliente
 import MenuPage from "./pages/MenuPage";
 
@@ -25,7 +26,10 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        
+        {/* ==========================================
+            RUTA PUBLICA PUBLICIDAD
+        ========================================== */}
+        <Route path="/" element={<LandingPage />} />
         {/* ==========================================
             RUTAS PÚBLICAS CON FILTRO DE LOGUEO
         ========================================== */}

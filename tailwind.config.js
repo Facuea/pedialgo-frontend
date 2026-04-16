@@ -5,6 +5,9 @@ export default {
       colors: {
         principal: '#E11D48',
         fondo: '#FFF7ED',
+      },
+      fontFamily: {
+        'pedialgo': ['"FontPediAlgo"', 'sans-serif'],
       }
     },
   },
