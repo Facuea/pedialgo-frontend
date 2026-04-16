@@ -17,8 +17,8 @@ function TicketImpresion({ pedido, nombreLocal }) {
       <div className="border-b-2 border-dashed border-black pb-4 mb-4">
         <p><span className="font-bold">Cliente:</span> {pedido.nombreCliente}</p>
         <p><span className="font-bold">Tel:</span> {pedido.telefono}</p>
-        <p><span className="font-bold">Tipo:</span> {pedido.direccion ? "Delivery" : "Retiro en Local"}</p>
-        {pedido.direccion && (
+        <p><span className="font-bold">Tipo:</span> {pedido.direccion && pedido.direccion !== "Retiro en local" ? "Delivery" : "Retiro en Local"}</p>
+        {pedido.direccion && pedido.direccion !== "Retiro en local" && (
           <p><span className="font-bold">Dir:</span> {pedido.direccion}</p>
         )}
       </div>
@@ -45,9 +45,23 @@ function TicketImpresion({ pedido, nombreLocal }) {
         </table>
       </div>
 
-      {/* SECCIÓN: Total del pedido */}
-      <div className="text-right">
-        <p className="text-xl font-bold">TOTAL: ${pedido.total}</p>
+      {/* SECCIÓN: Totales y Pago */}
+      <div className="space-y-1">
+        <div className="text-right">
+          <p className="text-xl font-bold">TOTAL: ${pedido.total}</p>
+        </div>
+
+        {pedido.metodoPago && (
+          <div className="border-t border-black pt-2 mt-2">
+            <p className="font-bold uppercase">Pago: {pedido.metodoPago}</p>
+            {pedido.metodoPago.toLowerCase() === 'efectivo' && pedido.montoAbona && (
+              <div className="text-right">
+                <p>Abona con: ${pedido.montoAbona}</p>
+                <p className="font-bold">Vuelto: ${pedido.montoAbona - pedido.total}</p>
+              </div>
+            )}
+          </div>
+        )}
       </div>
       
       {/* SECCIÓN: Footer del ticket */}

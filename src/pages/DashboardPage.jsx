@@ -219,6 +219,7 @@ useEffect(() => {
                       
                       <p className="text-xs font-medium text-gray-600 mt-2 bg-gray-50 border border-gray-100 inline-block px-2.5 py-1 rounded-md">{pedido.direccion ? `Dir: ${pedido.direccion}` : "Retiro en local"}</p>
                     </div>
+                    
                     <div className="border-t border-dashed border-gray-200 pt-3">
                       <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-widest mb-2">Comanda</p>
                       <ul className="space-y-1.5">
@@ -230,6 +231,22 @@ useEffect(() => {
                         ))}
                       </ul>
                     </div>
+
+                    {/* NUEVO: Sección del Método de Pago visible en el detalle */}
+                    {pedido.metodoPago && (
+                      <div className="border-t border-dashed border-gray-200 pt-3 mt-3">
+                        <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-widest mb-1">Método de Pago</p>
+                        <div className="flex justify-between items-center bg-gray-50 rounded px-2 py-1.5 border border-gray-100">
+                          <span className="text-xs font-bold text-gray-700 uppercase">{pedido.metodoPago}</span>
+                          {pedido.metodoPago.toLowerCase() === 'efectivo' && pedido.montoAbona && (
+                            <span className="text-xs font-medium text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-100">
+                              Paga c/ ${pedido.montoAbona}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    )}
+
                   </div>
 
                   <div className="p-4 border-t border-gray-100 bg-white flex flex-col gap-3">

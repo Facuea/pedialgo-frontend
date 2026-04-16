@@ -4,12 +4,15 @@ const API_URL = import.meta.env.VITE_API_URL;
 // SECCIÓN: Estados iniciales
 function CarritoModal({ mostrar, onClose, carrito, agregarAlCarrito, quitarDelCarrito, totalDinero, tema, nombreLocal, numeroWhatsApp, slug, vaciarCarrito }) {
   const [metodoEntrega, setMetodoEntrega] = useState("delivery");
+  const [metodoPago, setMetodoPago] = useState("efectivo"); // NUEVO ESTADO: Método de pago
+  
   const [cliente, setCliente] = useState({
     nombre: "",
     telefono: "",
     email: "",
     direccion: "",
-    notas: ""
+    notas: "",
+    montoAbona: "" // NUEVO ESTADO: Para el vuelto
   });
   
   const [errores, setErrores] = useState({});
@@ -23,7 +26,7 @@ function CarritoModal({ mostrar, onClose, carrito, agregarAlCarrito, quitarDelCa
 
     if (name === "nombre") {
       newValue = value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, "");
-    } else if (name === "telefono") {
+    } else if (name === "telefono" || name === "montoAbona") { // Permitir números en montoAbona
       newValue = value.replace(/[^0-9+\s]/g, "");
     }
 
@@ -48,6 +51,15 @@ function CarritoModal({ mostrar, onClose, carrito, agregarAlCarrito, quitarDelCa
     if (metodoEntrega === "delivery" && !cliente.direccion.trim()) {
       nuevosErrores.direccion = "Para envíos, la dirección es obligatoria.";
     }
+    
+    // NUEVA VALIDACIÓN: Si paga en efectivo, validar monto
+    if (metodoPago === "efectivo") {
+      if (!cliente.montoAbona.trim()) {
+         nuevosErrores.montoAbona = "Ingresá con cuánto vas a abonar.";
+      } else if (parseInt(cliente.montoAbona) < totalDinero) {
+         nuevosErrores.montoAbona = "El monto no puede ser menor al total.";
+      }
+    }
 
     if (Object.keys(nuevosErrores).length > 0) {
       setErrores(nuevosErrores);
@@ -59,6 +71,8 @@ function CarritoModal({ mostrar, onClose, carrito, agregarAlCarrito, quitarDelCa
       telefono: cliente.telefono,
       emailCliente: cliente.email, 
       direccion: metodoEntrega === "delivery" ? cliente.direccion : "Retiro en local",
+      metodoPago: metodoPago, // NUEVO: Enviar al backend
+      montoAbona: metodoPago === "efectivo" ? parseInt(cliente.montoAbona) : null, // NUEVO: Enviar al backend
       items: carrito.map(item => ({
         productoId: item.id,
         cantidad: item.cantidad
@@ -83,6 +97,11 @@ function CarritoModal({ mostrar, onClose, carrito, agregarAlCarrito, quitarDelCa
       }).join("\n");
 
       const metodoTexto = metodoEntrega === "delivery" ? " ENVIO A DOMICILIO" : " RETIRO EN LOCAL";
+      
+      // NUEVO: Armar texto de pago para WhatsApp
+      const pagoTexto = metodoPago === "efectivo" 
+        ? ` Efectivo (Abona con $${cliente.montoAbona} - Vuelto: $${parseInt(cliente.montoAbona) - totalDinero})` 
+        : ` Transferencia (CBU/Alias)`;
 
       const mensajeFinal = `
 *NUEVO PEDIDO - ${nombreLocal}* -----------------------------------
@@ -98,6 +117,7 @@ ${cliente.notas ? ` Notas: ${cliente.notas}` : ""}
 ${mensajeProductos}
 -----------------------------------
  *TOTAL A PAGAR: $${totalDinero}*
+ *PAGO:* ${pagoTexto}
       `.trim();
 
       const url = `https://wa.me/${numeroWhatsApp}?text=${encodeURIComponent(mensajeFinal)}`;
@@ -249,8 +269,48 @@ ${mensajeProductos}
                 </div>
               )}
 
+              {/* NUEVA SECCIÓN: Selección de método de pago */}
+              <div className="pt-2 border-t mt-4" style={{ borderColor: tema.colorTexto + '20' }}>
+                <p className="font-semibold text-sm mb-3 opacity-80">¿Cómo vas a pagar?</p>
+                <div className="flex gap-2 mb-3">
+                  <button 
+                    onClick={() => { setMetodoPago("efectivo"); setErrores({...errores, montoAbona: null}); }}
+                    className="flex-1 py-2.5 rounded-xl text-sm font-bold transition-all border-2 cursor-pointer"
+                    style={{
+                      backgroundColor: metodoPago === "efectivo" ? tema.colorPrimario : "transparent",
+                      color: metodoPago === "efectivo" ? tema.colorFondo : tema.colorTexto,
+                      borderColor: metodoPago === "efectivo" ? tema.colorPrimario : tema.colorTexto + '30'
+                    }}
+                  >Efectivo</button>
+                  <button 
+                    onClick={() => { setMetodoPago("transferencia"); setErrores({...errores, montoAbona: null}); }}
+                    className="flex-1 py-2.5 rounded-xl text-sm font-bold transition-all border-2 cursor-pointer"
+                    style={{
+                      backgroundColor: metodoPago === "transferencia" ? tema.colorPrimario : "transparent",
+                      color: metodoPago === "transferencia" ? tema.colorFondo : tema.colorTexto,
+                      borderColor: metodoPago === "transferencia" ? tema.colorPrimario : tema.colorTexto + '30'
+                    }}
+                  >Transferencia</button>
+                </div>
+
+                {metodoPago === "efectivo" && (
+                  <div>
+                    <input 
+                      type="tel" 
+                      name="montoAbona" 
+                      placeholder="¿Con cuánto vas a abonar? *" 
+                      value={cliente.montoAbona} 
+                      onChange={handleChange} 
+                      className="w-full p-3 rounded-xl border outline-none transition-colors" 
+                      style={{ backgroundColor: tema.colorTexto + '0A', borderColor: errores.montoAbona ? '#ef4444' : tema.colorTexto + '20' }} 
+                    />
+                    {errores.montoAbona && <p className="text-[#ef4444] text-[11px] mt-1 px-2 font-semibold">{errores.montoAbona}</p>}
+                  </div>
+                )}
+              </div>
+
               {/* Notas (Sin validación) */}
-              <textarea name="notas" placeholder="Aclaraciones..." value={cliente.notas} onChange={handleChange} rows="2" className="w-full p-3 rounded-xl border outline-none resize-none" style={{ backgroundColor: tema.colorTexto + '0A', borderColor: tema.colorTexto + '20' }} />
+              <textarea name="notas" placeholder="Aclaraciones..." value={cliente.notas} onChange={handleChange} rows="2" className="w-full mt-2 p-3 rounded-xl border outline-none resize-none" style={{ backgroundColor: tema.colorTexto + '0A', borderColor: tema.colorTexto + '20' }} />
             </div>
           </div>
 
