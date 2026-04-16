@@ -1,17 +1,34 @@
 import { useState, useEffect } from "react";
+import { QRCodeCanvas } from "qrcode.react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { fetchPrivado } from "../services/apiConfig";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
 function AdminLayout({ children }) {
+  const [mostrarQR, setMostrarQR] = useState(false);
+
+  const localActivo = JSON.parse(localStorage.getItem("localActivo")) || {};
+  
+  const urlMenu = `${window.location.origin}/${localActivo.slug}`;
+  const descargarQR = () => {
+    const canvas = document.getElementById("qr-sidebar");
+    if (!canvas) return;
+    const pngUrl = canvas.toDataURL("image/png");
+    let downloadLink = document.createElement("a");
+    downloadLink.href = pngUrl;
+    downloadLink.download = `QR-${localActivo.slug}.png`;
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
+  };
+
   const location = useLocation();
   const navigate = useNavigate();
 
   const COLOR_PRIMARIO = "#F1A139"; 
 
   const usuarioInfo = JSON.parse(localStorage.getItem("usuario")) || { email: "usuario@pedialgo.com", rol: "EMPLEADO", locales: [] };
-  const localActivo = JSON.parse(localStorage.getItem("localActivo")) || {};
   
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [menuLocalesAbierto, setMenuLocalesAbierto] = useState(false);
@@ -196,6 +213,63 @@ function AdminLayout({ children }) {
 
         <div className="flex-1 overflow-y-auto p-4 md:p-10 no-scrollbar relative w-full print:p-0">
           {children}
+        </div>
+
+        {/*  Panel del QR --- */}
+        <div className="fixed bottom-6 right-6 z-50 print:hidden">
+          <button 
+            onClick={() => setMostrarQR(!mostrarQR)}
+            className="w-14 h-14 bg-white border border-gray-200 shadow-xl rounded-full flex items-center justify-center hover:scale-110 transition-all cursor-pointer"
+            title="Ver mi QR y Link"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-gray-600"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+          </button>
+
+          {mostrarQR && (
+            <div className="absolute bottom-16 right-0 w-64 bg-white rounded-2xl shadow-2xl border border-gray-100 p-5 animate-in fade-in slide-in-from-bottom-4">
+              <div className="flex justify-between items-center mb-4">
+                <p className="font-bold text-sm text-gray-800">Tu Menú Digital</p>
+                <button onClick={() => setMostrarQR(false)} className="text-gray-400 hover:text-gray-600 text-lg cursor-pointer">×</button>
+              </div>
+              
+              <div className="bg-gray-50 p-3 rounded-xl flex flex-col items-center border border-gray-100 mb-4">
+                <QRCodeCanvas 
+                  id="qr-sidebar" 
+                  value={urlMenu} 
+                  size={140} 
+                  level={"H"} 
+                  includeMargin={true} 
+                />
+                <button 
+                  onClick={descargarQR}
+                  className="mt-3 text-[10px] font-bold text-blue-600 hover:underline cursor-pointer"
+                >
+                  Descargar imagen PNG
+                </button>
+              </div>
+
+              <div className="space-y-2">
+                <p className="text-[10px] text-gray-400 uppercase font-bold tracking-widest">Link de tu local</p>
+                <div className="flex gap-2">
+                  <input 
+                    readOnly 
+                    value={urlMenu} 
+                    className="flex-1 bg-gray-100 p-2 rounded-lg text-[11px] border-none text-gray-600 outline-none" 
+                  />
+                  <button 
+                    onClick={() => {
+                      navigator.clipboard.writeText(urlMenu);
+                      alert("¡Link copiado!");
+                    }}
+                    className="bg-gray-200 px-2 rounded-lg text-xs cursor-pointer hover:bg-gray-300 transition-colors"
+                    title="Copiar Link"
+                  >
+                    📋
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </main>
     </div>
