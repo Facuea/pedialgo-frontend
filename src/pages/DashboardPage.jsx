@@ -323,33 +323,7 @@ useEffect(() => {
                 </div>
               )}
             </div>
-            {/* SECCIÓN DE ACTUALIZACIONES */}
-            <div className="mt-12 bg-indigo-50/50 border border-indigo-100 rounded-2xl p-6 shadow-sm print:hidden">
-              <h3 className="text-indigo-800 font-bold mb-4 flex items-center gap-2 text-lg">
-                <span>🚀</span> Novedades y Mejoras en PediAlgo
-              </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                
-                <div className="bg-white p-4 rounded-xl border border-indigo-50 shadow-sm transition-transform hover:-translate-y-1">
-                  <span className="text-[10px] font-black bg-emerald-100 text-emerald-700 px-2 py-1 rounded uppercase tracking-wider mb-2 inline-block">Nuevo</span>
-                  <p className="font-bold text-gray-800 text-sm mb-1">Métodos de Pago</p>
-                  <p className="text-xs text-gray-600">Ahora tus clientes pueden avisarte si pagan en Efectivo o Transferencia, y podés ver con cuánto abonan directo en el pedido.</p>
-                </div>
-                
-                <div className="bg-white p-4 rounded-xl border border-indigo-50 shadow-sm transition-transform hover:-translate-y-1">
-                  <span className="text-[10px] font-black bg-blue-100 text-blue-700 px-2 py-1 rounded uppercase tracking-wider mb-2 inline-block">Mejora</span>
-                  <p className="font-bold text-gray-800 text-sm mb-1">Ticket Inteligente</p>
-                  <p className="text-xs text-gray-600">El ticket de impresión ahora muestra el método de pago y calcula automáticamente el vuelto para agilizar tu caja.</p>
-                </div>
-                
-                <div className="bg-white p-4 rounded-xl border border-indigo-50 shadow-sm transition-transform hover:-translate-y-1">
-                  <span className="text-[10px] font-black bg-purple-100 text-purple-700 px-2 py-1 rounded uppercase tracking-wider mb-2 inline-block">Herramienta</span>
-                  <p className="font-bold text-gray-800 text-sm mb-1">Link y QR a mano</p>
-                  <p className="text-xs text-gray-600">Agregamos una sección en tu menú lateral izquierdo para que descargues tu código QR o copies tu link cuando quieras.</p>
-                </div>
-
-              </div>
-            </div>
+            
           </div>
         </AdminLayout>
       </div>

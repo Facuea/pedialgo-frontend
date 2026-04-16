@@ -6,6 +6,8 @@ import { fetchPrivado } from "../services/apiConfig";
 const API_URL = import.meta.env.VITE_API_URL;
 
 function AdminLayout({ children }) {
+  const [mostrarNovedades, setMostrarNovedades] = useState(false);
+
   const [mostrarQR, setMostrarQR] = useState(false);
 
   const localActivo = JSON.parse(localStorage.getItem("localActivo")) || {};
@@ -172,6 +174,15 @@ function AdminLayout({ children }) {
           })}
 
           <div className="pt-4 mt-4 border-t border-gray-50">
+            {/* BOTÓN: NOVEDADES */}
+            <button
+              onClick={() => setMostrarNovedades(true)}
+              className="flex items-center gap-3.5 w-full px-4 py-3 rounded-xl font-bold text-indigo-700 bg-indigo-50 hover:bg-indigo-100 transition-all cursor-pointer group mb-1"
+            >
+               <span className="text-sm tracking-tight flex items-center gap-2">
+                  Novedades
+               </span>
+            </button>
             {/* --- NUEVO BOTÓN: LINK / QR EN EL MENÚ --- */}
             <button
               onClick={() => setMostrarQR(true)}
@@ -290,7 +301,49 @@ function AdminLayout({ children }) {
           </div>
         )}
         {/* --- FIN MODAL QR --- */}
+        {/* --- INICIO MODAL DE NOVEDADES --- */}
+        {mostrarNovedades && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
+            <div className="bg-white rounded-2xl shadow-2xl border border-gray-100 p-6 max-w-3xl w-full max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in-95">
+              <div className="flex justify-between items-center mb-6 pb-4 border-b border-gray-100">
+                <h3 className="text-indigo-800 font-bold flex items-center gap-2 text-xl">
+                   Novedades y Mejoras en PediAlgo
+                </h3>
+                <button onClick={() => setMostrarNovedades(false)} className="text-gray-400 hover:text-gray-600 text-2xl cursor-pointer leading-none">&times;</button>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                <div className="bg-indigo-50/50 p-5 rounded-xl border border-indigo-100 shadow-sm">
+                  <span className="text-[10px] font-black bg-emerald-100 text-emerald-700 px-2 py-1 rounded uppercase tracking-wider mb-3 inline-block">Nuevo</span>
+                  <p className="font-bold text-gray-800 text-sm mb-2">Métodos de Pago</p>
+                  <p className="text-xs text-gray-600 leading-relaxed">Ahora tus clientes pueden avisarte si pagan en Efectivo o Transferencia, y podés ver con cuánto abonan directo en el pedido.</p>
+                </div>
+                
+                <div className="bg-indigo-50/50 p-5 rounded-xl border border-indigo-100 shadow-sm">
+                  <span className="text-[10px] font-black bg-blue-100 text-blue-700 px-2 py-1 rounded uppercase tracking-wider mb-3 inline-block">Mejora</span>
+                  <p className="font-bold text-gray-800 text-sm mb-2">Ticket Inteligente</p>
+                  <p className="text-xs text-gray-600 leading-relaxed">El ticket de impresión ahora muestra el método de pago y calcula automáticamente el vuelto para agilizar tu caja.</p>
+                </div>
+                
+                <div className="bg-indigo-50/50 p-5 rounded-xl border border-indigo-100 shadow-sm">
+                  <span className="text-[10px] font-black bg-purple-100 text-purple-700 px-2 py-1 rounded uppercase tracking-wider mb-3 inline-block">Herramienta</span>
+                  <p className="font-bold text-gray-800 text-sm mb-2">Link y QR a mano</p>
+                  <p className="text-xs text-gray-600 leading-relaxed">Agregamos una sección en tu menú lateral izquierdo para que descargues tu código QR o copies tu link cuando quieras.</p>
+                </div>
+              </div>
 
+              <div className="mt-8 pt-4 border-t border-gray-100 text-center">
+                <button 
+                  onClick={() => setMostrarNovedades(false)}
+                  className="bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-2 px-6 rounded-lg text-sm transition-colors cursor-pointer"
+                >
+                  Cerrar
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+        {/* --- FIN MODAL DE NOVEDADES --- */}
       </main>
       {/* --- FIN ÁREA PRINCIPAL --- */}
     </div>
