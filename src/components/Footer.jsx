@@ -3,7 +3,7 @@ function Footer() {
     <footer className="bg-transparent py-10 mt-auto print:hidden w-full">
       <div className="max-w-4xl mx-auto px-6 flex flex-col items-center justify-center gap-4 text-center">
         
-        {/* LOGO GRANDE CON LINK A TU WEB */}
+        {/* LOGO CON LINK A TU WEB (Tamaño reducido) */}
         <a 
           href="https://pedialgoar.com" 
           target="_blank" 
@@ -14,7 +14,7 @@ function Footer() {
           <img 
             src="https://res.cloudinary.com/dca2psqfg/image/upload/q_auto/f_auto/v1774900350/logo-largo-pedialgo_u7snto.png" 
             alt="PediAlgo Logo" 
-            className="h-20 md:h-24 w-auto object-contain drop-shadow-sm mx-auto" 
+            className="h-14 md:h-16 w-auto object-contain drop-shadow-sm mx-auto" 
           />
         </a>
 
