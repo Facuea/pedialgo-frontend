@@ -1,10 +1,9 @@
 import { useState } from "react";
 const API_URL = import.meta.env.VITE_API_URL;
 
-// SECCIÓN: Estados iniciales
 function CarritoModal({ mostrar, onClose, carrito, agregarAlCarrito, quitarDelCarrito, totalDinero, tema, nombreLocal, numeroWhatsApp, slug, vaciarCarrito }) {
   const [metodoEntrega, setMetodoEntrega] = useState("delivery");
-  const [metodoPago, setMetodoPago] = useState("efectivo"); // NUEVO ESTADO: Método de pago
+  const [metodoPago, setMetodoPago] = useState("efectivo");
   
   const [cliente, setCliente] = useState({
     nombre: "",
@@ -12,21 +11,20 @@ function CarritoModal({ mostrar, onClose, carrito, agregarAlCarrito, quitarDelCa
     email: "",
     direccion: "",
     notas: "",
-    montoAbona: "" // NUEVO ESTADO: Para el vuelto
+    montoAbona: ""
   });
   
   const [errores, setErrores] = useState({});
 
   if (!mostrar) return null;
 
-  // SECCIÓN: Funciones auxiliares
   const handleChange = (e) => {
     const { name, value } = e.target;
     let newValue = value;
 
     if (name === "nombre") {
       newValue = value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, "");
-    } else if (name === "telefono" || name === "montoAbona") { // Permitir números en montoAbona
+    } else if (name === "telefono" || name === "montoAbona") { 
       newValue = value.replace(/[^0-9+\s]/g, "");
     }
 
@@ -37,7 +35,6 @@ function CarritoModal({ mostrar, onClose, carrito, agregarAlCarrito, quitarDelCa
     }
   };
 
-  // SECCIÓN: Procesamiento del pedido
   const procesarPedido = async () => {
     const nuevosErrores = {};
 
@@ -52,7 +49,6 @@ function CarritoModal({ mostrar, onClose, carrito, agregarAlCarrito, quitarDelCa
       nuevosErrores.direccion = "Para envíos, la dirección es obligatoria.";
     }
     
-    // NUEVA VALIDACIÓN: Si paga en efectivo, validar monto
     if (metodoPago === "efectivo") {
       if (!cliente.montoAbona.trim()) {
          nuevosErrores.montoAbona = "Ingresá con cuánto vas a abonar.";
@@ -71,8 +67,8 @@ function CarritoModal({ mostrar, onClose, carrito, agregarAlCarrito, quitarDelCa
       telefono: cliente.telefono,
       emailCliente: cliente.email, 
       direccion: metodoEntrega === "delivery" ? cliente.direccion : "Retiro en local",
-      metodoPago: metodoPago, // NUEVO: Enviar al backend
-      montoAbona: metodoPago === "efectivo" ? parseInt(cliente.montoAbona) : null, // NUEVO: Enviar al backend
+      metodoPago: metodoPago, 
+      montoAbona: metodoPago === "efectivo" ? parseInt(cliente.montoAbona) : null, 
       items: carrito.map(item => ({
         productoId: item.id,
         cantidad: item.cantidad
@@ -90,6 +86,10 @@ function CarritoModal({ mostrar, onClose, carrito, agregarAlCarrito, quitarDelCa
         throw new Error("No se pudo guardar el pedido en el servidor");
       }
 
+     
+      const pedidoCreado = await response.json();
+      const pedidoId = pedidoCreado.id; 
+
       let mensajeProductos = carrito.map(item => {
         const hayDescuento = item.descuento > 0;
         const precioVenta = hayDescuento ? item.precio - (item.precio * item.descuento / 100) : item.precio;
@@ -98,13 +98,12 @@ function CarritoModal({ mostrar, onClose, carrito, agregarAlCarrito, quitarDelCa
 
       const metodoTexto = metodoEntrega === "delivery" ? " ENVIO A DOMICILIO" : " RETIRO EN LOCAL";
       
-      // NUEVO: Armar texto de pago para WhatsApp
       const pagoTexto = metodoPago === "efectivo" 
         ? ` Efectivo (Abona con $${cliente.montoAbona} - Vuelto: $${parseInt(cliente.montoAbona) - totalDinero})` 
         : ` Transferencia (CBU/Alias)`;
 
       const mensajeFinal = `
-*NUEVO PEDIDO - ${nombreLocal}* -----------------------------------
+*NUEVO PEDIDO N°${pedidoId} - ${nombreLocal}* -----------------------------------
 *Datos del Cliente:*
  Nombre: ${cliente.nombre}
  Telefono: ${cliente.telefono}
