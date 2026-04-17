@@ -9,6 +9,7 @@ function TicketImpresion({ pedido, nombreLocal }) {
       <div className="text-center border-b-2 border-dashed border-black pb-4 mb-4">
         <h2 className="text-2xl font-bold uppercase">{nombreLocal}</h2>
         <p className="mt-1">TICKET DE PEDIDO</p>
+        {/* Aquí está el ID del pedido */}
         <p className="text-xl font-bold mt-2">N° {pedido.id}</p>
         <p>{pedido.fecha.split("T")[0]} {pedido.fecha.split("T")[1].substring(0,5)} hs</p>
       </div>
