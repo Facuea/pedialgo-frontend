@@ -6,9 +6,11 @@ import { fetchPrivado } from "../services/apiConfig";
 const API_URL = import.meta.env.VITE_API_URL;
 
 function FinanzasPage() {
-  // SECCIÓN: Estados iniciales
+  // SECCIÓN: Estados iniciales y Constantes de diseño
   const COLOR_PRIMARIO = "#F1A139";
   const COLOR_SECUNDARIO = "#E63946";
+  const COLOR_VERDE = "#10b981"; // Color para ganancias
+  const COLOR_ROJO = "#ef4444"; // Color para egresos
   
   const localActivo = JSON.parse(localStorage.getItem("localActivo")) || {};
   const localId = localActivo.id;
@@ -75,37 +77,50 @@ function FinanzasPage() {
           <p className="text-gray-500 text-sm mt-1">Métricas y rendimiento de tu local.</p>
         </div>
 
-        {/* TARJETAS DE MÉTRICAS PRINCIPALES */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          {/* Tarjeta Ingresos */}
-          <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm relative overflow-hidden">
+        {/* --- INICIO: TARJETAS DE MÉTRICAS PRINCIPALES --- */}
+        {/* Cambiamos a grid-cols-4 para que entren las dos tarjetas nuevas */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-8">
+          
+          {/* 1. Tarjeta Ingresos Brutos */}
+          <div className="bg-white p-5 md:p-6 rounded-2xl border border-gray-200 shadow-sm relative overflow-hidden">
             <div className="absolute top-0 right-0 w-24 h-24 opacity-10 rounded-bl-full -mr-4 -mt-4 z-0" style={{ backgroundColor: COLOR_PRIMARIO }}></div>
             <div className="relative z-10">
-              <p className="text-[11px] font-bold text-gray-500 uppercase tracking-widest mb-1">Ingresos de Hoy</p>
-              <p className="text-3xl font-black" style={{ color: COLOR_PRIMARIO }}>{formatearDinero(finanzas.ingresosHoy)}</p>
+              <p className="text-[10px] md:text-[11px] font-bold text-gray-500 uppercase tracking-widest mb-1">Ingresos</p>
+              <p className="text-2xl md:text-3xl font-black" style={{ color: COLOR_PRIMARIO }}>{formatearDinero(finanzas.ingresosHoy)}</p>
             </div>
           </div>
 
-          {/* Tarjeta Pedidos */}
-          <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm relative overflow-hidden">
+          {/* 2. Tarjeta Egresos (NUEVO) */}
+          <div className="bg-white p-5 md:p-6 rounded-2xl border border-red-100 shadow-sm relative overflow-hidden bg-red-50/30">
+            <div className="absolute top-0 right-0 w-24 h-24 opacity-10 rounded-bl-full -mr-4 -mt-4 z-0" style={{ backgroundColor: COLOR_ROJO }}></div>
+            <div className="relative z-10">
+              <p className="text-[10px] md:text-[11px] font-bold text-red-500 uppercase tracking-widest mb-1">Gastos (Salidas)</p>
+              <p className="text-2xl md:text-3xl font-black text-red-600">-{formatearDinero(finanzas.egresosHoy)}</p>
+            </div>
+          </div>
+
+          {/* 3. Tarjeta Ganancia Neta (NUEVO) */}
+          <div className="bg-white p-5 md:p-6 rounded-2xl border border-emerald-100 shadow-sm relative overflow-hidden bg-emerald-50/30">
+            <div className="absolute top-0 right-0 w-24 h-24 opacity-10 rounded-bl-full -mr-4 -mt-4 z-0" style={{ backgroundColor: COLOR_VERDE }}></div>
+            <div className="relative z-10">
+              <p className="text-[10px] md:text-[11px] font-bold text-emerald-600 uppercase tracking-widest mb-1">Ganancia Neta</p>
+              <p className="text-2xl md:text-3xl font-black text-emerald-600">{formatearDinero(finanzas.gananciaNetaHoy)}</p>
+            </div>
+          </div>
+
+          {/* 4. Tarjeta Pedidos */}
+          <div className="bg-white p-5 md:p-6 rounded-2xl border border-gray-200 shadow-sm relative overflow-hidden">
             <div className="absolute top-0 right-0 w-24 h-24 opacity-10 rounded-bl-full -mr-4 -mt-4 z-0" style={{ backgroundColor: COLOR_SECUNDARIO }}></div>
             <div className="relative z-10">
-              <p className="text-[11px] font-bold text-gray-500 uppercase tracking-widest mb-1">Pedidos Cerrados</p>
-              <p className="text-3xl font-black text-gray-800">{finanzas.cantidadPedidosHoy}</p>
+              <p className="text-[10px] md:text-[11px] font-bold text-gray-500 uppercase tracking-widest mb-1">Pedidos Hoy</p>
+              <p className="text-2xl md:text-3xl font-black text-gray-800">{finanzas.cantidadPedidosHoy}</p>
             </div>
           </div>
-
-          {/* Tarjeta Ticket Promedio */}
-          <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-24 h-24 opacity-5 rounded-bl-full -mr-4 -mt-4 z-0 bg-gray-400"></div>
-            <div className="relative z-10">
-              <p className="text-[11px] font-bold text-gray-500 uppercase tracking-widest mb-1">Ticket Promedio</p>
-              <p className="text-3xl font-black text-gray-700">{formatearDinero(finanzas.ticketPromedio)}</p>
-            </div>
-          </div>
+          
         </div>
+        {/* --- FIN: TARJETAS DE MÉTRICAS PRINCIPALES --- */}
 
-        {/* GRÁFICO Y RANKING (2 Columnas) */}
+        {/* --- INICIO: GRÁFICO Y RANKING (2 Columnas) --- */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           
           <div className="lg:col-span-2 bg-white p-6 md:p-8 rounded-2xl border border-gray-200 shadow-sm">
@@ -165,6 +180,7 @@ function FinanzasPage() {
           </div>
 
         </div>
+        {/* --- FIN: GRÁFICO Y RANKING --- */}
 
       </div>
     </AdminLayout>
