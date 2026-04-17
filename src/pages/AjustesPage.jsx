@@ -18,6 +18,9 @@ function AjustesPage() {
   const [cargando, setCargando] = useState(false);
   const [busqueda, setBusqueda] = useState("");
 
+  // --- SECCIÓN: CONFIGURACIÓN LOCAL (IMPRESORA) ---
+  const [anchoTicket, setAnchoTicket] = useState(localStorage.getItem("anchoTicketImpresion") || "80mm");
+
   const [notificacion, setNotificacion] = useState({ visible: false, mensaje: "", tipo: "exito" });
   const [timeoutId, setTimeoutId] = useState(null);
 
@@ -140,6 +143,14 @@ function AjustesPage() {
   };
 
   const delay = (ms) => new Promise(res => setTimeout(res, ms));
+
+  // --- SECCIÓN: HANDLER PARA CAMBIAR TAMAÑO DE TICKET ---
+  const handleCambioTicket = (e) => {
+    const nuevoAncho = e.target.value;
+    setAnchoTicket(nuevoAncho);
+    localStorage.setItem("anchoTicketImpresion", nuevoAncho);
+    mostrarNotificacion(`Ancho de ticket actualizado a ${nuevoAncho} en este dispositivo.`);
+  };
 
   const handleGuardarImagenes = async () => {
     if (!archivoLogo && !archivoPortada) {
@@ -392,6 +403,7 @@ function AjustesPage() {
           <p className="text-gray-500 text-sm mt-1">Personalizá tu menú digital y administrá los accesos de tu equipo.</p>
         </div>
 
+        {/* --- SECCIÓN: PESTAÑAS DE NAVEGACIÓN --- */}
         <div className="flex border-b border-gray-200 mb-8 overflow-x-auto no-scrollbar">
           <button onClick={() => setTabActiva("APARIENCIA")} className={`px-6 py-3 font-bold text-sm whitespace-nowrap transition-colors border-b-2 cursor-pointer ${tabActiva === "APARIENCIA" ? 'border-orange-500 text-orange-600' : 'border-transparent text-gray-500 hover:text-gray-700'}`}>
             Apariencia y Colores
@@ -401,6 +413,10 @@ function AjustesPage() {
           </button>
           <button onClick={() => setTabActiva("EMPLEADOS")} className={`px-6 py-3 font-bold text-sm whitespace-nowrap transition-colors border-b-2 cursor-pointer ${tabActiva === "EMPLEADOS" ? 'border-orange-500 text-orange-600' : 'border-transparent text-gray-500 hover:text-gray-700'}`}>
             Empleados
+          </button>
+          {/* NUEVA PESTAÑA IMPRESORA */}
+          <button onClick={() => setTabActiva("IMPRESORA")} className={`px-6 py-3 font-bold text-sm whitespace-nowrap transition-colors border-b-2 cursor-pointer ${tabActiva === "IMPRESORA" ? 'border-orange-500 text-orange-600' : 'border-transparent text-gray-500 hover:text-gray-700'}`}>
+            Impresora
           </button>
         </div>
 
@@ -663,6 +679,31 @@ function AjustesPage() {
             )}
           </div>
         )}
+
+        {/* --- CONTENIDO PESTAÑA IMPRESORA --- */}
+        {tabActiva === "IMPRESORA" && (
+          <div className="bg-white p-6 md:p-8 rounded-2xl border border-gray-200 shadow-sm animate-fade-in">
+            <h2 className="text-lg font-bold text-gray-800 mb-4 border-b border-gray-100 pb-2">Configuración de este Dispositivo</h2>
+            <p className="text-sm text-gray-500 mb-6">
+              Estos ajustes se guardan localmente en el navegador de esta computadora o celular. Si usás PediAlgo desde otra PC (por ejemplo, la de la cocina), vas a tener que configurarlo ahí también.
+            </p>
+            
+            <div className="max-w-md">
+              <label className="block text-[11px] font-bold text-gray-500 uppercase tracking-widest mb-2">
+                Ancho del Ticket de Impresión
+              </label>
+              <select 
+                value={anchoTicket}
+                onChange={handleCambioTicket}
+                className="w-full bg-gray-50 border border-gray-300 text-gray-800 text-sm font-medium rounded-xl focus:border-orange-400 focus:ring-1 focus:ring-orange-400 block p-3 outline-none transition-colors"
+              >
+                <option value="80mm">Normal - 80mm (Tickeadora estándar de caja)</option>
+                <option value="58mm">Chico - 58mm (Posnet o Tickeadora portátil)</option>
+              </select>
+            </div>
+          </div>
+        )}
+
       </div>
 
       {/* MODALES */}

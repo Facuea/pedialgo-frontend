@@ -332,7 +332,7 @@ export default function LandingPage() {
 
           <div className="order-2 flex justify-center lg:justify-end mt-10 lg:mt-0">
              {/* Espacio reservado para que luego pongas la captura del QR */}
-             <div className="relative w-full max-w-xs rounded-3xl overflow-hidden shadow-xl border border-slate-100 bg-white flex items-center justify-center aspect-[3/4]">
+             <div className="relative w-full max-w-xs rounded-3xl overflow-hidden shadow-xl border border-slate-100 bg-white flex items-center justify-center aspect-3/4">
               <p className="text-slate-400 font-medium px-6 text-center">Aquí irá la imagen del panel QR</p>
               {/* <img src="/tu-imagen-qr.png" alt="Código QR" className="w-full h-full object-cover" /> */}
             </div>
