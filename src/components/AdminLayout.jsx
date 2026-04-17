@@ -76,6 +76,7 @@ function AdminLayout({ children }) {
   const menuItems = [
     { path: "/admin/dashboard", label: "Monitor de Pedidos", roles: ["ADMIN", "EMPLEADO"] },
     { path: "/admin/finanzas", label: "Resumen Financiero", roles: ["ADMIN"] },
+    { path: "/admin/gastos", label: "Control de Gastos", roles: ["ADMIN"] }, // <-- ESTA ES LA NUEVA
     { path: "/admin/categorias", label: "Categorías", roles: ["ADMIN"] },
     { path: "/admin/productos", label: "Mis Productos", roles: ["ADMIN", "EMPLEADO"] },
     { path: "/admin/ajustes", label: "Ajustes del Local", roles: ["ADMIN"] },
