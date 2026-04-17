@@ -722,6 +722,7 @@ function AjustesPage() {
           </div>
         </div>
       )}
+      
     </AdminLayout>
   );
 }

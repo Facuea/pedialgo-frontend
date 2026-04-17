@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { QRCodeCanvas } from "qrcode.react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { fetchPrivado } from "../services/apiConfig";
+import Footer from "./Footer";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -235,12 +236,22 @@ function AdminLayout({ children }) {
           </button>
         </header>
 
-        {/* CONTENIDO (AQUÍ SE INYECTAN LAS OTRAS PÁGINAS) */}
-        <div className="flex-1 overflow-y-auto p-4 md:p-10 no-scrollbar relative w-full print:p-0">
-          {children}
+        {/* CONTENIDO Y FOOTER */}
+        <div className="flex-1 overflow-y-auto p-4 md:p-10 no-scrollbar relative w-full print:p-0 flex flex-col justify-between">
+          
+          {/* Aquí se inyectan las páginas (Dashboard, Productos, etc) */}
+          <div className="flex-1">
+             {children}
+          </div>
+          
+          {/* Footer adentro del scroll principal, abajo de todo */}
+          <div className="mt-8 pt-8 border-t border-gray-100">
+             <Footer />
+          </div>
+
         </div>
 
-        {/* --- MODAL DEL QR (Con detalles naranjas) --- */}
+        {/* --- MODAL DEL QR --- */}
         {mostrarQR && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
             <div className="bg-white rounded-2xl shadow-2xl border border-gray-100 p-6 max-w-sm w-full animate-in fade-in zoom-in-95">
