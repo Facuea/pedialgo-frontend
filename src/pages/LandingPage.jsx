@@ -376,15 +376,18 @@ export default function LandingPage() {
       </section>
       {/* -------------------------------------- */}
 
-      {/* --- NUEVA SECCIÓN: RESUMEN DE SERVICIO Y CONTRATACIÓN --- */}
+      {/* --- RESUMEN DE SERVICIO Y CONTRATACIÓN --- */}
       <section className="py-24 px-6 bg-[#EFBF04] relative overflow-hidden">
         <div className="max-w-5xl mx-auto text-center relative z-10">
           <h2 className="font-pedialgo text-4xl lg:text-5xl text-[#1A1A1A] mb-6" style={{ fontFamily: 'FontPediAlgo' }}>Todo lo que tu local necesita.</h2>
+          
           <p className="text-[#1A1A1A] opacity-90 mb-12 text-lg font-medium max-w-2xl mx-auto">
-            Una plataforma integral, diseñada para simplificar tu día a día y potenciar tus ventas sin pagar comisiones por pedido.
+            Una plataforma integral diseñada para potenciar tus ventas sin comisiones. <br className="hidden md:block" />
+            <strong className="font-black">Para que arranques hoy mismo, nosotros cargamos tu carta inicial por vos.</strong> Después, tendrás el control total para modificar lo que necesites.
           </p>
           
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-left mb-14">
+             {/* ITEMS */}
              <div className="bg-white/40 p-4 rounded-xl shadow-sm"><p className="font-bold text-[#1A1A1A] flex items-center gap-2 text-sm"><CheckCircle2 className="w-4 h-4 text-[#1A1A1A] shrink-0"/> Menú Digital</p></div>
              <div className="bg-white/40 p-4 rounded-xl shadow-sm"><p className="font-bold text-[#1A1A1A] flex items-center gap-2 text-sm"><CheckCircle2 className="w-4 h-4 text-[#1A1A1A] shrink-0"/> WhatsApp Directo</p></div>
              <div className="bg-white/40 p-4 rounded-xl shadow-sm"><p className="font-bold text-[#1A1A1A] flex items-center gap-2 text-sm"><CheckCircle2 className="w-4 h-4 text-[#1A1A1A] shrink-0"/> Monitor de Cocina</p></div>
@@ -393,6 +396,10 @@ export default function LandingPage() {
              <div className="bg-white/40 p-4 rounded-xl shadow-sm"><p className="font-bold text-[#1A1A1A] flex items-center gap-2 text-sm"><CheckCircle2 className="w-4 h-4 text-[#1A1A1A] shrink-0"/> Código QR Propio</p></div>
              <div className="bg-white/40 p-4 rounded-xl shadow-sm"><p className="font-bold text-[#1A1A1A] flex items-center gap-2 text-sm"><CheckCircle2 className="w-4 h-4 text-[#1A1A1A] shrink-0"/> Link Personalizado</p></div>
              <div className="bg-white/40 p-4 rounded-xl shadow-sm"><p className="font-bold text-[#1A1A1A] flex items-center gap-2 text-sm"><CheckCircle2 className="w-4 h-4 text-[#1A1A1A] shrink-0"/> Multi-sucursal</p></div>
+             <div className="bg-white/40 p-4 rounded-xl shadow-sm"><p className="font-bold text-[#1A1A1A] flex items-center gap-2 text-sm"><CheckCircle2 className="w-4 h-4 text-[#1A1A1A] shrink-0"/> Edición de Carta 24/7</p></div>
+             <div className="bg-white/40 p-4 rounded-xl shadow-sm"><p className="font-bold text-[#1A1A1A] flex items-center gap-2 text-sm"><CheckCircle2 className="w-4 h-4 text-[#1A1A1A] shrink-0"/> Integración de Redes</p></div>
+             <div className="bg-white/40 p-4 rounded-xl shadow-sm"><p className="font-bold text-[#1A1A1A] flex items-center gap-2 text-sm"><CheckCircle2 className="w-4 h-4 text-[#1A1A1A] shrink-0"/> Mapa Interactivo</p></div>
+             <div className="bg-white/40 p-4 rounded-xl shadow-sm"><p className="font-bold text-[#1A1A1A] flex items-center gap-2 text-sm"><CheckCircle2 className="w-4 h-4 text-[#1A1A1A] shrink-0"/> Permisos de Equipo</p></div>
           </div>
 
           <button 
