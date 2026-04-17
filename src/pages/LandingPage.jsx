@@ -1,16 +1,11 @@
 import { useState, useEffect } from "react";
 import { 
-  Smartphone, 
-  ChefHat, 
-  MessageCircle, 
   CheckCircle2, 
   ArrowRight,
   Menu,
   X,
   Store,
-  LineChart, // Icono para Finanzas
-  QrCode,    // Icono para QR
-  Printer    // Icono para Tickets
+  ChevronDown
 } from "lucide-react";
 
 export default function LandingPage() {
@@ -145,9 +140,6 @@ export default function LandingPage() {
       <section id="menu-digital" className="py-20 px-6 max-w-6xl mx-auto">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           <div className="order-1">
-            <div className="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center mb-5">
-              <Smartphone className="w-6 h-6 text-[#EFA02B]" />
-            </div>
             <h2 className="font-pedialgo text-3xl text-[#1A1A1A] mb-4" style={{ fontFamily: 'FontPediAlgo' }}>Tu carta, Tu estilo.</h2>
             <p className="text-slate-600 mb-6 font-medium leading-relaxed">
               Personalizá colores, logos y fotos para que el menú sea único. Actualizá productos al instante sin gastar un peso más en imprenta.
@@ -204,9 +196,6 @@ export default function LandingPage() {
       <section id="whatsapp" className="py-20 px-6 bg-white border-y border-slate-100">
         <div className="max-w-6xl mx-auto grid lg:grid-cols-2 gap-12 items-center">
           <div className="order-1 lg:order-2">
-            <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center mb-5">
-              <MessageCircle className="w-6 h-6 text-green-600" />
-            </div>
             <h2 className="font-pedialgo text-3xl text-[#1A1A1A] mb-4" style={{ fontFamily: 'FontPediAlgo' }}>Directo al WhatsApp.</h2>
             <p className="text-slate-600 mb-6 font-medium leading-relaxed">
               Tus clientes eligen, el sistema calcula el total y te envía un mensaje ordenado a tu WhatsApp. Sin aplicaciones puente ni comisiones por venta.
@@ -236,9 +225,6 @@ export default function LandingPage() {
       <section id="monitor" className="py-20 px-6 max-w-6xl mx-auto">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           <div className="order-1">
-            <div className="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center mb-5">
-              <ChefHat className="w-6 h-6 text-[#E43D4E]" />
-            </div>
             <h2 className="font-pedialgo text-3xl text-[#1A1A1A] mb-4" style={{ fontFamily: 'FontPediAlgo' }}>Orden en la cocina.</h2>
             <p className="text-slate-600 mb-6 font-medium leading-relaxed">
               Un panel de control ágil. Cambiá los estados de los pedidos con un clic, revisá tus métricas y mantené a todos organizados.
@@ -276,10 +262,7 @@ export default function LandingPage() {
       <section className="py-20 px-6 bg-white border-y border-slate-100">
         <div className="max-w-6xl mx-auto grid lg:grid-cols-2 gap-12 items-center">
           <div className="order-1 lg:order-2">
-            <div className="w-12 h-12 bg-emerald-100 rounded-xl flex items-center justify-center mb-5">
-              <LineChart className="w-6 h-6 text-emerald-600" />
-            </div>
-            <h2 className="font-pedialgo text-3xl text-[#1A1A1A] mb-4" style={{ fontFamily: 'FontPediAlgo' }}>Control total de tus finanzas.</h2>
+            <h2 className="font-pedialgo text-3xl text-[#1A1A1A] mb-4" style={{ fontFamily: 'FontPediAlgo' }}>Números claros.</h2>
             <p className="text-slate-600 mb-6 font-medium leading-relaxed">
               Sabé exactamente cuánta plata entró y cuánta salió. Llevá un registro diario de tus compras e insumos para conocer la ganancia neta real de tu local al instante.
             </p>
@@ -297,9 +280,8 @@ export default function LandingPage() {
           </div>
 
           <div className="order-2 lg:order-1 flex justify-center lg:justify-start mt-10 lg:mt-0">
-            {/* Imagen apaisada para Finanzas (1336x592) */}
-            <div className="relative w-full rounded-2xl overflow-hidden shadow-xl border border-slate-100 bg-slate-50 flex items-center justify-center">
-              <img src="/imagen-generado.png" alt="Control Financiero" className="w-full h-auto object-cover" />
+            <div className="relative w-full max-w-md rounded-2xl overflow-hidden shadow-xl border border-slate-100 bg-slate-50 flex items-center justify-center aspect-video">
+              <img src="/imagen-generado.png" alt="Control Financiero" className="w-full h-full object-cover" />
             </div>
           </div>
         </div>
@@ -310,9 +292,6 @@ export default function LandingPage() {
       <section className="py-20 px-6 bg-slate-50 border-b border-slate-100">
         <div className="max-w-6xl mx-auto grid lg:grid-cols-2 gap-12 items-center">
           <div className="order-1">
-            <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center mb-5">
-              <Printer className="w-6 h-6 text-purple-600" />
-            </div>
             <h2 className="font-pedialgo text-3xl text-[#1A1A1A] mb-4" style={{ fontFamily: 'FontPediAlgo' }}>Impresión a tu medida.</h2>
             <p className="text-slate-600 mb-6 font-medium leading-relaxed">
               Generá tickets de pedido claros y organizados, listos para enviar a la cocina o para entregar a tus clientes. Adaptamos el sistema al equipamiento de tu local.
@@ -345,10 +324,7 @@ export default function LandingPage() {
       {/* --- NUEVA SECCIÓN: QR Y LINKS --- */}
       <section className="py-20 px-6 max-w-6xl mx-auto">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
-          <div className="order-1 lg:order-2">
-            <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mb-5">
-              <QrCode className="w-6 h-6 text-blue-600" />
-            </div>
+          <div className="order-1">
             <h2 className="font-pedialgo text-3xl text-[#1A1A1A] mb-4" style={{ fontFamily: 'FontPediAlgo' }}>Compartí tu carta en un clic.</h2>
             <p className="text-slate-600 mb-6 font-medium leading-relaxed">
               Descargá tu código QR listo para imprimir y pegarlo en tus mesas, o copiá tu link directo para sumarlo a tu biografía de Instagram y enviar por WhatsApp.
@@ -366,10 +342,9 @@ export default function LandingPage() {
             </button>
           </div>
 
-          <div className="order-2 lg:order-1 flex justify-center lg:justify-start mt-10 lg:mt-0">
-             {/* Imagen apaisada para QR (1336x594) ajustada al ancho total del contenedor */}
-             <div className="relative w-full rounded-2xl overflow-hidden shadow-xl border border-slate-100 bg-white flex items-center justify-center">
-              <img src="/imagen-QR.png" alt="Panel QR" className="w-full h-auto object-cover" />
+          <div className="order-2 flex justify-center lg:justify-end mt-10 lg:mt-0">
+             <div className="relative w-full max-w-xs rounded-3xl overflow-hidden shadow-xl border border-slate-100 bg-white flex items-center justify-center aspect-3/4">
+              <img src="/imagen-QR.png" alt="Código QR" className="w-full h-full object-cover" />
             </div>
           </div>
         </div>
@@ -387,16 +362,18 @@ export default function LandingPage() {
           </p>
           
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-left mb-14">
-             {/* ITEMS */}
+             {/* ITEMS ORIGINALES */}
              <div className="bg-white/40 p-4 rounded-xl shadow-sm"><p className="font-bold text-[#1A1A1A] flex items-center gap-2 text-sm"><CheckCircle2 className="w-4 h-4 text-[#1A1A1A] shrink-0"/> Menú Digital</p></div>
              <div className="bg-white/40 p-4 rounded-xl shadow-sm"><p className="font-bold text-[#1A1A1A] flex items-center gap-2 text-sm"><CheckCircle2 className="w-4 h-4 text-[#1A1A1A] shrink-0"/> WhatsApp Directo</p></div>
-             <div className="bg-white/40 p-4 rounded-xl shadow-sm"><p className="font-bold text-[#1A1A1A] flex items-center gap-2 text-sm"><CheckCircle2 className="w-4 h-4 text-[#1A1A1A] shrink-0"/> Monitor de Pedidos</p></div>
+             <div className="bg-white/40 p-4 rounded-xl shadow-sm"><p className="font-bold text-[#1A1A1A] flex items-center gap-2 text-sm"><CheckCircle2 className="w-4 h-4 text-[#1A1A1A] shrink-0"/> Monitor de Cocina</p></div>
              <div className="bg-white/40 p-4 rounded-xl shadow-sm"><p className="font-bold text-[#1A1A1A] flex items-center gap-2 text-sm"><CheckCircle2 className="w-4 h-4 text-[#1A1A1A] shrink-0"/> Control Financiero</p></div>
              <div className="bg-white/40 p-4 rounded-xl shadow-sm"><p className="font-bold text-[#1A1A1A] flex items-center gap-2 text-sm"><CheckCircle2 className="w-4 h-4 text-[#1A1A1A] shrink-0"/> Imprime Tickets</p></div>
              <div className="bg-white/40 p-4 rounded-xl shadow-sm"><p className="font-bold text-[#1A1A1A] flex items-center gap-2 text-sm"><CheckCircle2 className="w-4 h-4 text-[#1A1A1A] shrink-0"/> Código QR Propio</p></div>
              <div className="bg-white/40 p-4 rounded-xl shadow-sm"><p className="font-bold text-[#1A1A1A] flex items-center gap-2 text-sm"><CheckCircle2 className="w-4 h-4 text-[#1A1A1A] shrink-0"/> Link Personalizado</p></div>
              <div className="bg-white/40 p-4 rounded-xl shadow-sm"><p className="font-bold text-[#1A1A1A] flex items-center gap-2 text-sm"><CheckCircle2 className="w-4 h-4 text-[#1A1A1A] shrink-0"/> Multi-sucursal</p></div>
-             <div className="bg-white/40 p-4 rounded-xl shadow-sm"><p className="font-bold text-[#1A1A1A] flex items-center gap-2 text-sm"><CheckCircle2 className="w-4 h-4 text-[#1A1A1A] shrink-0"/> Edición libre de Carta </p></div>
+             
+             {/* ITEMS NUEVOS */}
+             <div className="bg-white/40 p-4 rounded-xl shadow-sm"><p className="font-bold text-[#1A1A1A] flex items-center gap-2 text-sm"><CheckCircle2 className="w-4 h-4 text-[#1A1A1A] shrink-0"/> Edición de Carta 24/7</p></div>
              <div className="bg-white/40 p-4 rounded-xl shadow-sm"><p className="font-bold text-[#1A1A1A] flex items-center gap-2 text-sm"><CheckCircle2 className="w-4 h-4 text-[#1A1A1A] shrink-0"/> Integración de Redes</p></div>
              <div className="bg-white/40 p-4 rounded-xl shadow-sm"><p className="font-bold text-[#1A1A1A] flex items-center gap-2 text-sm"><CheckCircle2 className="w-4 h-4 text-[#1A1A1A] shrink-0"/> Mapa Interactivo</p></div>
              <div className="bg-white/40 p-4 rounded-xl shadow-sm"><p className="font-bold text-[#1A1A1A] flex items-center gap-2 text-sm"><CheckCircle2 className="w-4 h-4 text-[#1A1A1A] shrink-0"/> Permisos de Equipo</p></div>
