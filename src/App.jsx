@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 // Paginas de publicidad / CLiente
 import LandingPage from './pages/LandingPage';
@@ -21,8 +22,33 @@ import SuperAdminDashboardPage from "./pages/superadmin/SuperAdminDashboardPage"
 // Guardianes de Rutas (Seguridad)
 import ProtectedRoute from "./components/ProtectedRoute"; 
 import PublicRoute from "./components/PublicRoute";
+import versionActual from './version.json';
 
 function App() {
+  useEffect(() => {
+    const chequearVersion = () => {
+      const versionGuardada = localStorage.getItem('appVersion');
+      
+      if (versionGuardada !== versionActual.version) {
+        console.log("Nueva versión detectada. Actualizando caché...");
+        
+        localStorage.setItem('appVersion', versionActual.version);
+        
+        if ('caches' in window) {
+          caches.keys().then((names) => {
+            names.forEach((name) => {
+              caches.delete(name);
+            });
+          });
+        }
+        setTimeout(() => {
+            window.location.reload(true); 
+        }, 500);
+      }
+    };
+
+    chequearVersion();
+  }, []);
   return (
     <BrowserRouter>
       <Routes>
