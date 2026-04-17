@@ -9,7 +9,8 @@ import {
   X,
   Store,
   LineChart, // Icono para Finanzas
-  QrCode     // Icono para QR
+  QrCode,    // Icono para QR
+  Printer    // Icono para Tickets
 } from "lucide-react";
 
 export default function LandingPage() {
@@ -278,7 +279,7 @@ export default function LandingPage() {
             <div className="w-12 h-12 bg-emerald-100 rounded-xl flex items-center justify-center mb-5">
               <LineChart className="w-6 h-6 text-emerald-600" />
             </div>
-            <h2 className="font-pedialgo text-3xl text-[#1A1A1A] mb-4" style={{ fontFamily: 'FontPediAlgo' }}>Números claros.</h2>
+            <h2 className="font-pedialgo text-3xl text-[#1A1A1A] mb-4" style={{ fontFamily: 'FontPediAlgo' }}>Control total de tus finanzas.</h2>
             <p className="text-slate-600 mb-6 font-medium leading-relaxed">
               Sabé exactamente cuánta plata entró y cuánta salió. Llevá un registro diario de tus compras e insumos para conocer la ganancia neta real de tu local al instante.
             </p>
@@ -296,10 +297,45 @@ export default function LandingPage() {
           </div>
 
           <div className="order-2 lg:order-1 flex justify-center lg:justify-start mt-10 lg:mt-0">
-            {/* Espacio reservado para que luego pongas una captura de la pantalla de Finanzas */}
-            <div className="relative w-full max-w-md rounded-2xl overflow-hidden shadow-xl border border-slate-100 bg-slate-50 flex items-center justify-center aspect-video">
-              <p className="text-slate-400 font-medium">Aquí irá la imagen de Finanzas/Gastos</p>
-              {/* <img src="/tu-imagen-finanzas.png" alt="Control Financiero" className="w-full h-full object-cover" /> */}
+            {/* Imagen apaisada para Finanzas (1336x592) */}
+            <div className="relative w-full rounded-2xl overflow-hidden shadow-xl border border-slate-100 bg-slate-50 flex items-center justify-center">
+              <img src="/imagen-generado.png" alt="Control Financiero" className="w-full h-auto object-cover" />
+            </div>
+          </div>
+        </div>
+      </section>
+      {/* -------------------------------------- */}
+
+      {/* --- NUEVA SECCIÓN: IMPRESIÓN DE TICKETS --- */}
+      <section className="py-20 px-6 bg-slate-50 border-b border-slate-100">
+        <div className="max-w-6xl mx-auto grid lg:grid-cols-2 gap-12 items-center">
+          <div className="order-1">
+            <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center mb-5">
+              <Printer className="w-6 h-6 text-purple-600" />
+            </div>
+            <h2 className="font-pedialgo text-3xl text-[#1A1A1A] mb-4" style={{ fontFamily: 'FontPediAlgo' }}>Impresión a tu medida.</h2>
+            <p className="text-slate-600 mb-6 font-medium leading-relaxed">
+              Generá tickets de pedido claros y organizados, listos para enviar a la cocina o para entregar a tus clientes. Adaptamos el sistema al equipamiento de tu local.
+            </p>
+            <div className="space-y-4 mb-8">
+              <BenefitItem text="Compatible con tickeadoras estándar de caja (80mm)." />
+              <BenefitItem text="Compatible con posnets y tickeadoras portátiles (58mm)." />
+              <BenefitItem text="Configuración individual por computadora." />
+            </div>
+          </div>
+
+          <div className="order-2 flex justify-center lg:justify-end mt-10 lg:mt-0">
+            <div className="relative w-full max-w-sm rounded-xl overflow-hidden shadow-lg border border-slate-200 bg-white p-6 md:p-8">
+              <div className="w-full border-b-2 border-dashed border-slate-300 pb-4 mb-4 text-center font-mono">
+                <h3 className="font-bold text-2xl uppercase">Tu Local</h3>
+                <p className="text-sm mt-1">TICKET DE PEDIDO</p>
+                <p className="text-xl font-bold mt-2">N° 142</p>
+              </div>
+              <div className="space-y-2 font-mono text-sm text-slate-700">
+                <div className="flex justify-between"><p>1x Burger Doble</p><p>$5000</p></div>
+                <div className="flex justify-between"><p>2x Porción Papas</p><p>$4000</p></div>
+                <div className="flex justify-between pt-4 mt-4 border-t border-slate-200"><p className="font-bold text-black text-lg">TOTAL:</p><p className="font-bold text-black text-lg">$9000</p></div>
+              </div>
             </div>
           </div>
         </div>
@@ -309,7 +345,7 @@ export default function LandingPage() {
       {/* --- NUEVA SECCIÓN: QR Y LINKS --- */}
       <section className="py-20 px-6 max-w-6xl mx-auto">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
-          <div className="order-1">
+          <div className="order-1 lg:order-2">
             <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mb-5">
               <QrCode className="w-6 h-6 text-blue-600" />
             </div>
@@ -330,13 +366,41 @@ export default function LandingPage() {
             </button>
           </div>
 
-          <div className="order-2 flex justify-center lg:justify-end mt-10 lg:mt-0">
-             {/* Espacio reservado para que luego pongas la captura del QR */}
-             <div className="relative w-full max-w-xs rounded-3xl overflow-hidden shadow-xl border border-slate-100 bg-white flex items-center justify-center aspect-3/4">
-              <p className="text-slate-400 font-medium px-6 text-center">Aquí irá la imagen del panel QR</p>
-              {/* <img src="/tu-imagen-qr.png" alt="Código QR" className="w-full h-full object-cover" /> */}
+          <div className="order-2 lg:order-1 flex justify-center lg:justify-start mt-10 lg:mt-0">
+             {/* Imagen apaisada para QR (1336x594) ajustada al ancho total del contenedor */}
+             <div className="relative w-full rounded-2xl overflow-hidden shadow-xl border border-slate-100 bg-white flex items-center justify-center">
+              <img src="/imagen-QR.png" alt="Panel QR" className="w-full h-auto object-cover" />
             </div>
           </div>
+        </div>
+      </section>
+      {/* -------------------------------------- */}
+
+      {/* --- NUEVA SECCIÓN: RESUMEN DE SERVICIO Y CONTRATACIÓN --- */}
+      <section className="py-24 px-6 bg-[#EFBF04] relative overflow-hidden">
+        <div className="max-w-5xl mx-auto text-center relative z-10">
+          <h2 className="font-pedialgo text-4xl lg:text-5xl text-[#1A1A1A] mb-6" style={{ fontFamily: 'FontPediAlgo' }}>Todo lo que tu local necesita.</h2>
+          <p className="text-[#1A1A1A] opacity-90 mb-12 text-lg font-medium max-w-2xl mx-auto">
+            Una plataforma integral, diseñada para simplificar tu día a día y potenciar tus ventas sin pagar comisiones por pedido.
+          </p>
+          
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-left mb-14">
+             <div className="bg-white/40 p-4 rounded-xl shadow-sm"><p className="font-bold text-[#1A1A1A] flex items-center gap-2 text-sm"><CheckCircle2 className="w-4 h-4 text-[#1A1A1A] shrink-0"/> Menú Digital</p></div>
+             <div className="bg-white/40 p-4 rounded-xl shadow-sm"><p className="font-bold text-[#1A1A1A] flex items-center gap-2 text-sm"><CheckCircle2 className="w-4 h-4 text-[#1A1A1A] shrink-0"/> WhatsApp Directo</p></div>
+             <div className="bg-white/40 p-4 rounded-xl shadow-sm"><p className="font-bold text-[#1A1A1A] flex items-center gap-2 text-sm"><CheckCircle2 className="w-4 h-4 text-[#1A1A1A] shrink-0"/> Monitor de Cocina</p></div>
+             <div className="bg-white/40 p-4 rounded-xl shadow-sm"><p className="font-bold text-[#1A1A1A] flex items-center gap-2 text-sm"><CheckCircle2 className="w-4 h-4 text-[#1A1A1A] shrink-0"/> Control Financiero</p></div>
+             <div className="bg-white/40 p-4 rounded-xl shadow-sm"><p className="font-bold text-[#1A1A1A] flex items-center gap-2 text-sm"><CheckCircle2 className="w-4 h-4 text-[#1A1A1A] shrink-0"/> Imprime Tickets</p></div>
+             <div className="bg-white/40 p-4 rounded-xl shadow-sm"><p className="font-bold text-[#1A1A1A] flex items-center gap-2 text-sm"><CheckCircle2 className="w-4 h-4 text-[#1A1A1A] shrink-0"/> Código QR Propio</p></div>
+             <div className="bg-white/40 p-4 rounded-xl shadow-sm"><p className="font-bold text-[#1A1A1A] flex items-center gap-2 text-sm"><CheckCircle2 className="w-4 h-4 text-[#1A1A1A] shrink-0"/> Link Personalizado</p></div>
+             <div className="bg-white/40 p-4 rounded-xl shadow-sm"><p className="font-bold text-[#1A1A1A] flex items-center gap-2 text-sm"><CheckCircle2 className="w-4 h-4 text-[#1A1A1A] shrink-0"/> Multi-sucursal</p></div>
+          </div>
+
+          <button 
+            onClick={() => handleWhatsApp("¡Hola! Estoy listo para contratar PediAlgo y digitalizar mi local.")}
+            className="px-8 py-4 bg-[#1A1A1A] text-white font-black text-lg rounded-2xl hover:bg-slate-800 active:scale-95 transition-all shadow-xl inline-flex items-center gap-3"
+          >
+            Contratar servicio <ArrowRight className="w-5 h-5" />
+          </button>
         </div>
       </section>
       {/* -------------------------------------- */}
