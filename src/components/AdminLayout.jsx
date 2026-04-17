@@ -103,13 +103,15 @@ function AdminLayout({ children }) {
       {/* --- INICIO DEL MENÚ LATERAL (SIDEBAR) --- */}
       <aside className={`fixed md:static inset-y-0 left-0 w-72 bg-white border-r border-gray-100 flex flex-col z-30 transform transition-transform duration-300 ease-in-out ${isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0`}>
         
-        {/* LOGO */}
+        {/* LOGO CON LINK A LA WEB PRINCIPAL */}
         <div className="h-32 flex items-center justify-center border-b border-gray-50/80 px-4 shrink-0">
-          <img 
-            src="https://res.cloudinary.com/dca2psqfg/image/upload/v1774900350/logo-largo-pedialgo_u7snto.png" 
-            alt="PediAlgo" 
-            className="h-18 w-auto object-contain"
-          />
+          <a href="https://pedialgoar.com" target="_blank" rel="noopener noreferrer" className="cursor-pointer block">
+            <img 
+              src="https://res.cloudinary.com/dca2psqfg/image/upload/v1774900350/logo-largo-pedialgo_u7snto.png" 
+              alt="PediAlgo" 
+              className="h-18 w-auto object-contain transition-transform hover:scale-105"
+            />
+          </a>
         </div>
 
         {/* SELECTOR DE LOCAL */}
@@ -224,13 +226,15 @@ function AdminLayout({ children }) {
       {/* --- INICIO ÁREA PRINCIPAL (MAIN) --- */}
       <main className="flex-1 flex flex-col relative overflow-hidden w-full z-0">
         
-        {/* CABECERA MÓVIL */}
+        {/* CABECERA MÓVIL (Con logo clickeable a la web) */}
         <header className="h-16 bg-white border-b border-gray-100 flex items-center justify-between px-6 md:hidden shadow-sm z-10 shrink-0">
-          <img 
-            src="https://res.cloudinary.com/dca2psqfg/image/upload/v1774900350/logo-largo-pedialgo_u7snto.png" 
-            alt="PediAlgo" 
-            className="h-10 object-contain"
-          />
+          <a href="https://pedialgoar.com" target="_blank" rel="noopener noreferrer" className="cursor-pointer">
+            <img 
+              src="https://res.cloudinary.com/dca2psqfg/image/upload/v1774900350/logo-largo-pedialgo_u7snto.png" 
+              alt="PediAlgo" 
+              className="h-10 object-contain"
+            />
+          </a>
           <button onClick={() => setIsMobileMenuOpen(true)} className="text-2xl text-gray-700 p-2 cursor-pointer">
             ☰
           </button>

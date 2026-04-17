@@ -7,7 +7,9 @@ import {
   ArrowRight,
   Menu,
   X,
-  Store
+  Store,
+  LineChart, // Icono para Finanzas
+  QrCode     // Icono para QR
 } from "lucide-react";
 
 export default function LandingPage() {
@@ -269,28 +271,97 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* --- NUEVA SECCIÓN: CONTROL FINANCIERO --- */}
+      <section className="py-20 px-6 bg-white border-y border-slate-100">
+        <div className="max-w-6xl mx-auto grid lg:grid-cols-2 gap-12 items-center">
+          <div className="order-1 lg:order-2">
+            <div className="w-12 h-12 bg-emerald-100 rounded-xl flex items-center justify-center mb-5">
+              <LineChart className="w-6 h-6 text-emerald-600" />
+            </div>
+            <h2 className="font-pedialgo text-3xl text-[#1A1A1A] mb-4" style={{ fontFamily: 'FontPediAlgo' }}>Números claros.</h2>
+            <p className="text-slate-600 mb-6 font-medium leading-relaxed">
+              Sabé exactamente cuánta plata entró y cuánta salió. Llevá un registro diario de tus compras e insumos para conocer la ganancia neta real de tu local al instante.
+            </p>
+            <div className="space-y-4 mb-8">
+              <BenefitItem text="Registro rápido de salidas de dinero." />
+              <BenefitItem text="Cálculo automático de ganancia neta." />
+              <BenefitItem text="Ticket promedio y ranking de productos más vendidos." />
+            </div>
+            <button 
+              onClick={() => handleWhatsApp("Hola, me interesa probar las herramientas financieras de PediAlgo.")}
+              className="text-sm font-bold text-emerald-600 hover:text-emerald-700 flex items-center gap-1 transition-colors"
+            >
+              Probar funciones gratis <ArrowRight className="w-4 h-4" />
+            </button>
+          </div>
+
+          <div className="order-2 lg:order-1 flex justify-center lg:justify-start mt-10 lg:mt-0">
+            {/* Espacio reservado para que luego pongas una captura de la pantalla de Finanzas */}
+            <div className="relative w-full max-w-md rounded-2xl overflow-hidden shadow-xl border border-slate-100 bg-slate-50 flex items-center justify-center aspect-video">
+              <p className="text-slate-400 font-medium">Aquí irá la imagen de Finanzas/Gastos</p>
+              {/* <img src="/tu-imagen-finanzas.png" alt="Control Financiero" className="w-full h-full object-cover" /> */}
+            </div>
+          </div>
+        </div>
+      </section>
+      {/* -------------------------------------- */}
+
+      {/* --- NUEVA SECCIÓN: QR Y LINKS --- */}
+      <section className="py-20 px-6 max-w-6xl mx-auto">
+        <div className="grid lg:grid-cols-2 gap-12 items-center">
+          <div className="order-1">
+            <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mb-5">
+              <QrCode className="w-6 h-6 text-blue-600" />
+            </div>
+            <h2 className="font-pedialgo text-3xl text-[#1A1A1A] mb-4" style={{ fontFamily: 'FontPediAlgo' }}>Compartí tu carta en un clic.</h2>
+            <p className="text-slate-600 mb-6 font-medium leading-relaxed">
+              Descargá tu código QR listo para imprimir y pegarlo en tus mesas, o copiá tu link directo para sumarlo a tu biografía de Instagram y enviar por WhatsApp.
+            </p>
+            <div className="space-y-4 mb-8">
+              <BenefitItem text="Código QR descargable en alta calidad." />
+              <BenefitItem text="Enlace corto y profesional." />
+              <BenefitItem text="Accesible en el panel lateral 24/7." />
+            </div>
+            <button 
+              onClick={() => handleWhatsApp("¡Hola! Quiero armar mi QR y mi link con PediAlgo.")}
+              className="text-sm font-bold text-blue-600 hover:text-blue-700 flex items-center gap-1 transition-colors"
+            >
+              Crear mi menú digital <ArrowRight className="w-4 h-4" />
+            </button>
+          </div>
+
+          <div className="order-2 flex justify-center lg:justify-end mt-10 lg:mt-0">
+             {/* Espacio reservado para que luego pongas la captura del QR */}
+             <div className="relative w-full max-w-xs rounded-3xl overflow-hidden shadow-xl border border-slate-100 bg-white flex items-center justify-center aspect-[3/4]">
+              <p className="text-slate-400 font-medium px-6 text-center">Aquí irá la imagen del panel QR</p>
+              {/* <img src="/tu-imagen-qr.png" alt="Código QR" className="w-full h-full object-cover" /> */}
+            </div>
+          </div>
+        </div>
+      </section>
+      {/* -------------------------------------- */}
+
       <section id="contacto" className="py-24 px-6 bg-[#1A1A1A] text-white">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="font-pedialgo text-4xl lg:text-5xl mb-6" style={{ fontFamily: 'FontPediAlgo' }}>Contacto</h2>
           <p className="text-slate-400 mb-10 text-lg font-medium">Explorá nuestras redes.</p>
           
-          <div className="flex justify-center gap-6 mb-20">
-            <a href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent('Hola, quiero sumar mi local a PediAlgo.')}`} target="_blank" rel="noreferrer" className="w-16 h-16 flex items-center justify-center bg-green-600 hover:bg-green-500 rounded-full transition-all hover:scale-110 shadow-lg p-3">
-               <img src="https://res.cloudinary.com/dca2psqfg/image/upload/v1774564000/whatsapp-logo-whatsapp-icon-whatsapp-transparent-free-png_uaqj6k.png" alt="WhatsApp" className="w-full h-full object-contain" />
+          <div className="flex justify-center gap-8 mb-20">
+            {/* ICONOS DE REDES SOCIALES LIMPIOS Y GRISES */}
+            <a href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent('Hola, quiero sumar mi local a PediAlgo.')}`} target="_blank" rel="noreferrer" className="text-slate-400 hover:text-[#25D366] transition-all hover:scale-110">
+              <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
             </a>
-            <a href="https://www.instagram.com/pedialgoar/" target="_blank" rel="noreferrer" className="w-16 h-16 flex items-center justify-center bg-linear-to-tr from-yellow-500 via-pink-500 to-purple-500 rounded-full transition-all hover:scale-110 shadow-lg p-3">
-               <img src="https://res.cloudinary.com/dca2psqfg/image/upload/q_auto/f_auto/v1774564000/instagram-logo-instagram-icon-transparent-free-png_mnlash.png" alt="Instagram" className="w-full h-full object-contain" />
+            
+            <a href="https://www.instagram.com/pedialgoar/" target="_blank" rel="noreferrer" className="text-slate-400 hover:text-[#E1306C] transition-all hover:scale-110">
+              <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
             </a>
-            <a href="https://www.facebook.com/profile.php?id=61573635060258" target="_blank" rel="noreferrer" className="w-16 h-16 flex items-center justify-center bg-blue-600 hover:bg-blue-500 rounded-full transition-all hover:scale-110 shadow-lg">
-              <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+            
+            <a href="https://www.facebook.com/profile.php?id=61573635060258" target="_blank" rel="noreferrer" className="text-slate-400 hover:text-[#1877F2] transition-all hover:scale-110">
+              <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
             </a>
-            <a 
-              href={`https://mail.google.com/mail/?view=cm&fs=1&to=${EMAIL_CONTACTO}`} 
-              target="_blank" 
-              rel="noreferrer" 
-              className="w-16 h-16 flex items-center justify-center bg-slate-700 hover:bg-slate-600 rounded-full transition-all hover:scale-110 shadow-lg"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+            
+            <a href={`https://mail.google.com/mail/?view=cm&fs=1&to=${EMAIL_CONTACTO}`} target="_blank" rel="noreferrer" className="text-slate-400 hover:text-white transition-all hover:scale-110">
+              <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
             </a>
           </div>
 
