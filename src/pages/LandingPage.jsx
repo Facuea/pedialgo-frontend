@@ -474,10 +474,10 @@ export default function LandingPage() {
             className="h-24 w-auto grayscale opacity-40 hover:grayscale-0 transition-all duration-700"
           />
           
-          {/* NUEVA SECCIÓN DE LINKS EN EL FOOTER */}
+          {/* SECCIÓN DE LINKS EN EL FOOTER */}
           <div className="flex flex-wrap justify-center gap-8 text-sm font-medium">
             <a 
-              href="/Terminos_y_Condiciones_PediAlgo_Final.pdf" 
+              href="/assets/Terminos_y_Condiciones_PediAlgo_v1.pdf" 
               target="_blank" 
               rel="noreferrer" 
               className="text-slate-400 hover:text-[#EFBF04] transition-colors"
