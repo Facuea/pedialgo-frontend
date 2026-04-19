@@ -467,13 +467,32 @@ export default function LandingPage() {
       </section>
 
       <footer className="bg-[#1A1A1A] pt-20 pb-10 px-6 border-t border-slate-800/50">
-        <div className="max-w-6xl mx-auto flex flex-col items-center gap-10">
+        <div className="max-w-6xl mx-auto flex flex-col items-center gap-8">
           <img 
             src="https://res.cloudinary.com/dca2psqfg/image/upload/v1774581960/Logo_PediAlgopng_cmns3q.png" 
             alt="PediAlgo" 
             className="h-24 w-auto grayscale opacity-40 hover:grayscale-0 transition-all duration-700"
           />
-          <div className="pt-10 border-t border-white/5 w-full text-center">
+          
+          {/* NUEVA SECCIÓN DE LINKS EN EL FOOTER */}
+          <div className="flex flex-wrap justify-center gap-8 text-sm font-medium">
+            <a 
+              href="/Terminos_y_Condiciones_PediAlgo_Final.pdf" 
+              target="_blank" 
+              rel="noreferrer" 
+              className="text-slate-400 hover:text-[#EFBF04] transition-colors"
+            >
+              Términos y Condiciones
+            </a>
+            <button 
+              onClick={() => scrollToSection('contacto')} 
+              className="text-slate-400 hover:text-[#EFBF04] transition-colors cursor-pointer"
+            >
+              Contacto
+            </button>
+          </div>
+
+          <div className="pt-8 border-t border-white/5 w-full text-center">
             <p className="text-slate-500 text-sm font-medium">© {new Date().getFullYear()} PediAlgo. Todos los derechos reservados.</p>
           </div>
         </div>
