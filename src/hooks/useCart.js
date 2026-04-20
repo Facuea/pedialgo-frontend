@@ -7,6 +7,9 @@ export const useCart = (slug) => {
     return carritoGuardado ? JSON.parse(carritoGuardado) : [];
   });
 
+  // NUEVO: Estado para el cupón
+  const [cuponAplicado, setCuponAplicado] = useState(null);
+
   // SECCIÓN: Persistencia en localStorage
   useEffect(() => {
     localStorage.setItem(`carrito_${slug}`, JSON.stringify(carrito));
@@ -34,7 +37,10 @@ export const useCart = (slug) => {
     });
   };
 
-  const vaciarCarrito = () => setCarrito([]);
+  const vaciarCarrito = () => {
+    setCarrito([]);
+    setCuponAplicado(null); // Al vaciar el carrito, se borra el cupón
+  };
 
   const limpiarProductosInactivos = useCallback((idsValidos) => {
     setCarrito((prev) => {
@@ -46,15 +52,37 @@ export const useCart = (slug) => {
     });
   }, []);
 
-  // SECCIÓN: Cálculos de totales
+  
+  const aplicarCupon = (cupon) => {
+    setCuponAplicado(cupon);
+  };
+
   const totalItems = carrito.reduce((acc, p) => acc + p.cantidad, 0);
   
-  const totalDinero = carrito.reduce((acc, item) => {
+ 
+  const subtotal = carrito.reduce((acc, item) => {
     const hayDescuento = item.descuento > 0;
     const precioVenta = hayDescuento ? item.precio - (item.precio * item.descuento / 100) : item.precio;
     return acc + (precioVenta * item.cantidad);
   }, 0);
 
-  // SECCIÓN: Return del hook
-  return { carrito, agregarAlCarrito, quitarDelCarrito, vaciarCarrito, totalItems, totalDinero, limpiarProductosInactivos };
+
+  let totalDinero = subtotal;
+  if (cuponAplicado) {
+    const descuentoMonto = (subtotal * cuponAplicado.descuentoPorcentaje) / 100;
+    totalDinero = subtotal - descuentoMonto;
+  }
+
+  return { 
+    carrito, 
+    agregarAlCarrito, 
+    quitarDelCarrito, 
+    vaciarCarrito, 
+    totalItems, 
+    totalDinero, 
+    subtotal, 
+    limpiarProductosInactivos,
+    cuponAplicado,
+    aplicarCupon
+  };
 };

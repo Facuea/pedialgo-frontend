@@ -160,6 +160,16 @@ function LoginPage() {
             >
               {cargando ? "AUTENTICANDO..." : "INICIAR SESIÓN"}
             </button>
+            <div style={{ marginTop: '15px', textAlign: 'center' }}>
+              <a 
+                href="https://wa.me/5493585148782?text=Hola!%20Olvidé%20la%20contraseña%20de%20mi%20cuenta%20en%20PediAlgo%20y%20necesito%20ayuda%20para%20recuperarla." 
+                target="_blank" 
+                rel="noopener noreferrer"
+                style={{ color: COLOR_PRIMARIO, textDecoration: 'none', fontSize: '14px' }}
+              >
+                ¿Olvidaste tu contraseña?
+              </a>
+            </div>
           </form>
 
           {/* SECCIÓN: Footer */}

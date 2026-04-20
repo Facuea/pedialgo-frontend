@@ -1,7 +1,11 @@
 import { useState } from "react";
 const API_URL = import.meta.env.VITE_API_URL;
 
-function CarritoModal({ mostrar, onClose, carrito, agregarAlCarrito, quitarDelCarrito, totalDinero, tema, nombreLocal, numeroWhatsApp, slug, vaciarCarrito }) {
+function CarritoModal({ 
+  mostrar, onClose, carrito, agregarAlCarrito, quitarDelCarrito, 
+  totalDinero, subtotal, cuponAplicado, aplicarCupon, // NUEVAS PROPS DE CUPON
+  tema, nombreLocal, numeroWhatsApp, slug, vaciarCarrito 
+}) {
   const [metodoEntrega, setMetodoEntrega] = useState("delivery");
   const [metodoPago, setMetodoPago] = useState("efectivo");
   
@@ -15,6 +19,11 @@ function CarritoModal({ mostrar, onClose, carrito, agregarAlCarrito, quitarDelCa
   });
   
   const [errores, setErrores] = useState({});
+
+  // ESTADOS DEL CUPON
+  const [inputCupon, setInputCupon] = useState("");
+  const [mensajeCupon, setMensajeCupon] = useState({ texto: "", error: false });
+  const [validandoCupon, setValidandoCupon] = useState(false);
 
   if (!mostrar) return null;
 
@@ -32,6 +41,31 @@ function CarritoModal({ mostrar, onClose, carrito, agregarAlCarrito, quitarDelCa
 
     if (errores[name]) {
       setErrores({ ...errores, [name]: null });
+    }
+  };
+
+  const handleValidarCupon = async () => {
+    if (!inputCupon.trim()) return;
+    setValidandoCupon(true);
+    setMensajeCupon({ texto: "", error: false });
+
+    try {
+      const response = await fetch(`${API_URL}/public/locales/${slug}/cupones/validar?codigo=${inputCupon}&montoCarrito=${subtotal}`);
+      
+      if (!response.ok) {
+          const errorMsg = await response.text();
+          throw new Error(errorMsg);
+      }
+
+      const cuponData = await response.json();
+      aplicarCupon(cuponData); 
+      setMensajeCupon({ texto: `¡Descuento del ${cuponData.descuentoPorcentaje}% aplicado!`, error: false });
+
+    } catch (error) {
+      setMensajeCupon({ texto: error.message || "Cupón inválido", error: true });
+      aplicarCupon(null);
+    } finally {
+      setValidandoCupon(false);
     }
   };
 
@@ -86,7 +120,6 @@ function CarritoModal({ mostrar, onClose, carrito, agregarAlCarrito, quitarDelCa
         throw new Error("No se pudo guardar el pedido en el servidor");
       }
 
-     
       const pedidoCreado = await response.json();
       const pedidoId = pedidoCreado.id; 
 
@@ -115,7 +148,7 @@ ${cliente.notas ? ` Notas: ${cliente.notas}` : ""}
 *Detalle del pedido:*
 ${mensajeProductos}
 -----------------------------------
- *TOTAL A PAGAR: $${totalDinero}*
+${cuponAplicado ? ` *Subtotal: $${subtotal}*\n *Descuento (${cuponAplicado.codigo}): -${cuponAplicado.descuentoPorcentaje}%*\n` : ""} *TOTAL A PAGAR: $${totalDinero}*
  *PAGO:* ${pagoTexto}
       `.trim();
 
@@ -211,6 +244,38 @@ ${mensajeProductos}
               })}
             </div>
 
+            {/* NUEVA SECCIÓN: Cupón de Descuento */}
+            <div className="pt-2 pb-2 border-b" style={{ borderColor: tema.colorTexto + '20' }}>
+                <p className="font-semibold text-sm mb-2 opacity-80">¿Tenés un código de descuento?</p>
+                <div className="flex gap-2">
+                    <input 
+                        type="text" 
+                        value={inputCupon}
+                        onChange={(e) => setInputCupon(e.target.value.toUpperCase())}
+                        placeholder="Ej: PROMO10"
+                        disabled={cuponAplicado !== null}
+                        className="flex-1 p-2 rounded-xl border outline-none"
+                        style={{ backgroundColor: tema.colorTexto + '0A', borderColor: tema.colorTexto + '20' }}
+                    />
+                    <button 
+                        onClick={cuponAplicado ? () => { aplicarCupon(null); setInputCupon(""); setMensajeCupon({texto:"", error:false}) } : handleValidarCupon}
+                        disabled={validandoCupon || (!inputCupon && !cuponAplicado)}
+                        className="px-4 rounded-xl font-bold transition-all text-sm cursor-pointer"
+                        style={{ 
+                            backgroundColor: cuponAplicado ? '#ef4444' : tema.colorPrimario, 
+                            color: tema.colorFondo 
+                        }}
+                    >
+                        {validandoCupon ? '...' : (cuponAplicado ? 'Quitar' : 'Aplicar')}
+                    </button>
+                </div>
+                {mensajeCupon.texto && (
+                    <p className={`text-[11px] mt-1.5 px-1 font-semibold ${mensajeCupon.error ? 'text-[#ef4444]' : 'text-[#10b981]'}`}>
+                        {mensajeCupon.texto}
+                    </p>
+                )}
+            </div>
+
             {/* SECCIÓN: Selección de método de entrega */}
             <div className="flex gap-2 my-2">
               <button 
@@ -268,7 +333,7 @@ ${mensajeProductos}
                 </div>
               )}
 
-              {/* NUEVA SECCIÓN: Selección de método de pago */}
+              {/* Selección de método de pago */}
               <div className="pt-2 border-t mt-4" style={{ borderColor: tema.colorTexto + '20' }}>
                 <p className="font-semibold text-sm mb-3 opacity-80">¿Cómo vas a pagar?</p>
                 <div className="flex gap-2 mb-3">
@@ -308,15 +373,23 @@ ${mensajeProductos}
                 )}
               </div>
 
-              {/* Notas (Sin validación) */}
+              {/* Notas */}
               <textarea name="notas" placeholder="Aclaraciones..." value={cliente.notas} onChange={handleChange} rows="2" className="w-full mt-2 p-3 rounded-xl border outline-none resize-none" style={{ backgroundColor: tema.colorTexto + '0A', borderColor: tema.colorTexto + '20' }} />
             </div>
           </div>
 
           {/* SECCIÓN: Total y botón de pedido */}
-          <div className="pt-4 border-t-2 flex justify-between items-center font-semibold text-2xl" style={{ borderColor: tema.colorTexto + '20' }}>
-            <span>Total</span>
-            <span style={{ color: tema.colorPrimario, fontFamily: "Poppins" }}>${totalDinero}</span>
+          <div className="pt-4 border-t-2 font-semibold text-2xl" style={{ borderColor: tema.colorTexto + '20' }}>
+              {cuponAplicado && (
+                  <div className="flex justify-between items-center text-sm opacity-60 line-through mb-1">
+                      <span>Subtotal</span>
+                      <span>${subtotal}</span>
+                  </div>
+              )}
+              <div className="flex justify-between items-center">
+                  <span>Total {cuponAplicado && <span className="text-sm font-normal text-[#10b981]">(-{cuponAplicado.descuentoPorcentaje}%)</span>}</span>
+                  <span style={{ color: tema.colorPrimario, fontFamily: "Poppins" }}>${totalDinero}</span>
+              </div>
           </div>
 
           <button onClick={procesarPedido} className="w-full mt-6 py-3.5 rounded-xl font-bold text-lg shadow-md hover:brightness-110 active:scale-[0.98] transition-all cursor-pointer" style={{ backgroundColor: "#1BA64A", color: "#ffffff" }}>
