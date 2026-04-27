@@ -94,6 +94,7 @@ function CarritoModal({ mostrar, onClose, carrito, agregarAlCarrito, quitarDelCa
       direccion: metodoEntrega === "delivery" ? cliente.direccion : "Retiro en local",
       metodoPago: metodoPago, 
       montoAbona: metodoPago === "efectivo" ? parseInt(cliente.montoAbona) : null, 
+      codigoCupon: cuponAplicado ? cuponAplicado.codigo : null,
       items: carrito.map(item => ({
         productoId: item.id,
         cantidad: item.cantidad
