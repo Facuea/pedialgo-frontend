@@ -14,6 +14,8 @@ import AjustesPage from "./pages/AjustesPage";
 import FinanzasPage from "./pages/FinanzasPage";
 import SeleccionarLocalPage from "./pages/admin/SeleccionarLocalPage";
 import GastosPage from "./pages/GastosPage";
+import CuponesAdminPage from "./pages/CuponesAdminPage"; // <-- IMPORTACIÓN NUEVA
+
 // Páginas de SuperAdmin (Plataforma)
 import SuperAdminLocalesPage from "./pages/superadmin/SuperAdminLocalesPage";
 import SuperAdminUsuariosPage from "./pages/superadmin/SuperAdminUsuariosPage";
@@ -49,6 +51,7 @@ function App() {
 
     chequearVersion();
   }, []);
+  
   return (
     <BrowserRouter>
       <Routes>
@@ -56,6 +59,7 @@ function App() {
             RUTA PUBLICA PUBLICIDAD
         ========================================== */}
         <Route path="/" element={<LandingPage />} />
+        
         {/* ==========================================
             RUTAS PÚBLICAS CON FILTRO DE LOGUEO
         ========================================== */}
@@ -75,12 +79,13 @@ function App() {
         </Route>
 
         {/* ==========================================
-            RUTAS SÚPER PROTEGIDAS
+            RUTAS SÚPER PROTEGIDAS (Solo Dueños)
         ========================================== */}
         <Route element={<ProtectedRoute rolesPermitidos={["ADMIN"]} />}>
           <Route path="/admin/categorias" element={<CategoriasPage />} />
           <Route path="/admin/ajustes" element={<AjustesPage />} />
           <Route path="/admin/finanzas" element={<FinanzasPage />} />
+          <Route path="/admin/cupones" element={<CuponesAdminPage />} /> {/* <-- RUTA NUEVA */}
         </Route>
 
         {/* ==========================================

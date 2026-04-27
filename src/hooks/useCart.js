@@ -7,6 +7,9 @@ export const useCart = (slug) => {
     return carritoGuardado ? JSON.parse(carritoGuardado) : [];
   });
 
+  // SECCIÓN: Estado del cupón
+  const [cuponAplicado, setCuponAplicado] = useState(null);
+
   // SECCIÓN: Persistencia en localStorage
   useEffect(() => {
     localStorage.setItem(`carrito_${slug}`, JSON.stringify(carrito));
@@ -34,7 +37,10 @@ export const useCart = (slug) => {
     });
   };
 
-  const vaciarCarrito = () => setCarrito([]);
+  const vaciarCarrito = () => {
+    setCarrito([]);
+    setCuponAplicado(null);
+  };
 
   const limpiarProductosInactivos = useCallback((idsValidos) => {
     setCarrito((prev) => {
@@ -46,15 +52,40 @@ export const useCart = (slug) => {
     });
   }, []);
 
+  const aplicarCupon = (cupon) => {
+    setCuponAplicado(cupon);
+  };
+
+  const removerCupon = () => {
+    setCuponAplicado(null);
+  };
+
   // SECCIÓN: Cálculos de totales
   const totalItems = carrito.reduce((acc, p) => acc + p.cantidad, 0);
   
-  const totalDinero = carrito.reduce((acc, item) => {
+  const subtotal = carrito.reduce((acc, item) => {
     const hayDescuento = item.descuento > 0;
     const precioVenta = hayDescuento ? item.precio - (item.precio * item.descuento / 100) : item.precio;
     return acc + (precioVenta * item.cantidad);
   }, 0);
 
+  // Restamos el monto fijo del cupón. Usamos Math.max para que el total no quede en negativo.
+  const totalDinero = cuponAplicado 
+    ? Math.max(0, subtotal - cuponAplicado.descuentoFijo) 
+    : subtotal;
+
   // SECCIÓN: Return del hook
-  return { carrito, agregarAlCarrito, quitarDelCarrito, vaciarCarrito, totalItems, totalDinero, limpiarProductosInactivos };
+  return { 
+    carrito, 
+    agregarAlCarrito, 
+    quitarDelCarrito, 
+    vaciarCarrito, 
+    totalItems, 
+    subtotal, 
+    totalDinero, 
+    limpiarProductosInactivos,
+    cuponAplicado,
+    aplicarCupon,
+    removerCupon
+  };
 };

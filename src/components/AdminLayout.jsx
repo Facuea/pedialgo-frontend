@@ -77,7 +77,8 @@ function AdminLayout({ children }) {
   const menuItems = [
     { path: "/admin/dashboard", label: "Monitor de Pedidos", roles: ["ADMIN", "EMPLEADO"] },
     { path: "/admin/finanzas", label: "Resumen Financiero", roles: ["ADMIN"] },
-    { path: "/admin/gastos", label: "Control de Gastos", roles: ["ADMIN"] }, // <-- ESTA ES LA NUEVA
+    { path: "/admin/gastos", label: "Control de Gastos", roles: ["ADMIN"] },
+    { path: "/admin/cupones", label: "Gestión de Cupones", roles: ["ADMIN"] }, // <-- NUEVA SECCIÓN DE CUPONES
     { path: "/admin/categorias", label: "Categorías", roles: ["ADMIN"] },
     { path: "/admin/productos", label: "Mis Productos", roles: ["ADMIN", "EMPLEADO"] },
     { path: "/admin/ajustes", label: "Ajustes del Local", roles: ["ADMIN"] },
@@ -176,7 +177,7 @@ function AdminLayout({ children }) {
           })}
 
           <div className="pt-4 mt-4 border-t border-gray-50">
-            {/* BOTÓN: LINK / QR (Ahora con hover en tonos naranjas) */}
+            {/* BOTÓN: LINK / QR */}
             <button
               onClick={() => setMostrarQR(true)}
               className="flex items-center gap-3.5 w-full px-4 py-3 rounded-xl font-bold text-gray-600 hover:text-orange-600 hover:bg-orange-50 transition-all cursor-pointer group mb-1"
