@@ -18,7 +18,20 @@ function MenuPage() {
   const [mostrarCarrito, setMostrarCarrito] = useState(false);
   const [errorLocal, setErrorLocal] = useState(false);
 
-  const { carrito, agregarAlCarrito, quitarDelCarrito, vaciarCarrito, totalItems, totalDinero, limpiarProductosInactivos } = useCart(slug);
+  // ACÁ ESTÁ EL CAMBIO: Extraemos TODAS las funciones del useCart, incluidas las de cupones
+  const { 
+    carrito, 
+    agregarAlCarrito, 
+    quitarDelCarrito, 
+    vaciarCarrito, 
+    totalItems, 
+    totalDinero, 
+    limpiarProductosInactivos,
+    subtotal,           
+    cuponAplicado,      
+    aplicarCupon,       
+    removerCupon        
+  } = useCart(slug);
 
   useEffect(() => {
     const cargarDatos = async () => {
@@ -437,6 +450,11 @@ function MenuPage() {
         nombreLocal={menu.nombre}
         numeroWhatsApp={whatsapp}
         slug={slug}
+        // ACÁ ESTÁ EL CAMBIO: Le pasamos las nuevas variables al modal
+        subtotal={subtotal}
+        cuponAplicado={cuponAplicado}
+        aplicarCupon={aplicarCupon}
+        removerCupon={removerCupon}
       />
       <footer className="py-8 text-center opacity-60">
   <p className="text-xs font-medium">
