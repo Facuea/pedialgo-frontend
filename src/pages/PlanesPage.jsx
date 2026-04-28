@@ -6,7 +6,7 @@ export default function PlanesPage() {
   return (
     <div className="min-h-screen bg-slate-50 font-sans selection:bg-[#EFA02B] selection:text-[#1A1A1A] relative flex flex-col justify-center items-center p-6">
 
-      {/* Imagen de fondo (Delivery) AHORA SÍ ES VISIBLE */}
+      {/* Imagen de fondo (Delivery) VISIBLE */}
       <div 
         className="absolute inset-y-0 right-0 w-full md:w-3/5 opacity-40 z-0 pointer-events-none"
         style={{
@@ -31,13 +31,13 @@ export default function PlanesPage() {
       <div className="max-w-5xl w-full text-center relative z-10 mt-24 lg:mt-0">
         
         <h1 className="text-4xl lg:text-5xl font-black text-[#1A1A1A] mb-3 tracking-tight" style={{ fontFamily: 'FontPediAlgo' }}>
-          Un solo plan, todo incluido.
+          Crea tu cuenta gratuita
         </h1>
         <p className="text-slate-600 mb-8 text-lg font-medium max-w-2xl mx-auto bg-white/50 backdrop-blur-sm rounded-full py-1 px-4 inline-block">
           Sin comisiones por venta, sin costos ocultos. Pagás solo una suscripción mensual fija.
         </p>
 
-        {/* TARJETA HORIZONTAL (Más compacta, evita tener que hacer scroll) */}
+        {/* TARJETA HORIZONTAL */}
         <div className="bg-white rounded-4xl shadow-2xl border border-slate-200 overflow-hidden flex flex-col md:flex-row text-left w-full">
           
           {/* Columna Izquierda: Precio (Roja) */}
@@ -63,16 +63,17 @@ export default function PlanesPage() {
                 Todo esto está incluido:
               </p>
               
-              {/* Beneficios en 2 columnas para ahorrar espacio vertical */}
+              {/* Beneficios en 2 columnas */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3 mb-8">
                 {[
-                  "Menú Digital 100% personalizable",
+                  "Personaliza colores, fuentes e imágenes de tu carta",
                   "Pedidos directos a WhatsApp",
+                  "Pedidos automatizados con pagos automáticos",
                   "Monitor inteligente para cocina",
                   "Módulo de Control Financiero",
                   "Impresión de Tickets (80/58mm)",
                   "Código QR propio en alta calidad",
-                  "Link para bio de Instagram",
+                  "Link único para todas tus redes sociales",
                   "Sistema Multi-sucursal",
                   "Usuarios y permisos ilimitados",
                   "Edición de precios en tiempo real",
@@ -87,11 +88,11 @@ export default function PlanesPage() {
               </div>
             </div>
 
-            {/* BOTÓN SÓLIDO (Sin IA, limpio y directo) */}
+            {/* BOTÓN SÓLIDO */}
             <div className="mt-auto">
               <a 
                 href={REGISTRO_URL}
-                className="w-full py-4 bg-[#EFA02B] hover:bg-[#e09425] text-[#E43D4E]/80 font-black text-lg rounded-xl transition-all active:scale-95 shadow-md flex justify-center items-center gap-2 cursor-pointer text-center border-b-4 border-[#d18820]"
+                className="w-full py-4 bg-[#EFA02B] hover:bg-[#e09425] text-white font-black text-lg rounded-xl transition-all active:scale-95 shadow-md flex justify-center items-center gap-2 cursor-pointer text-center border-b-4 border-[#d18820]"
               >
                 Crear mi cuenta gratis <ArrowRight className="w-5 h-5" />
               </a>
