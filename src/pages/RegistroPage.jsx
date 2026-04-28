@@ -22,12 +22,33 @@ export default function RegistroPage() {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+    
+    // VALIDACIONES ESTRICTAS EN TIEMPO REAL
+    if (name === "documento" || name === "whatsappLocal") {
+      // Si el valor ingresado NO son solo números, no hace nada (lo bloquea)
+      if (!/^\d*$/.test(value)) return;
+    }
+
     setFormData({ ...formData, [name]: value });
     setError("");
   };
 
+  const validarFormulario = () => {
+    if (formData.password.length < 8 || !/\d/.test(formData.password)) {
+      setError("La contraseña debe tener al menos 8 caracteres y contener un número.");
+      return false;
+    }
+    if (!formData.email.includes(".") || !formData.email.includes("@")) {
+      setError("Por favor, ingresá un formato de correo electrónico válido.");
+      return false;
+    }
+    return true;
+  };
+
   const handleIniciarRegistro = async (e) => {
     e.preventDefault();
+    if (!validarFormulario()) return;
+
     setCargando(true);
     setError("");
 
@@ -64,7 +85,7 @@ export default function RegistroPage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          email: formData.email,
+          usuario: formData, // MANDAMOS TODO EL FORMULARIO
           codigo: codigoVerificacion
         })
       });
@@ -156,7 +177,8 @@ export default function RegistroPage() {
                     <label className="block text-[11px] font-black text-slate-400 uppercase tracking-widest mb-1.5">WhatsApp de Pedidos</label>
                     <div className="relative">
                       <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"><Phone className="h-5 w-5 text-slate-400" /></div>
-                      <input required type="tel" name="whatsappLocal" value={formData.whatsappLocal} onChange={handleInputChange} className="w-full pl-10 pr-3 py-3 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-[#EFA02B] focus:ring-1 focus:ring-[#EFA02B] bg-slate-50 focus:bg-white transition-colors" placeholder="Ej: +549351234567" />
+                      {/* TYPE TEXT PERO CONTROLADO CON REGEX PARA SOLO NUMEROS */}
+                      <input required type="text" name="whatsappLocal" value={formData.whatsappLocal} onChange={handleInputChange} className="w-full pl-10 pr-3 py-3 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-[#EFA02B] focus:ring-1 focus:ring-[#EFA02B] bg-slate-50 focus:bg-white transition-colors" placeholder="Solo números" />
                     </div>
                   </div>
                 </div>
@@ -175,7 +197,8 @@ export default function RegistroPage() {
                     <label className="block text-[11px] font-black text-slate-400 uppercase tracking-widest mb-1.5">DNI</label>
                     <div className="relative">
                       <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"><Hash className="h-5 w-5 text-slate-400" /></div>
-                      <input required type="text" name="documento" value={formData.documento} onChange={handleInputChange} className="w-full pl-10 pr-3 py-3 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-[#EFA02B] focus:ring-1 focus:ring-[#EFA02B] bg-slate-50 focus:bg-white transition-colors" placeholder="Sin puntos" />
+                      {/* TYPE TEXT PERO CONTROLADO CON REGEX PARA SOLO NUMEROS */}
+                      <input required type="text" name="documento" value={formData.documento} onChange={handleInputChange} className="w-full pl-10 pr-3 py-3 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-[#EFA02B] focus:ring-1 focus:ring-[#EFA02B] bg-slate-50 focus:bg-white transition-colors" placeholder="Solo números" />
                     </div>
                   </div>
                 </div>
@@ -192,7 +215,7 @@ export default function RegistroPage() {
                   <label className="block text-[11px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Contraseña</label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"><Lock className="h-5 w-5 text-slate-400" /></div>
-                    <input required type="password" name="password" value={formData.password} onChange={handleInputChange} className="w-full pl-10 pr-3 py-3 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-[#EFA02B] focus:ring-1 focus:ring-[#EFA02B] bg-slate-50 focus:bg-white transition-colors" placeholder="••••••••" />
+                    <input required type="password" name="password" value={formData.password} onChange={handleInputChange} className="w-full pl-10 pr-3 py-3 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-[#EFA02B] focus:ring-1 focus:ring-[#EFA02B] bg-slate-50 focus:bg-white transition-colors" placeholder="Mínimo 8 caracteres y un número" />
                   </div>
                 </div>
 
