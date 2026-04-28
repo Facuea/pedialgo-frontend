@@ -172,18 +172,11 @@ function AjustesPage() {
     }
   };
 
-  const handlePagoManual = async () => {
-    try {
-      const res = await fetchPrivado(`/admin/suscripcion/${localId}/pago-manual`);
-      if (res.ok) {
-        const data = await res.json();
-        alert("IMPORTANTE: Para activar tu cuenta, transferí $15.000 a:\n\nALIAS: pedialgo.oficial.mp\nCBU: 00000031000...");
-        const urlWa = `https://wa.me/5493585148782?text=${encodeURIComponent(data.mensaje)}`;
-        window.open(urlWa, '_blank');
-      }
-    } catch (error) {
-      mostrarNotificacion("Error al procesar pago manual.", "error");
-    }
+  const handlePagoManual = () => {
+    const mensaje = `Hola! Quiero pagar el mes de suscripción para mi local: ${infoLocal.nombre || "mi local"}.`;
+    
+    const urlWa = `https://wa.me/5493585148782?text=${encodeURIComponent(mensaje)}`;
+    window.open(urlWa, '_blank');
   };
 
   // --- SECCIÓN: HANDLER PARA CAMBIAR TAMAÑO DE TICKET ---
