@@ -4,7 +4,6 @@ import { ArrowLeft, Store, Mail, User, Phone, Lock, Hash } from "lucide-react";
 const API_URL = import.meta.env.VITE_API_URL;
 
 export default function RegistroPage() {
-  // Manejo de pantallas: 1 = Formulario, 2 = Código de Verificación
   const [paso, setPaso] = useState(1);
   const [cargando, setCargando] = useState(false);
   const [error, setError] = useState("");
@@ -24,7 +23,7 @@ export default function RegistroPage() {
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
-    setError(""); // Limpiamos errores al escribir
+    setError("");
   };
 
   const handleIniciarRegistro = async (e) => {
@@ -45,7 +44,6 @@ export default function RegistroPage() {
         throw new Error(data.error || "Error al iniciar el registro.");
       }
 
-      // Si todo sale bien, pasamos al paso 2
       setPaso(2);
       setMensajeExito("Te enviamos un código de 6 dígitos a tu correo.");
     } catch (err) {
@@ -76,7 +74,6 @@ export default function RegistroPage() {
         throw new Error(data.error || "Código incorrecto.");
       }
 
-      // Éxito total: los mandamos al login para que entren
       setMensajeExito("¡Cuenta activada! Redirigiendo al panel...");
       setTimeout(() => {
         window.location.href = "/login";
@@ -92,22 +89,27 @@ export default function RegistroPage() {
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8 font-sans selection:bg-[#EFA02B] selection:text-white">
       
-      <div className="sm:mx-auto sm:w-full sm:max-w-md mb-8 flex justify-between items-center relative">
-        <a href="/planes" className="text-slate-500 hover:text-slate-800 font-bold transition-colors flex items-center gap-2 text-sm absolute -left-10">
+      {/* Cabecera con Botón Volver y Logo */}
+      <div className="sm:mx-auto sm:w-full sm:max-w-md mb-6 flex flex-col items-center relative">
+        <a href="/planes" className="absolute left-0 top-1/2 -translate-y-1/2 text-slate-500 hover:text-[#E43D4E] font-bold transition-colors flex items-center gap-2 text-sm z-10 cursor-pointer">
           <ArrowLeft className="w-5 h-5" /> Volver
         </a>
-        <div className="flex items-center gap-2 mx-auto">
-          <div className="w-10 h-10 bg-[#1A1A1A] rounded-xl flex items-center justify-center">
-            <Store className="text-[#EFA02B] w-6 h-6" />
-          </div>
-          <span className="text-2xl font-black tracking-tighter text-[#1A1A1A]">PediAlgo</span>
+        
+        {/* LOGO OFICIAL */}
+        <div className="flex items-center justify-center">
+          <img 
+            src="https://res.cloudinary.com/dca2psqfg/image/upload/v1774581960/Logo_PediAlgopng_cmns3q.png" 
+            alt="PediAlgo" 
+            className="h-16 w-auto object-contain drop-shadow-sm"
+          />
         </div>
       </div>
 
       <div className="sm:mx-auto sm:w-full sm:max-w-xl">
-        <div className="bg-white py-10 px-6 sm:px-12 shadow-2xl rounded-4xl border border-slate-100 relative overflow-hidden">
+        <div className="bg-white py-10 px-6 sm:px-12 shadow-xl rounded-4xl border border-slate-200 relative overflow-hidden">
           
-          <div className="absolute top-0 left-0 w-full h-2 bg-[#EFA02B]"></div>
+          {/* Barra superior de acento con tu color Rojo */}
+          <div className="absolute top-0 left-0 w-full h-2 bg-[#E43D4E]"></div>
 
           {error && (
             <div className="mb-6 bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-xl text-sm font-bold text-center">
@@ -123,8 +125,12 @@ export default function RegistroPage() {
 
           {paso === 1 && (
             <>
-              <h2 className="text-2xl font-black text-slate-900 text-center mb-2">Crear cuenta gratis</h2>
-              <p className="text-center text-slate-500 text-sm font-medium mb-8">Comenzá tus 7 días de prueba. Sin tarjeta de crédito.</p>
+              <h2 className="text-3xl font-black text-slate-900 text-center mb-2" style={{ fontFamily: 'FontPediAlgo' }}>
+                Crear cuenta gratis
+              </h2>
+              <p className="text-center text-slate-500 text-sm font-medium mb-8">
+                Comenzá tus 7 días de prueba. <br className="md:hidden" />No te pedimos medios de pago.
+              </p>
 
               <form onSubmit={handleIniciarRegistro} className="space-y-5">
                 
@@ -188,7 +194,8 @@ export default function RegistroPage() {
                   </div>
                 </div>
 
-                <button type="submit" disabled={cargando} className="w-full flex justify-center py-4 border border-transparent rounded-2xl shadow-sm text-sm font-black text-[#1A1A1A] bg-[#EFA02B] hover:bg-[#f5aa39] active:scale-95 transition-all focus:outline-none disabled:opacity-50 mt-4 cursor-pointer">
+                {/* BOTÓN SÓLIDO: Naranja con letra Blanca */}
+                <button type="submit" disabled={cargando} className="w-full flex justify-center py-4 border-b-4 border-[#d18820] rounded-xl shadow-md text-lg font-black text-white bg-[#EFA02B] hover:bg-[#e09425] active:translate-y-1 active:border-b-0 transition-all focus:outline-none disabled:opacity-50 mt-6 cursor-pointer">
                   {cargando ? "Procesando..." : "Siguiente Paso"}
                 </button>
               </form>
@@ -197,12 +204,14 @@ export default function RegistroPage() {
 
           {paso === 2 && (
             <div className="animate-in fade-in zoom-in duration-300">
-              <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-orange-100 mb-6">
-                <Mail className="h-8 w-8 text-[#EFA02B]" />
+              <div className="mx-auto flex items-center justify-center h-20 w-20 rounded-full bg-red-50 mb-6">
+                <Mail className="h-10 w-10 text-[#E43D4E]" />
               </div>
-              <h2 className="text-2xl font-black text-slate-900 text-center mb-2">Revisá tu correo</h2>
+              <h2 className="text-3xl font-black text-slate-900 text-center mb-2" style={{ fontFamily: 'FontPediAlgo' }}>
+                Revisá tu correo
+              </h2>
               <p className="text-center text-slate-500 text-sm font-medium mb-8">
-                Te enviamos un código de 6 dígitos a <br/><strong className="text-slate-800">{formData.email}</strong>
+                Te enviamos un código de 6 dígitos a <br/><strong className="text-slate-800 text-base">{formData.email}</strong>
               </p>
 
               <form onSubmit={handleVerificarCodigo} className="space-y-6">
@@ -217,18 +226,19 @@ export default function RegistroPage() {
                       setCodigoVerificacion(e.target.value);
                       setError("");
                     }} 
-                    className="w-full text-center text-3xl tracking-[1em] font-mono py-4 border border-slate-200 rounded-2xl focus:outline-none focus:border-[#EFA02B] focus:ring-2 focus:ring-[#EFA02B] bg-slate-50 focus:bg-white transition-all uppercase" 
+                    className="w-full text-center text-4xl tracking-[0.5em] font-mono py-4 border border-slate-200 rounded-2xl focus:outline-none focus:border-[#E43D4E] focus:ring-2 focus:ring-[#E43D4E] bg-slate-50 focus:bg-white transition-all uppercase" 
                     placeholder="------" 
                   />
                 </div>
 
-                <button type="submit" disabled={cargando || codigoVerificacion.length < 6} className="w-full flex justify-center py-4 border border-transparent rounded-2xl shadow-sm text-sm font-black text-white bg-[#1A1A1A] hover:bg-slate-800 active:scale-95 transition-all focus:outline-none disabled:opacity-50 cursor-pointer">
+                {/* BOTÓN ROJO DE ACTIVACIÓN */}
+                <button type="submit" disabled={cargando || codigoVerificacion.length < 6} className="w-full flex justify-center py-4 border-b-4 border-[#c93442] rounded-xl shadow-md text-lg font-black text-white bg-[#E43D4E] hover:bg-[#d63544] active:translate-y-1 active:border-b-0 transition-all focus:outline-none disabled:opacity-50 cursor-pointer">
                   {cargando ? "Verificando..." : "Activar mi cuenta"}
                 </button>
               </form>
 
               <div className="mt-8 text-center border-t border-slate-100 pt-6">
-                <button onClick={() => {setPaso(1); setCodigoVerificacion("");}} className="text-sm font-bold text-slate-500 hover:text-slate-800 transition-colors cursor-pointer">
+                <button onClick={() => {setPaso(1); setCodigoVerificacion("");}} className="text-sm font-bold text-slate-500 hover:text-[#E43D4E] transition-colors cursor-pointer">
                   ¿Escribiste mal el correo? Volver atrás
                 </button>
               </div>
