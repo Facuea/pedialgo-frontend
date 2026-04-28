@@ -91,7 +91,7 @@ export default function PlanesPage() {
             <div className="mt-auto">
               <a 
                 href={REGISTRO_URL}
-                className="w-full py-4 bg-[#EFA02B] hover:bg-[#e09425] text-[#E43D4E] font-black text-lg rounded-xl transition-all active:scale-95 shadow-md flex justify-center items-center gap-2 cursor-pointer text-center border-b-4 border-[#d18820]"
+                className="w-full py-4 bg-[#EFA02B] hover:bg-[#e09425] text-[#E43D4E]/70 font-black text-lg rounded-xl transition-all active:scale-95 shadow-md flex justify-center items-center gap-2 cursor-pointer text-center border-b-4 border-[#d18820]"
               >
                 Crear mi cuenta gratis <ArrowRight className="w-5 h-5" />
               </a>
