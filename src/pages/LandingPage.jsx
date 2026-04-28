@@ -64,7 +64,7 @@ export default function LandingPage() {
           
           {/* CENTRO: Categorías (Dropdown y links) */}
           <div className="hidden md:flex gap-8 items-center text-sm font-bold text-[#1A1A1A]">
-            
+             
             <div className="relative group py-2">
               <button className="flex items-center gap-1 hover:text-white transition-colors cursor-pointer">
                 Servicios <ChevronDown className="w-4 h-4" />
@@ -82,7 +82,7 @@ export default function LandingPage() {
             </div>
 
             <button onClick={() => scrollToSection('contacto')} className="hover:text-white transition-colors cursor-pointer py-2">Contacto</button>
-            <button onClick={() => handleWhatsApp("¡Hola! Quiero contratar PediAlgo para mi local.")} className="hover:text-white transition-colors cursor-pointer py-2">Contratar</button>
+            <a href="/planes" className="hover:text-white transition-colors cursor-pointer py-2 block">Planes y Precios</a>
           </div>
 
           {/* DERECHA: Botones de Iniciar Sesión y Prueba (Restaurado a su posición original) */}
@@ -93,12 +93,12 @@ export default function LandingPage() {
             >
               Iniciar Sesión
             </button>
-            <button 
-              onClick={() => handleWhatsApp("¡Hola! Me interesa probar el servicio gratuito de PediAlgo por 7 días.")}
-              className="px-5 py-2.5 bg-[#E43D4E] text-white text-sm font-bold rounded-xl shadow-sm hover:bg-[#c93442] hover:-translate-y-0.5 active:scale-95 transition-all cursor-pointer"
+            <a 
+              href="/planes"
+              className="px-5 py-2.5 bg-[#E43D4E] text-white text-sm font-bold rounded-xl shadow-sm hover:bg-[#c93442] hover:-translate-y-0.5 active:scale-95 transition-all cursor-pointer inline-block"
             >
               Prueba Gratis
-            </button>
+            </a>
           </div>
 
           <button className="md:hidden text-[#1A1A1A] p-1 cursor-pointer" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
@@ -110,6 +110,7 @@ export default function LandingPage() {
         {isMobileMenuOpen && (
           <div className="md:hidden absolute top-20 left-6 right-6 bg-white rounded-2xl shadow-2xl z-50 p-6 flex flex-col gap-3 border border-slate-100 animate-in slide-in-from-top-4">
             <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">Servicios</p>
+       
             <div className="flex flex-col gap-3 pl-2 border-l-2 border-slate-100 mb-2">
               <button onClick={() => scrollToSection('menu-digital')} className="text-left font-bold text-slate-700 text-sm">Menú Digital</button>
               <button onClick={() => scrollToSection('whatsapp')} className="text-left font-bold text-slate-700 text-sm">Pedidos WhatsApp</button>
@@ -121,13 +122,14 @@ export default function LandingPage() {
 
             <div className="border-t border-slate-100 my-1"></div>
             <button onClick={() => scrollToSection('contacto')} className="text-left font-bold text-slate-700 py-2">Contacto</button>
-            <button onClick={() => handleWhatsApp("¡Hola! Quiero contratar PediAlgo para mi local.")} className="text-left font-bold text-slate-700 py-2">Contratar</button>
+      
+            <a href="/planes" className="text-left font-bold text-slate-700 py-2 block">Planes y Precios</a>
             
             <div className="border-t border-slate-100 my-1 pt-3 flex flex-col gap-3">
               <button onClick={handleLogin} className="w-full py-3 bg-slate-100 text-slate-800 font-bold rounded-xl text-center">Iniciar Sesión</button>
-              <button onClick={() => handleWhatsApp("¡Hola! Me interesa probar el servicio gratuito de PediAlgo por 7 días.")} className="w-full py-3 bg-[#E43D4E] text-white font-bold rounded-xl text-center">
+              <a href="/planes" className="w-full py-3 bg-[#E43D4E] text-white font-bold rounded-xl text-center block">
                 Prueba Gratis
-              </button>
+              </a>
             </div>
           </div>
         )}
@@ -135,6 +137,7 @@ export default function LandingPage() {
 
         <div className="max-w-6xl mx-auto grid lg:grid-cols-[1.1fr_1fr] gap-10 items-center relative z-10">
           <div className="text-left">
+ 
             <h1 
               className="font-pedialgo text-4xl lg:text-6xl text-white leading-tight mb-5 tracking-tight"
               style={{ fontFamily: 'FontPediAlgo' }}
@@ -146,13 +149,13 @@ export default function LandingPage() {
               Digitalizá tu carta en minutos, recibí pedidos directo a tu WhatsApp y gestioná tu cocina sin enredos.
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-start">
-              <button 
-                onClick={() => handleWhatsApp("¡Hola! Vengo de la web y quiero crear mi cuenta gratis por 7 días.")}
+              <a 
+                href="/planes"
                 className="px-6 py-3.5 bg-[#E43D4E] text-white font-bold text-sm rounded-xl hover:bg-[#d63544] active:scale-95 transition-all flex items-center justify-center gap-2 group w-fit cursor-pointer"
               >
                 Crear cuenta gratis
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-              </button>
+              </a>
               <button 
                 onClick={handleViewDemo}
                 className="px-6 py-3.5 border border-[#1A1A1A] text-[#1A1A1A] font-bold text-sm rounded-xl hover:bg-[#1A1A1A] hover:text-[#EFA02B] active:scale-95 transition-all w-fit text-center cursor-pointer"
@@ -170,6 +173,7 @@ export default function LandingPage() {
             />
           </div>
         </div>
+  
       </div>
 
       {/* SECCIÓN 1: MENÚ DIGITAL (SIN ICONOS) */}
@@ -178,7 +182,8 @@ export default function LandingPage() {
           <div className="order-1">
             <h2 className="font-pedialgo text-3xl text-[#1A1A1A] mb-4" style={{ fontFamily: 'FontPediAlgo' }}>Tu carta, Tu estilo.</h2>
             <p className="text-slate-600 mb-6 font-medium leading-relaxed">
-              Personalizá colores, logos y fotos para que el menú sea único. Actualizá productos al instante sin gastar un peso más en imprenta.
+              Personalizá colores, logos y fotos para que el menú sea único.
+              Actualizá productos al instante sin gastar un peso más en imprenta.
             </p>
             
             <div className="space-y-4 mb-8">
@@ -196,12 +201,12 @@ export default function LandingPage() {
                 <p className="text-sm text-slate-600 font-medium leading-relaxed mb-4">
                   Si buscás que tu menú tenga una identidad visual completamente exclusiva, ofrecemos un servicio de desarrollo premium personalizado.
                 </p>
-                <button 
-                  onClick={() => handleWhatsApp("Hola, me gustaría consultar por el servicio de diseño de menú personalizado.")}
+                <a 
+                  href="/planes"
                   className="text-sm font-bold text-[#EFA02B] hover:text-[#d48c22] flex items-center gap-1 transition-colors cursor-pointer"
                 >
                   Consultar precios <ArrowRight className="w-4 h-4" />
-                </button>
+                </a>
               </div>
 
               <div className="bg-orange-50/80 border border-orange-200 rounded-2xl p-6 shadow-sm">
@@ -209,12 +214,14 @@ export default function LandingPage() {
                   <Store className="w-5 h-5 text-[#EFA02B]" /> ¿Tenés varias sucursales?
                 </h4>
                 <p className="text-sm text-slate-600 font-medium leading-relaxed mb-4">
-                  El sistema te permite gestionar diferentes ubicaciones. Tus clientes pueden saltar de un local a otro rápidamente.
+                  El sistema te permite gestionar diferentes ubicaciones.
+                  Tus clientes pueden saltar de un local a otro rápidamente.
                 </p>
                 <div className="flex flex-col gap-3">
                   <a href="https://www.pedialgoar.com/burger-house" target="_blank" rel="noreferrer" className="flex items-center gap-2 text-sm font-bold text-[#E43D4E] hover:text-[#c93442] transition-colors">
                     <ArrowRight className="w-4 h-4" /> pedialgoar.com/burger-house
                   </a>
+          
                   <a href="https://www.pedialgoar.com/burger-house-sur" target="_blank" rel="noreferrer" className="flex items-center gap-2 text-sm font-bold text-[#E43D4E] hover:text-[#c93442] transition-colors">
                     <ArrowRight className="w-4 h-4" /> pedialgoar.com/burger-house-sur
                   </a>
@@ -235,7 +242,8 @@ export default function LandingPage() {
           <div className="order-1 lg:order-2">
             <h2 className="font-pedialgo text-3xl text-[#1A1A1A] mb-4" style={{ fontFamily: 'FontPediAlgo' }}>Directo al WhatsApp.</h2>
             <p className="text-slate-600 mb-6 font-medium leading-relaxed">
-              Tus clientes eligen, el sistema calcula el total y te envía un mensaje ordenado a tu WhatsApp. Sin aplicaciones puente ni comisiones por venta.
+              Tus clientes eligen, el sistema calcula el total y te envía un mensaje ordenado a tu WhatsApp.
+              Sin aplicaciones puente ni comisiones por venta.
             </p>
             <div className="space-y-4 mb-8">
               <BenefitItem text="El 100% de la ganancia es tuya." />
@@ -243,12 +251,12 @@ export default function LandingPage() {
               <BenefitItem text="Comunicación entre cliente y local." />
               <BenefitItem text="Eficiencia y fluidez." />
             </div>
-            <button 
-              onClick={() => handleWhatsApp("Hola, quiero saber cómo funciona la integración de pedidos por WhatsApp.")}
-              className="px-6 py-3 bg-green-600 text-white font-bold text-sm rounded-xl hover:bg-green-500 active:scale-95 transition-all w-fit cursor-pointer"
+            <a 
+              href="/planes"
+              className="px-6 py-3 bg-green-600 text-white font-bold text-sm rounded-xl hover:bg-green-500 active:scale-95 transition-all w-fit cursor-pointer inline-block"
             >
               Pedir más información
-            </button>
+            </a>
           </div>
 
           <div className="order-2 lg:order-1 flex justify-center lg:justify-start mt-10 lg:mt-0">
@@ -265,19 +273,20 @@ export default function LandingPage() {
           <div className="order-1">
             <h2 className="font-pedialgo text-3xl text-[#1A1A1A] mb-4" style={{ fontFamily: 'FontPediAlgo' }}>Orden en la cocina.</h2>
             <p className="text-slate-600 mb-6 font-medium leading-relaxed">
-              Un panel de control ágil. Cambiá los estados de los pedidos con un clic, revisá tus métricas y mantené a todos organizados.
+              Un panel de control ágil.
+              Cambiá los estados de los pedidos con un clic, revisá tus métricas y mantené a todos organizados.
             </p>
             <div className="space-y-4 mb-8">
               <BenefitItem text="Actualización de pedidos en tiempo real." />
               <BenefitItem text="Notificaciones audibles (suena la campana)." />
               <BenefitItem text="Mail automático al cliente por cada cambio de estado." />
             </div>
-            <button 
-              onClick={() => handleWhatsApp("Hola, me interesa saber más sobre el monitor de control para la cocina.")}
-              className="px-6 py-3 border-2 border-slate-800 text-slate-800 font-bold text-sm rounded-xl hover:bg-slate-800 hover:text-white active:scale-95 transition-all w-fit cursor-pointer"
+            <a 
+              href="/planes"
+              className="px-6 py-3 border-2 border-slate-800 text-slate-800 font-bold text-sm rounded-xl hover:bg-slate-800 hover:text-white active:scale-95 transition-all w-fit cursor-pointer inline-block"
             >
               Consultar sobre esta función
-            </button>
+            </a>
           </div>
 
           <div className="order-2 relative w-full flex items-center justify-center mt-6 lg:mt-0 px-4 sm:px-8">
@@ -309,12 +318,12 @@ export default function LandingPage() {
               <BenefitItem text="Cálculo automático de ganancia neta." />
               <BenefitItem text="Ticket promedio y ranking de productos más vendidos." />
             </div>
-            <button 
-              onClick={() => handleWhatsApp("Hola, me interesa probar las herramientas financieras de PediAlgo.")}
-              className="text-sm font-bold text-emerald-600 hover:text-emerald-700 flex items-center gap-1 transition-colors cursor-pointer"
+            <a 
+              href="/planes"
+              className="text-sm font-bold text-emerald-600 hover:text-emerald-700 items-center gap-1 transition-colors cursor-pointer inline-flex"
             >
               Probar funciones gratis <ArrowRight className="w-4 h-4" />
-            </button>
+            </a>
           </div>
 
           <div className="order-2 lg:order-1 flex justify-center lg:justify-start mt-10 lg:mt-0">
@@ -331,7 +340,8 @@ export default function LandingPage() {
           <div className="order-1">
             <h2 className="font-pedialgo text-3xl text-[#1A1A1A] mb-4" style={{ fontFamily: 'FontPediAlgo' }}>Impresión a tu medida.</h2>
             <p className="text-slate-600 mb-6 font-medium leading-relaxed">
-              Generá tickets de pedido claros y organizados, listos para enviar a la cocina o para entregar a tus clientes. Adaptamos el sistema al equipamiento de tu local.
+              Generá tickets de pedido claros y organizados, listos para enviar a la cocina o para entregar a tus clientes.
+              Adaptamos el sistema al equipamiento de tu local.
             </p>
             <div className="space-y-4 mb-8">
               <BenefitItem text="Compatible con tickeadoras estándar de caja (80mm)." />
@@ -370,12 +380,12 @@ export default function LandingPage() {
               <BenefitItem text="Enlace corto y profesional." />
               <BenefitItem text="Accesible en el panel lateral 24/7." />
             </div>
-            <button 
-              onClick={() => handleWhatsApp("¡Hola! Quiero armar mi QR y mi link con PediAlgo.")}
-              className="text-sm font-bold text-blue-600 hover:text-blue-700 flex items-center gap-1 transition-colors cursor-pointer"
+            <a 
+              href="/planes"
+              className="text-sm font-bold text-blue-600 hover:text-blue-700 items-center gap-1 transition-colors cursor-pointer inline-flex"
             >
               Crear mi menú digital <ArrowRight className="w-4 h-4" />
-            </button>
+            </a>
           </div>
 
           <div className="order-2 lg:order-1 flex justify-center lg:justify-start mt-10 lg:mt-0">
@@ -392,7 +402,8 @@ export default function LandingPage() {
           <h2 className="font-pedialgo text-4xl lg:text-5xl text-[#1A1A1A] mb-6" style={{ fontFamily: 'FontPediAlgo' }}>Todo lo que tu local necesita.</h2>
           
           <p className="text-[#1A1A1A] opacity-90 mb-12 text-lg font-medium max-w-2xl mx-auto">
-            Una plataforma integral diseñada para potenciar tus ventas sin comisiones. <br className="hidden md:block" />
+            Una plataforma integral diseñada para potenciar tus ventas sin comisiones.
+            <br className="hidden md:block" />
             <strong className="font-black">Para que arranques hoy mismo, nosotros cargamos tu carta inicial por vos.</strong> Después, tendrás el control total para modificar lo que necesites.
           </p>
           
@@ -411,12 +422,12 @@ export default function LandingPage() {
              <div className="bg-white/40 p-4 rounded-xl shadow-sm"><p className="font-bold text-[#1A1A1A] flex items-center gap-2 text-sm"><CheckCircle2 className="w-4 h-4 text-[#1A1A1A] shrink-0"/> Permisos de Equipo</p></div>
           </div>
 
-          <button 
-            onClick={() => handleWhatsApp("¡Hola! Estoy listo para contratar PediAlgo y digitalizar mi local.")}
+          <a 
+            href="/planes"
             className="px-8 py-4 bg-[#1A1A1A] text-white font-black text-lg rounded-2xl hover:bg-slate-800 active:scale-95 transition-all shadow-xl inline-flex items-center gap-3 cursor-pointer"
           >
             Contratar servicio <ArrowRight className="w-5 h-5" />
-          </button>
+          </a>
         </div>
       </section>
 
@@ -438,7 +449,7 @@ export default function LandingPage() {
             <a href="https://www.facebook.com/profile.php?id=61573635060258" target="_blank" rel="noreferrer" className="text-slate-400 hover:text-[#1877F2] transition-all hover:scale-110">
               <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
             </a>
-            
+      
             <a href={`https://mail.google.com/mail/?view=cm&fs=1&to=${EMAIL_CONTACTO}`} target="_blank" rel="noreferrer" className="text-slate-400 hover:text-white transition-all hover:scale-110">
               <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
             </a>

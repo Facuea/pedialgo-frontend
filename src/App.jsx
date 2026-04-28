@@ -2,6 +2,8 @@ import { useEffect } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 // Paginas de publicidad / CLiente
 import LandingPage from './pages/LandingPage';
+import PlanesPage from './pages/PlanesPage';
+
 // Páginas de Usuario / Cliente
 import MenuPage from "./pages/MenuPage";
 
@@ -14,7 +16,7 @@ import AjustesPage from "./pages/AjustesPage";
 import FinanzasPage from "./pages/FinanzasPage";
 import SeleccionarLocalPage from "./pages/admin/SeleccionarLocalPage";
 import GastosPage from "./pages/GastosPage";
-import CuponesAdminPage from "./pages/CuponesAdminPage"; // <-- IMPORTACIÓN NUEVA
+import CuponesAdminPage from "./pages/CuponesAdminPage";
 
 // Páginas de SuperAdmin (Plataforma)
 import SuperAdminLocalesPage from "./pages/superadmin/SuperAdminLocalesPage";
@@ -59,7 +61,7 @@ function App() {
             RUTA PUBLICA PUBLICIDAD
         ========================================== */}
         <Route path="/" element={<LandingPage />} />
-        
+        <Route path="/planes" element={<PlanesPage />} />
         {/* ==========================================
             RUTAS PÚBLICAS CON FILTRO DE LOGUEO
         ========================================== */}
