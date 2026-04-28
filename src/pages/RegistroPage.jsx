@@ -43,7 +43,6 @@ export default function RegistroPage() {
       if (!response.ok) {
         throw new Error(data.error || "Error al iniciar el registro.");
       }
-
       setPaso(2);
       setMensajeExito("Te enviamos un código de 6 dígitos a tu correo.");
     } catch (err) {
@@ -87,26 +86,38 @@ export default function RegistroPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8 font-sans selection:bg-[#EFA02B] selection:text-white">
+    <div className="min-h-screen bg-slate-50 flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8 font-sans selection:bg-[#EFA02B] selection:text-white relative overflow-hidden">
       
+      {/* Imagen de fondo (Delivery) difuminada */}
+      <div 
+        className="absolute inset-y-0 right-0 w-full md:w-3/5 opacity-40 z-0 pointer-events-none"
+        style={{
+          backgroundImage: "url('https://res.cloudinary.com/dca2psqfg/image/upload/v1777357719/ytd_b4is4z.png')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          WebkitMaskImage: "linear-gradient(to left, rgba(0,0,0,1) 40%, rgba(0,0,0,0) 100%)",
+          maskImage: "linear-gradient(to left, rgba(0,0,0,1) 40%, rgba(0,0,0,0) 100%)"
+        }}
+      />
+
       {/* Cabecera con Botón Volver y Logo */}
-      <div className="sm:mx-auto sm:w-full sm:max-w-md mb-6 flex flex-col items-center relative">
+      <div className="sm:mx-auto sm:w-full sm:max-w-md mb-8 flex flex-col items-center relative z-10">
         <a href="/planes" className="absolute left-0 top-1/2 -translate-y-1/2 text-slate-500 hover:text-[#E43D4E] font-bold transition-colors flex items-center gap-2 text-sm z-10 cursor-pointer">
           <ArrowLeft className="w-5 h-5" /> Volver
         </a>
         
-        {/* LOGO OFICIAL */}
+        {/* LOGO OFICIAL EN GRANDE */}
         <div className="flex items-center justify-center">
           <img 
             src="https://res.cloudinary.com/dca2psqfg/image/upload/v1774581960/Logo_PediAlgopng_cmns3q.png" 
             alt="PediAlgo" 
-            className="h-16 w-auto object-contain drop-shadow-sm"
+            className="h-24 md:h-28 w-auto object-contain drop-shadow-md hover:scale-105 transition-transform"
           />
         </div>
       </div>
 
-      <div className="sm:mx-auto sm:w-full sm:max-w-xl">
-        <div className="bg-white py-10 px-6 sm:px-12 shadow-xl rounded-4xl border border-slate-200 relative overflow-hidden">
+      <div className="sm:mx-auto sm:w-full sm:max-w-xl relative z-10">
+        <div className="bg-white py-10 px-6 sm:px-12 shadow-2xl rounded-[2.5rem] border border-slate-200 relative overflow-hidden">
           
           {/* Barra superior de acento con tu color Rojo */}
           <div className="absolute top-0 left-0 w-full h-2 bg-[#E43D4E]"></div>
@@ -204,7 +215,7 @@ export default function RegistroPage() {
 
           {paso === 2 && (
             <div className="animate-in fade-in zoom-in duration-300">
-              <div className="mx-auto flex items-center justify-center h-20 w-20 rounded-full bg-red-50 mb-6">
+              <div className="mx-auto flex items-center justify-center h-20 w-20 rounded-full bg-red-50 mb-6 border border-red-100">
                 <Mail className="h-10 w-10 text-[#E43D4E]" />
               </div>
               <h2 className="text-3xl font-black text-slate-900 text-center mb-2" style={{ fontFamily: 'FontPediAlgo' }}>
