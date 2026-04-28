@@ -13,7 +13,6 @@ export default function LandingPage() {
   const [sugerencia, setSugerencia] = useState("");
 
   const WHATSAPP_NUMBER = "5493585148782";
-  const WHATSAPP_MSG = encodeURIComponent("¡Hola! Me interesa probar el servicio gratuito de PediAlgo por 7 días.");
   const DEMO_URL = "https://www.pedialgoar.com/burger-house";
   const LOGIN_URL = "https://www.pedialgoar.com/login";
   const EMAIL_CONTACTO = "pedialgo@gmail.com";
@@ -82,7 +81,7 @@ export default function LandingPage() {
             </div>
 
             <button onClick={() => scrollToSection('contacto')} className="hover:text-white transition-colors cursor-pointer py-2">Contacto</button>
-            <a href="/planes" className="hover:text-white transition-colors cursor-pointer py-2 block">Planes y Precios</a>
+            <a href="/planes" className="hover:text-white transition-colors cursor-pointer py-2 inline-block">Contratar</a>
           </div>
 
           {/* DERECHA: Botones de Iniciar Sesión y Prueba (Restaurado a su posición original) */}
@@ -123,7 +122,7 @@ export default function LandingPage() {
             <div className="border-t border-slate-100 my-1"></div>
             <button onClick={() => scrollToSection('contacto')} className="text-left font-bold text-slate-700 py-2">Contacto</button>
       
-            <a href="/planes" className="text-left font-bold text-slate-700 py-2 block">Planes y Precios</a>
+            <a href="/planes" className="text-left font-bold text-slate-700 py-2 block">Contratar</a>
             
             <div className="border-t border-slate-100 my-1 pt-3 flex flex-col gap-3">
               <button onClick={handleLogin} className="w-full py-3 bg-slate-100 text-slate-800 font-bold rounded-xl text-center">Iniciar Sesión</button>
@@ -203,7 +202,7 @@ export default function LandingPage() {
                 </p>
                 <a 
                   href="/planes"
-                  className="text-sm font-bold text-[#EFA02B] hover:text-[#d48c22] flex items-center gap-1 transition-colors cursor-pointer"
+                  className="text-sm font-bold text-[#EFA02B] hover:text-[#d48c22] items-center gap-1 transition-colors cursor-pointer inline-flex"
                 >
                   Consultar precios <ArrowRight className="w-4 h-4" />
                 </a>
@@ -320,7 +319,7 @@ export default function LandingPage() {
             </div>
             <a 
               href="/planes"
-              className="text-sm font-bold text-emerald-600 hover:text-emerald-700 items-center gap-1 transition-colors cursor-pointer inline-flex"
+              className="text-sm font-bold text-emerald-600 hover:text-emerald-700  items-center gap-1 transition-colors cursor-pointer inline-flex"
             >
               Probar funciones gratis <ArrowRight className="w-4 h-4" />
             </a>

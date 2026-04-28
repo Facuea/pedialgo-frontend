@@ -1,8 +1,10 @@
 import { useEffect } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+
 // Paginas de publicidad / CLiente
 import LandingPage from './pages/LandingPage';
 import PlanesPage from './pages/PlanesPage';
+import RegistroPage from './pages/RegistroPage';
 
 // Páginas de Usuario / Cliente
 import MenuPage from "./pages/MenuPage";
@@ -67,6 +69,7 @@ function App() {
         ========================================== */}
         <Route element={<PublicRoute />}>
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/registro" element={<RegistroPage />} />
         </Route>
 
         {/* ==========================================
