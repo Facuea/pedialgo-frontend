@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ArrowLeft, Store, Mail, User, Phone, Lock, Hash } from "lucide-react";
+import { ArrowLeft, Store, Mail, User, Phone, Lock, Hash, Loader2 } from "lucide-react";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -43,6 +43,7 @@ export default function RegistroPage() {
       if (!response.ok) {
         throw new Error(data.error || "Error al iniciar el registro.");
       }
+
       setPaso(2);
       setMensajeExito("Te enviamos un código de 6 dígitos a tu correo.");
     } catch (err) {
@@ -56,6 +57,7 @@ export default function RegistroPage() {
     e.preventDefault();
     setCargando(true);
     setError("");
+    setMensajeExito("");
 
     try {
       const response = await fetch(`${API_URL}/public/registro/verificar`, {
@@ -73,14 +75,15 @@ export default function RegistroPage() {
         throw new Error(data.error || "Código incorrecto.");
       }
 
-      setMensajeExito("¡Cuenta activada! Redirigiendo al panel...");
+      // ÉXITO: Mensaje personalizado y redirección en 3 segundos
+      setMensajeExito("¡Cuenta creada exitosamente! Debes iniciar sesión para comenzar.");
+      
       setTimeout(() => {
         window.location.href = "/login";
-      }, 2000);
+      }, 3000);
 
     } catch (err) {
       setError(err.message);
-    } finally {
       setCargando(false);
     }
   };
@@ -88,7 +91,7 @@ export default function RegistroPage() {
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8 font-sans selection:bg-[#EFA02B] selection:text-white relative overflow-hidden">
       
-      {/* Imagen de fondo (Delivery) difuminada */}
+      {/* Fondo Delivery (Igual que en Planes) */}
       <div 
         className="absolute inset-y-0 right-0 w-full md:w-3/5 opacity-40 z-0 pointer-events-none"
         style={{
@@ -100,26 +103,23 @@ export default function RegistroPage() {
         }}
       />
 
-      {/* Cabecera con Botón Volver y Logo */}
       <div className="sm:mx-auto sm:w-full sm:max-w-md mb-8 flex flex-col items-center relative z-10">
         <a href="/planes" className="absolute left-0 top-1/2 -translate-y-1/2 text-slate-500 hover:text-[#E43D4E] font-bold transition-colors flex items-center gap-2 text-sm z-10 cursor-pointer">
           <ArrowLeft className="w-5 h-5" /> Volver
         </a>
         
-        {/* LOGO OFICIAL EN GRANDE */}
-        <div className="flex items-center justify-center">
+        {/* LOGO GIGANTE Y CLICKEABLE */}
+        <a href="/" className="cursor-pointer hover:scale-105 transition-transform">
           <img 
             src="https://res.cloudinary.com/dca2psqfg/image/upload/v1774581960/Logo_PediAlgopng_cmns3q.png" 
             alt="PediAlgo" 
-            className="h-24 md:h-28 w-auto object-contain drop-shadow-md hover:scale-105 transition-transform"
+            className="h-24 md:h-28 w-auto object-contain drop-shadow-md"
           />
-        </div>
+        </a>
       </div>
 
       <div className="sm:mx-auto sm:w-full sm:max-w-xl relative z-10">
         <div className="bg-white py-10 px-6 sm:px-12 shadow-2xl rounded-[2.5rem] border border-slate-200 relative overflow-hidden">
-          
-          {/* Barra superior de acento con tu color Rojo */}
           <div className="absolute top-0 left-0 w-full h-2 bg-[#E43D4E]"></div>
 
           {error && (
@@ -129,7 +129,7 @@ export default function RegistroPage() {
           )}
 
           {mensajeExito && (
-            <div className="mb-6 bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-xl text-sm font-bold text-center">
+            <div className="mb-6 bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-xl text-sm font-bold text-center animate-pulse">
               {mensajeExito}
             </div>
           )}
@@ -140,13 +140,11 @@ export default function RegistroPage() {
                 Crear cuenta gratis
               </h2>
               <p className="text-center text-slate-500 text-sm font-medium mb-8">
-                Comenzá tus 7 días de prueba. <br className="md:hidden" />No te pedimos medios de pago.
+                Comenzá tus 7 días de prueba. <br className="md:hidden" />No te quitaremos nada de dinero.
               </p>
 
               <form onSubmit={handleIniciarRegistro} className="space-y-5">
-                
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                  {/* Nombre del Local */}
                   <div>
                     <label className="block text-[11px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Nombre del Local</label>
                     <div className="relative">
@@ -154,8 +152,6 @@ export default function RegistroPage() {
                       <input required type="text" name="nombreLocal" value={formData.nombreLocal} onChange={handleInputChange} className="w-full pl-10 pr-3 py-3 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-[#EFA02B] focus:ring-1 focus:ring-[#EFA02B] bg-slate-50 focus:bg-white transition-colors" placeholder="Ej: Burger House" />
                     </div>
                   </div>
-
-                  {/* WhatsApp */}
                   <div>
                     <label className="block text-[11px] font-black text-slate-400 uppercase tracking-widest mb-1.5">WhatsApp de Pedidos</label>
                     <div className="relative">
@@ -168,18 +164,15 @@ export default function RegistroPage() {
                 <div className="border-t border-slate-100 my-2"></div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                  {/* Nombre Completo */}
                   <div>
-                    <label className="block text-[11px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Tu Nombre y Apellido</label>
+                    <label className="block text-[11px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Nombre y Apellido</label>
                     <div className="relative">
                       <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"><User className="h-5 w-5 text-slate-400" /></div>
                       <input required type="text" name="nombreCompleto" value={formData.nombreCompleto} onChange={handleInputChange} className="w-full pl-10 pr-3 py-3 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-[#EFA02B] focus:ring-1 focus:ring-[#EFA02B] bg-slate-50 focus:bg-white transition-colors" placeholder="Ej: Juan Pérez" />
                     </div>
                   </div>
-
-                  {/* DNI */}
                   <div>
-                    <label className="block text-[11px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Tu DNI</label>
+                    <label className="block text-[11px] font-black text-slate-400 uppercase tracking-widest mb-1.5">DNI</label>
                     <div className="relative">
                       <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"><Hash className="h-5 w-5 text-slate-400" /></div>
                       <input required type="text" name="documento" value={formData.documento} onChange={handleInputChange} className="w-full pl-10 pr-3 py-3 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-[#EFA02B] focus:ring-1 focus:ring-[#EFA02B] bg-slate-50 focus:bg-white transition-colors" placeholder="Sin puntos" />
@@ -187,7 +180,6 @@ export default function RegistroPage() {
                   </div>
                 </div>
 
-                {/* Email */}
                 <div>
                   <label className="block text-[11px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Correo Electrónico</label>
                   <div className="relative">
@@ -196,7 +188,6 @@ export default function RegistroPage() {
                   </div>
                 </div>
 
-                {/* Contraseña */}
                 <div>
                   <label className="block text-[11px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Contraseña</label>
                   <div className="relative">
@@ -205,9 +196,8 @@ export default function RegistroPage() {
                   </div>
                 </div>
 
-                {/* BOTÓN SÓLIDO: Naranja con letra Blanca */}
-                <button type="submit" disabled={cargando} className="w-full flex justify-center py-4 border-b-4 border-[#d18820] rounded-xl shadow-md text-lg font-black text-white bg-[#EFA02B] hover:bg-[#e09425] active:translate-y-1 active:border-b-0 transition-all focus:outline-none disabled:opacity-50 mt-6 cursor-pointer">
-                  {cargando ? "Procesando..." : "Siguiente Paso"}
+                <button type="submit" disabled={cargando} className="w-full flex justify-center items-center gap-2 py-4 border-b-4 border-[#d18820] rounded-xl shadow-md text-lg font-black text-white bg-[#EFA02B] hover:bg-[#e09425] active:translate-y-1 active:border-b-0 transition-all focus:outline-none disabled:opacity-50 mt-6 cursor-pointer">
+                  {cargando ? <><Loader2 className="animate-spin h-5 w-5" /> Procesando...</> : "Siguiente Paso"}
                 </button>
               </form>
             </>
@@ -242,9 +232,8 @@ export default function RegistroPage() {
                   />
                 </div>
 
-                {/* BOTÓN ROJO DE ACTIVACIÓN */}
-                <button type="submit" disabled={cargando || codigoVerificacion.length < 6} className="w-full flex justify-center py-4 border-b-4 border-[#c93442] rounded-xl shadow-md text-lg font-black text-white bg-[#E43D4E] hover:bg-[#d63544] active:translate-y-1 active:border-b-0 transition-all focus:outline-none disabled:opacity-50 cursor-pointer">
-                  {cargando ? "Verificando..." : "Activar mi cuenta"}
+                <button type="submit" disabled={cargando || codigoVerificacion.length < 6} className="w-full flex justify-center items-center gap-2 py-4 border-b-4 border-[#c93442] rounded-xl shadow-md text-lg font-black text-white bg-[#E43D4E] hover:bg-[#d63544] active:translate-y-1 active:border-b-0 transition-all focus:outline-none disabled:opacity-50 cursor-pointer">
+                  {cargando ? <><Loader2 className="animate-spin h-5 w-5" /> Verificando...</> : "Activar mi cuenta"}
                 </button>
               </form>
 
