@@ -42,7 +42,7 @@ export default function PlanesPage() {
           
           {/* Columna Izquierda: Precio (Roja) */}
           <div className="bg-[#E43D4E] p-8 md:p-10 md:w-1/3 flex flex-col justify-center items-center text-center relative">
-            <div className="absolute top-0 right-0 md:left-0 md:right-auto bg-[#EFA02B] text-[10px] font-black px-4 py-1.5 rounded-bl-xl md:rounded-bl-none md:rounded-br-xl uppercase tracking-widest text-[#1A1A1A]">
+            <div className="absolute top-0 right-0 md:left-0 md:right-auto bg-[#EFA02B] text-[10px] font-black px-4 py-1.5 rounded-bl-xl md:rounded-bl-none md:rounded-br-xl uppercase tracking-widest text-white">
               Única Opción
             </div>
             <h2 className="text-white text-3xl font-black mb-2 mt-4 md:mt-0" style={{ fontFamily: 'FontPediAlgo' }}>Plan Pro</h2>
@@ -91,7 +91,7 @@ export default function PlanesPage() {
             <div className="mt-auto">
               <a 
                 href={REGISTRO_URL}
-                className="w-full py-4 bg-[#EFA02B] hover:bg-[#e09425] text-[#1A1A1A] font-black text-lg rounded-xl transition-all active:scale-95 shadow-md flex justify-center items-center gap-2 cursor-pointer text-center border-b-4 border-[#d18820]"
+                className="w-full py-4 bg-[#EFA02B] hover:bg-[#e09425] text-white font-black text-lg rounded-xl transition-all active:scale-95 shadow-md flex justify-center items-center gap-2 cursor-pointer text-center border-b-4 border-[#d18820]"
               >
                 Crear mi cuenta gratis <ArrowRight className="w-5 h-5" />
               </a>
