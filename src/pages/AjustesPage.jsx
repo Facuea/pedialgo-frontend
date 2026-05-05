@@ -150,23 +150,26 @@ function AjustesPage() {
 
   const delay = (ms) => new Promise(res => setTimeout(res, ms));
 
-  // --- LÓGICA DE SUSCRIPCIÓN ---
+  // --- LÓGICA DE SUSCRIPCIÓN CON MERCADO PAGO AUTOMATIZADO ---
   const handlePagoOnline = async () => {
     setProcesandoPago(true);
     try {
-      const res = await fetchPrivado(`/admin/suscripcion/${localId}/pago-online`, { method: 'POST' });
-      if (res.ok) {
-        const data = await res.json();
-        if (data.url) {
-          window.location.href = data.url;
-        } else {
-          mostrarNotificacion("Error: No se recibió la URL de pago", "error");
-        }
+      const response = await fetchPrivado(`/admin/pagos/suscripcion/crear-preferencia`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ localId: localId })
+      });
+      
+      const data = await response.json();
+
+      if (data.initPoint) {
+        window.location.href = data.initPoint;
       } else {
-        mostrarNotificacion("Error al conectar con Mercado Pago.", "error");
+        mostrarNotificacion("Error al generar el link de pago.", "error");
       }
     } catch (error) {
-      mostrarNotificacion("Error de conexión.", "error");
+      console.error("Error Mercado Pago:", error);
+      mostrarNotificacion("Hubo un problema al conectar con Mercado Pago.", "error");
     } finally {
       setProcesandoPago(false);
     }
