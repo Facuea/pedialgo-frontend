@@ -7,6 +7,9 @@ export default function SuscripcionVencidaPage({ localActivo }) {
   const navigate = useNavigate();
   const [cargandoMp, setCargandoMp] = useState(false);
 
+  // Logo oficial proporcionado
+  const LOGO_MP = "https://res.cloudinary.com/dca2psqfg/image/upload/v1778007929/Logotipo_de_Mercado_Pago_blanco_vertical_jge6wj.webp";
+
   // WhatsApp de soporte
   const NUMERO_WHATSAPP = "5493585148782"; 
   const mensajeBase = `Hola PediAlgo! Mi local *${localActivo?.nombre || "Mi Local"}* superó los 7 días de prueba y quiero abonar la suscripción para reactivarlo.`;
@@ -21,7 +24,7 @@ export default function SuscripcionVencidaPage({ localActivo }) {
   const handlePagarConMercadoPago = async () => {
     setCargandoMp(true);
     try {
-      // Llamamos al backend para que genere la preferencia de pago de $1000[cite: 5]
+      // Generación de preferencia de pago
       const response = await fetchPrivado(`/admin/pagos/suscripcion/crear-preferencia`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -46,7 +49,6 @@ export default function SuscripcionVencidaPage({ localActivo }) {
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col justify-center items-center py-12 px-4 sm:px-6 lg:px-8 font-sans selection:bg-[#009EE3] selection:text-white relative overflow-hidden">
       
-      {/* Estilos para las fuentes oficiales de Mercado Pago */}
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap');
         .font-mp { font-family: 'Montserrat', sans-serif; }
@@ -83,7 +85,7 @@ export default function SuscripcionVencidaPage({ localActivo }) {
 
           <div className="space-y-4">
             
-            {/* BOTÓN OFICIAL MERCADO PAGO */}
+            {/* BOTÓN CON LOGO OFICIAL */}
             <button 
               onClick={handlePagarConMercadoPago}
               disabled={cargandoMp}
@@ -92,9 +94,7 @@ export default function SuscripcionVencidaPage({ localActivo }) {
               {cargandoMp ? (
                 <Loader2 className="animate-spin w-5 h-5" />
               ) : (
-                <svg className="w-7 h-7 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M12.4 2C6.7 2 2 6.7 2 12.4s4.7 10.4 10.4 10.4 10.4-4.7 10.4-10.4S18.1 2 12.4 2zm0 18.8c-4.7 0-8.4-3.8-8.4-8.4s3.8-8.4 8.4-8.4 8.4 3.8 8.4 8.4-3.7 8.4-8.4 8.4zm4.4-11.7c-.5-.5-1.1-.7-1.8-.7-.7 0-1.3.2-1.8.7l-4.5 4.5-1.9-1.9c-.5-.5-1.1-.7-1.8-.7-.7 0-1.3.2-1.8.7-.5.5-.7 1.1-.7 1.8 0 .7.2 1.3.7 1.8l3.7 3.7c.5.5 1.1.7 1.8.7.7 0 1.3-.2 1.8-.7l6.3-6.4c1-1 1-2.6.1-3.5z"/>
-                </svg>
+                <img src={LOGO_MP} alt="Mercado Pago" className="h-8 w-auto" />
               )}
               Pagar con Mercado Pago
             </button>
@@ -127,7 +127,7 @@ export default function SuscripcionVencidaPage({ localActivo }) {
             <span className="text-[11px] font-bold uppercase tracking-wider">Pago 100% Protegido</span>
           </div>
           <p className="text-[12px] text-slate-400 leading-relaxed text-center font-medium">
-            Tu suscripción está procesada de forma directa por la tecnología de **Mercado Pago**. No almacenamos tus datos bancarios ni de tarjetas. Tu transacción es segura, rápida y transparente[cite: 5].
+            Tu suscripción está procesada de forma directa por la tecnología de **Mercado Pago**. No almacenamos tus datos bancarios ni de tarjetas. Tu transacción es segura, rápida y transparente.
           </p>
           <img 
             src="https://res.cloudinary.com/dca2psqfg/image/upload/v1774581960/Logo_PediAlgopng_cmns3q.png" 
