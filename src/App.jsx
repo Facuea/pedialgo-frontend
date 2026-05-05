@@ -19,6 +19,7 @@ import FinanzasPage from "./pages/FinanzasPage";
 import SeleccionarLocalPage from "./pages/admin/SeleccionarLocalPage";
 import GastosPage from "./pages/GastosPage";
 import CuponesAdminPage from "./pages/CuponesAdminPage";
+import SuscripcionVencidaPage from "./pages/admin/SuscripcionVencidaPage"; // <-- IMPORTACIÓN AGREGADA
 
 // Páginas de SuperAdmin (Plataforma)
 import SuperAdminLocalesPage from "./pages/superadmin/SuperAdminLocalesPage";
@@ -81,6 +82,7 @@ function App() {
           <Route path="/admin/productos" element={<ProductosPage />} />
           <Route path="/admin/seleccionar-local" element={<SeleccionarLocalPage />} />
           <Route path="/admin/gastos" element={<GastosPage />} />
+          <Route path="/admin/suscripcion-vencida" element={<SuscripcionVencidaPage />} /> {/* <-- RUTA AGREGADA */}
         </Route>
 
         {/* ==========================================
@@ -90,7 +92,7 @@ function App() {
           <Route path="/admin/categorias" element={<CategoriasPage />} />
           <Route path="/admin/ajustes" element={<AjustesPage />} />
           <Route path="/admin/finanzas" element={<FinanzasPage />} />
-          <Route path="/admin/cupones" element={<CuponesAdminPage />} /> {/* <-- RUTA NUEVA */}
+          <Route path="/admin/cupones" element={<CuponesAdminPage />} /> 
         </Route>
 
         {/* ==========================================

@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { loginUsuario } from "../services/authService";
 
 function LoginPage() {
-  // SECCIÓN: Estados iniciales
   const [email, setEmail] = useState(""); 
   const [password, setPassword] = useState("");
   const [mostrarPassword, setMostrarPassword] = useState(false);
@@ -15,14 +14,12 @@ function LoginPage() {
   const COLOR_PRIMARIO = "#F1A139"; 
   const COLOR_ERROR = "#E63946"; 
 
-  // SECCIÓN: Funciones de manejo
   const handleLogin = async (e) => {
     e.preventDefault();
     setError("");
     setCargando(true);
 
     try {
-
       const user = await loginUsuario(email, password);
       localStorage.setItem("usuario", JSON.stringify(user));
 
@@ -34,8 +31,27 @@ function LoginPage() {
       if (user.locales && user.locales.length > 1) {
         navigate("/admin/seleccionar-local");
       } else if (user.locales && user.locales.length === 1) {
-        localStorage.setItem("localActivo", JSON.stringify(user.locales[0]));
-        navigate("/admin/dashboard");
+        const local = user.locales[0];
+        localStorage.setItem("localActivo", JSON.stringify(local));
+
+        // Magia acá: Hacemos un chequeo rápido para ver si está suspendido
+        try {
+          const API_URL = import.meta.env.VITE_API_URL;
+          const res = await fetch(`${API_URL}/admin/locales/${local.id}`, {
+            headers: { "Authorization": `Bearer ${user.token}` }
+          });
+          const localData = await res.json();
+          
+          if (localData.activo === false) {
+            navigate("/admin/suscripcion-vencida");
+          } else {
+            navigate("/admin/dashboard");
+          }
+        } catch (fetchError) {
+          // Si por alguna razón falla el fetch, los mandamos al dashboard por las dudas
+          navigate("/admin/dashboard");
+        }
+
       } else {
         setError("Tu cuenta no tiene locales asignados. Contactá a soporte.");
       }
@@ -47,7 +63,6 @@ function LoginPage() {
     }
   };
 
-  // SECCIÓN: Renderizado principal (Diseño intacto)
   return (
     <div 
       className="min-h-screen flex bg-white font-sans"
@@ -96,7 +111,6 @@ function LoginPage() {
             <p className="text-gray-500 text-sm mt-2 font-medium">Gestioná tu cuenta de forma profesional</p>
           </div>
 
-          {/* SECCIÓN: Mensaje de error */}
           {error && (
             <div 
               className="text-white text-sm p-3.5 rounded-xl mb-6 text-center font-bold shadow-lg w-full"
@@ -106,7 +120,6 @@ function LoginPage() {
             </div>
           )}
 
-          {/* SECCIÓN: Formulario de login */}
           <form onSubmit={handleLogin} className="space-y-5 w-full">
             <div>
               <label className="text-xs uppercase font-black text-gray-400 ml-1 tracking-widest block mb-2">Correo Electrónico</label>
@@ -172,7 +185,6 @@ function LoginPage() {
             </div>
           </form>
 
-          {/* SECCIÓN: Footer */}
           <p className="text-center mt-12 text-[10px] text-gray-300 font-light uppercase tracking-widest w-full">
             PediAlgo &copy; 2026 - Control Panel
           </p>
