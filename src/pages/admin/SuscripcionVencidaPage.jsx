@@ -85,7 +85,7 @@ export default function SuscripcionVencidaPage({ localActivo }) {
               className="w-full flex justify-center items-center gap-2 py-4 border-b-4 border-[#007ebe] rounded-xl shadow-md text-base font-black text-white bg-[#009EE3] hover:bg-[#008bd6] active:translate-y-1 active:border-b-0 transition-all focus:outline-none cursor-pointer disabled:opacity-70"
             >
               {cargandoMp ? <Loader2 className="animate-spin w-5 h-5" /> : <CreditCard className="w-5 h-5" />}
-              Abonar con Mercado Pago ($1)
+              Abonar con Mercado Pago ($100)
             </button>
 
             {/* BOTÓN WHATSAPP (Secundario) */}
