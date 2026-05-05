@@ -1,7 +1,7 @@
 import { Lock, Phone, ArrowLeft, LogOut, CreditCard, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { fetchPrivado } from "../services/apiConfig"; // Asegurate de que la ruta sea correcta
+import { fetchPrivado } from "../../services/apiConfig";
 
 export default function SuscripcionVencidaPage({ localActivo }) {
   const navigate = useNavigate();
