@@ -3,6 +3,7 @@ import { QRCodeCanvas } from "qrcode.react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { fetchPrivado } from "../services/apiConfig";
 import Footer from "./Footer";
+import SuscripcionVencidaPage from "../pages/admin/SuscripcionVencidaPage"; // IMPORTAMOS EL CANDADO
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -36,13 +37,31 @@ function AdminLayout({ children }) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [menuLocalesAbierto, setMenuLocalesAbierto] = useState(false);
   const [nombreLocal, setNombreLocal] = useState("Cargando...");
+  const [estaVencido, setEstaVencido] = useState(false); // ESTADO DEL CANDADO
 
-  // Carga inicial del nombre del local
+  // Carga inicial del nombre del local y validación de fecha
   useEffect(() => {
     if (localActivo.id) {
       fetchPrivado(`/admin/locales/${localActivo.id}`)
         .then(res => res.json())
-        .then(data => setNombreLocal(data.nombre))
+        .then(data => {
+          setNombreLocal(data.nombre);
+          
+          // VERIFICACIÓN DEL CANDADO
+          if (data.fechaVencimiento) {
+            const fechaVencimiento = new Date(data.fechaVencimiento);
+            const fechaActual = new Date();
+            // Reseteamos las horas para comparar solo el día
+            fechaVencimiento.setHours(0, 0, 0, 0);
+            fechaActual.setHours(0, 0, 0, 0);
+
+            if (fechaActual > fechaVencimiento) {
+              setEstaVencido(true); // SE ACTIVA EL BLOQUEO
+            } else {
+              setEstaVencido(false);
+            }
+          }
+        })
         .catch(err => {
           console.error("Error al cargar local:", err);
           setNombreLocal("Mi Local");
@@ -73,12 +92,17 @@ function AdminLayout({ children }) {
     window.location.reload(); 
   };
 
+  // Si está vencido, devolvemos DIRECTAMENTE la pantalla del candado
+  if (estaVencido) {
+    return <SuscripcionVencidaPage localActivo={localActivo} />;
+  }
+
   // Lista de items del menú de navegación
   const menuItems = [
     { path: "/admin/dashboard", label: "Monitor de Pedidos", roles: ["ADMIN", "EMPLEADO"] },
     { path: "/admin/finanzas", label: "Resumen Financiero", roles: ["ADMIN"] },
     { path: "/admin/gastos", label: "Control de Gastos", roles: ["ADMIN"] },
-    { path: "/admin/cupones", label: "Gestión de Cupones", roles: ["ADMIN"] }, // <-- NUEVA SECCIÓN DE CUPONES
+    { path: "/admin/cupones", label: "Gestión de Cupones", roles: ["ADMIN"] },
     { path: "/admin/categorias", label: "Categorías", roles: ["ADMIN"] },
     { path: "/admin/productos", label: "Mis Productos", roles: ["ADMIN", "EMPLEADO"] },
     { path: "/admin/ajustes", label: "Ajustes del Local", roles: ["ADMIN"] },
