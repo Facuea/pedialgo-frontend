@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import AdminLayout from "../components/AdminLayout";
-import TicketImpresion from "../components/TicketImpresion"; 
+import TicketImpresion from "../components/TicketImpresion";
 import { Client } from '@stomp/stompjs';
 import { fetchPrivado } from "../services/apiConfig";
 
@@ -16,6 +16,7 @@ function DashboardPage() {
   const [pedidos, setPedidos] = useState([]);
   const [copiado, setCopiado] = useState(false);
   const [filtroActivo, setFiltroActivo] = useState("RECIBIDO");
+
   const [pedidoAImprimir, setPedidoAImprimir] = useState(null);
   const [notificacion, setNotificacion] = useState(false); 
   const [pedidoACancelar, setPedidoACancelar] = useState(null); 
@@ -37,8 +38,7 @@ function DashboardPage() {
     }
   }, [localId]);
 
-
-useEffect(() => {
+  useEffect(() => {
     if (!localId || !API_URL) return;
 
     const baseDomain = API_URL.replace('/api/v1', ''); 
@@ -50,6 +50,7 @@ useEffect(() => {
       onConnect: () => {
         stompClient.subscribe(`/topic/locales/${localId}/pedidos`, (mensaje) => {
           const pedidoNuevo = JSON.parse(mensaje.body);
+         
           setPedidos(prev => [pedidoNuevo, ...prev]);
           setNotificacion(true);
           setTimeout(() => setNotificacion(false), 4000);
@@ -57,6 +58,11 @@ useEffect(() => {
             const audio = new Audio('/notificacion-pedialgo.mp3');
             audio.play().catch(() => {}); 
           } catch (e) {}
+
+          // --- NUEVO FASE 4: IMPRESIÓN AUTOMÁTICA ---
+          // Prepara el ticket en pantalla oculta y lanza el pop-up de impresión
+          setPedidoAImprimir(pedidoNuevo);
+          setTimeout(() => window.print(), 500);
         });
       }
     });
@@ -70,7 +76,7 @@ useEffect(() => {
       const response = await fetchPrivado(`/admin/locales/${localId}/pedidos/hoy`);
       if (response.ok) {
         const data = await response.json();
-        setPedidos(data); 
+        setPedidos(data);
       }
     } catch (error) {
       console.error("Error de conexión:", error);
@@ -149,6 +155,7 @@ useEffect(() => {
                 >
                   {nombreLocal[0]} 
                 </div>
+          
                 <div className="flex-1 overflow-hidden min-w-50 pl-1">
                   <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-widest mb-0.5">Tu Menú Digital</p>
                   <p className="text-sm font-medium text-gray-800 truncate">{urlMenu}</p>
@@ -199,10 +206,10 @@ useEffect(() => {
                   </div>
 
                   <div className="p-4 flex-1">
+                    
                     <div className="mb-4">
                       <p className="font-semibold text-gray-800 text-base">{pedido.nombreCliente}</p>
                       
-                      {/* FIX: Link de Contactar en azul */}
                       <p className="text-xs font-medium text-gray-500 mt-0.5 flex items-center">
                         Cel: {pedido.telefono}
                         {pedido.telefono && (
@@ -232,7 +239,6 @@ useEffect(() => {
                       </ul>
                     </div>
 
-                    {/* NUEVO: Sección del Método de Pago visible en el detalle */}
                     {pedido.metodoPago && (
                       <div className="border-t border-dashed border-gray-200 pt-3 mt-3">
                         <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-widest mb-1">Método de Pago</p>
@@ -285,7 +291,6 @@ useEffect(() => {
                         </button>
                       )}
 
-                      {/* FIX: Confirmación de Cancelación de Seguridad */}
                       {pedido.estado !== "ENTREGADO" && pedido.estado !== "CANCELADO" && (
                         pedidoACancelar === pedido.id ? (
                           <div className="flex items-center gap-2 bg-rose-50 p-2 rounded-lg flex-1">

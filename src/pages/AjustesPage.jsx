@@ -30,6 +30,7 @@ function AjustesPage() {
   const [guardandoInfo, setGuardandoInfo] = useState(false);
   const [guardandoPassword, setGuardandoPassword] = useState(false); 
   const [procesandoPago, setProcesandoPago] = useState(false);
+  const [guardandoPagos, setGuardandoPagos] = useState(false);
 
   // ESTADO DE ERRORES PARA CONTACTO E INFO
   const [erroresInfo, setErroresInfo] = useState({});
@@ -44,6 +45,10 @@ function AjustesPage() {
   const [temaOriginal, setTemaOriginal] = useState({});
   const [infoLocalOriginal, setInfoLocalOriginal] = useState({});
   const [redesOriginal, setRedesOriginal] = useState({});
+
+  // --- ESTADOS DE PAGOS AUTOMÁTICOS ---
+  const [cobroAutomatico, setCobroAutomatico] = useState(false);
+  const [mpToken, setMpToken] = useState("");
 
   const cerrarNotificacion = () => {
     if (timeoutId) clearTimeout(timeoutId);
@@ -111,6 +116,9 @@ function AjustesPage() {
           direccionMapaEmbed: dataLocal.direccionMapaEmbed || "",
           whatsapp: dataLocal.whatsapp ? dataLocal.whatsapp : "+54 9 " 
         };
+        
+        setCobroAutomatico(dataLocal.cobroAutomatico || false);
+
         setInfoLocal(infoData);
         setInfoLocalOriginal({ nombre: dataLocal.nombre || "", descripcion: dataLocal.descripcion || "" });
         setRedes(redesData);
@@ -188,6 +196,26 @@ function AjustesPage() {
     setAnchoTicket(nuevoAncho);
     localStorage.setItem("anchoTicketImpresion", nuevoAncho);
     mostrarNotificacion(`Ancho de ticket actualizado a ${nuevoAncho} en este dispositivo.`);
+  };
+
+  // --- SECCIÓN: GUARDAR CONFIGURACIÓN DE PAGOS ---
+  const handleGuardarPagos = async () => {
+    setGuardandoPagos(true);
+    try {
+      await fetchPrivado(`/admin/locales/${localId}/pagos-config`, {
+        method: "PATCH",
+        body: JSON.stringify({
+          cobroAutomatico: cobroAutomatico,
+          mpAccessTokenVendedor: mpToken || null
+        })
+      });
+      mostrarNotificacion("Configuración de pagos guardada con éxito.");
+      setMpToken(""); // Limpiamos el token por seguridad visual
+    } catch (error) {
+      mostrarNotificacion("Error al guardar la configuración de pagos.", "error");
+    } finally {
+      setGuardandoPagos(false);
+    }
   };
 
   const handleGuardarImagenes = async () => {
@@ -448,6 +476,9 @@ function AjustesPage() {
           <button onClick={() => setTabActiva("CONTACTO")} className={`px-6 py-3 font-bold text-sm whitespace-nowrap transition-colors border-b-2 cursor-pointer ${tabActiva === "CONTACTO" ? 'border-orange-500 text-orange-600' : 'border-transparent text-gray-500 hover:text-gray-700'}`}>
             Contacto e Información
           </button>
+          <button onClick={() => setTabActiva("PAGOS")} className={`px-6 py-3 font-bold text-sm whitespace-nowrap transition-colors border-b-2 cursor-pointer ${tabActiva === "PAGOS" ? 'border-orange-500 text-orange-600' : 'border-transparent text-gray-500 hover:text-gray-700'}`}>
+            Pagos y Cobros
+          </button>
           <button onClick={() => setTabActiva("EMPLEADOS")} className={`px-6 py-3 font-bold text-sm whitespace-nowrap transition-colors border-b-2 cursor-pointer ${tabActiva === "EMPLEADOS" ? 'border-orange-500 text-orange-600' : 'border-transparent text-gray-500 hover:text-gray-700'}`}>
             Empleados
           </button>
@@ -458,6 +489,51 @@ function AjustesPage() {
             Suscripción
           </button>
         </div>
+
+        {tabActiva === "PAGOS" && (
+          <div className="bg-white p-6 md:p-8 rounded-2xl border border-gray-200 shadow-sm animate-fade-in">
+            <div className="flex justify-between items-center mb-6 border-b border-gray-100 pb-4">
+              <div>
+                <h2 className="text-lg font-bold text-gray-800">Configuración de Cobros Automáticos</h2>
+                <p className="text-sm text-gray-500 mt-1">Vinculá tu cuenta de Mercado Pago para recibir el dinero de los pedidos directo en tu cuenta.</p>
+              </div>
+              <button 
+                 onClick={handleGuardarPagos} 
+                 disabled={guardandoPagos} 
+                 className={`px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white text-xs font-bold rounded-lg cursor-pointer shadow-sm transition-all ${guardandoPagos ? 'opacity-50 cursor-not-allowed' : ''}`}
+              >
+                {guardandoPagos ? "Guardando..." : "Guardar Configuración"}
+              </button>
+            </div>
+
+            <div className="space-y-6">
+              <div className="flex items-center justify-between p-4 border border-gray-200 rounded-xl bg-gray-50">
+                <div>
+                  <h3 className="font-bold text-gray-800 text-sm">Activar Pagos Automáticos (Mercado Pago)</h3>
+                  <p className="text-xs text-gray-500 mt-1">Si está apagado, los clientes te pagarán al momento de la entrega o por WhatsApp.</p>
+                </div>
+                <label className="relative inline-flex items-center cursor-pointer">
+                  <input type="checkbox" className="sr-only peer" checked={cobroAutomatico} onChange={(e) => setCobroAutomatico(e.target.checked)} />
+                  <div className="w-11 h-6 bg-gray-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-orange-500"></div>
+                </label>
+              </div>
+
+              <div className={`transition-opacity ${cobroAutomatico ? 'opacity-100' : 'opacity-50 pointer-events-none'}`}>
+                <label className="block text-[11px] font-bold text-gray-500 uppercase tracking-widest mb-2">Access Token de Producción (Tu Mercado Pago)</label>
+                <input 
+                  type="password" 
+                  value={mpToken} 
+                  onChange={(e) => setMpToken(e.target.value)} 
+                  placeholder="APP_USR-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" 
+                  className="w-full p-3 rounded-xl border border-gray-300 text-sm font-mono text-gray-700 outline-none focus:ring-1 focus:border-orange-400 focus:ring-orange-400" 
+                />
+                <p className="text-[10px] text-gray-400 mt-2 font-medium">
+                  Dejá este campo vacío si ya lo configuraste antes y solo querés prender/apagar el botón de arriba. Para obtener tu token, creá una aplicación en el panel de Mercado Pago Developers.
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
 
         {tabActiva === "SUSCRIPCION" && (
           <div className="bg-white p-6 md:p-8 rounded-2xl border border-gray-200 shadow-sm animate-fade-in">

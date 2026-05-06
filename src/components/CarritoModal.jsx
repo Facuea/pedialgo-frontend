@@ -1,10 +1,10 @@
 import { useState } from "react";
 const API_URL = import.meta.env.VITE_API_URL;
 
-// IMPORTANTE: Asegurate de pasar 'subtotal', 'cuponAplicado', 'aplicarCupon' y 'removerCupon' cuando llames a este componente
-function CarritoModal({ mostrar, onClose, carrito, agregarAlCarrito, quitarDelCarrito, subtotal, totalDinero, cuponAplicado, aplicarCupon, removerCupon, tema, nombreLocal, numeroWhatsApp, slug, vaciarCarrito }) {
+function CarritoModal({ mostrar, onClose, carrito, agregarAlCarrito, quitarDelCarrito, subtotal, totalDinero, cuponAplicado, aplicarCupon, removerCupon, tema, nombreLocal, numeroWhatsApp, slug, vaciarCarrito, localId, cobroAutomatico }) {
   const [metodoEntrega, setMetodoEntrega] = useState("delivery");
-  const [metodoPago, setMetodoPago] = useState("efectivo");
+  const [metodoPago, setMetodoPago] = useState(cobroAutomatico ? "mercadopago" : "efectivo");
+  const [cargandoPago, setCargandoPago] = useState(false);
   
   const [cliente, setCliente] = useState({
     nombre: "",
@@ -14,7 +14,7 @@ function CarritoModal({ mostrar, onClose, carrito, agregarAlCarrito, quitarDelCa
     notas: "",
     montoAbona: ""
   });
-  
+
   const [errores, setErrores] = useState({});
   const [inputCupon, setInputCupon] = useState("");
   const [estadoCupon, setEstadoCupon] = useState({ mensaje: "", tipo: "" });
@@ -40,10 +40,8 @@ function CarritoModal({ mostrar, onClose, carrito, agregarAlCarrito, quitarDelCa
 
   const handleValidarCupon = async () => {
     if (!inputCupon.trim()) return;
-
     try {
       const response = await fetch(`${API_URL}/public/locales/${slug}/cupones/validar?codigo=${inputCupon.toUpperCase().trim()}`);
-      
       if (!response.ok) {
         const errorMsg = await response.text();
         setEstadoCupon({ mensaje: errorMsg || "Cupón inválido", tipo: "error" });
@@ -62,7 +60,6 @@ function CarritoModal({ mostrar, onClose, carrito, agregarAlCarrito, quitarDelCa
 
   const procesarPedido = async () => {
     const nuevosErrores = {};
-
     if (!cliente.nombre.trim()) nuevosErrores.nombre = "Por favor, ingresá tu nombre.";
     if (!cliente.telefono.trim()) nuevosErrores.telefono = "Por favor, ingresá tu teléfono.";
     if (!cliente.email.trim()) {
@@ -87,6 +84,67 @@ function CarritoModal({ mostrar, onClose, carrito, agregarAlCarrito, quitarDelCa
       return;
     }
 
+    // RUTA 1: PAGO AUTOMÁTICO VÍA MERCADO PAGO
+    if (metodoPago === "mercadopago") {
+      setCargandoPago(true);
+      try {
+        // 1. PRIMERO GUARDAMOS EL PEDIDO EN LA DB
+        const payload = {
+          nombreCliente: cliente.nombre,
+          telefono: cliente.telefono,
+          emailCliente: cliente.email, 
+          direccion: metodoEntrega === "delivery" ? cliente.direccion : "Retiro en local",
+          metodoPago: metodoPago, 
+          montoAbona: null, 
+          codigoCupon: cuponAplicado ? cuponAplicado.codigo : null,
+          items: carrito.map(item => ({
+            productoId: item.id,
+            cantidad: item.cantidad
+          }))
+        };
+
+        const responsePedido = await fetch(`${API_URL}/public/locales/${slug}/pedidos`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+
+        if (!responsePedido.ok) {
+          throw new Error("No se pudo guardar el pedido pre-pago");
+        }
+
+        const pedidoCreado = await responsePedido.json();
+
+        // 2. CON EL ID CREADO, VAMOS A MERCADO PAGO
+        const resMP = await fetch(`${API_URL}/api/v1/public/pagos/pedido/crear-preferencia`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            localId: localId,
+            slug: slug,
+            total: totalDinero,
+            pedidoId: pedidoCreado.id // ACÁ INYECTAMOS EL ID PARA EL BACKEND
+          })
+        });
+        
+        const dataMP = await resMP.json();
+        
+        if (dataMP.initPoint) {
+          vaciarCarrito();
+          window.location.href = dataMP.initPoint;
+        } else {
+          alert("El local tiene problemas con su pasarela de pagos. Por favor elegí otro medio.");
+        }
+      } catch (error) {
+        console.error("Error MP:", error);
+        alert("Error de conexión al procesar el pago online.");
+      } finally {
+        setCargandoPago(false);
+      }
+      return; // Cortamos acá para no ir a WhatsApp
+    }
+
+    // RUTA 2: TU CÓDIGO ORIGINAL PARA WHATSAPP
     const payload = {
       nombreCliente: cliente.nombre,
       telefono: cliente.telefono,
@@ -113,7 +171,7 @@ function CarritoModal({ mostrar, onClose, carrito, agregarAlCarrito, quitarDelCa
       }
 
       const pedidoCreado = await response.json();
-      const pedidoId = pedidoCreado.id; 
+      const pedidoId = pedidoCreado.id;
 
       let mensajeProductos = carrito.map(item => {
         const hayDescuento = item.descuento > 0;
@@ -197,7 +255,6 @@ ${mensajeProductos}
               {carrito.map((item) => {
                 const hayDescuento = item.descuento > 0;
                 const precioVenta = hayDescuento ? item.precio - (item.precio * item.descuento / 100) : item.precio;
-
                 return (
                   <div key={item.id} className="flex justify-between items-center border-b pb-4" style={{ borderColor: tema.colorTexto + '30' }}>
                     <div>
@@ -300,6 +357,20 @@ ${mensajeProductos}
               <div className="pt-2 border-t mt-4" style={{ borderColor: tema.colorTexto + '20' }}>
                 <p className="font-semibold text-sm mb-3 opacity-80">¿Cómo vas a pagar?</p>
                 <div className="flex gap-2 mb-3">
+                  
+                  {/* SI EL COBRO AUTOMATICO ESTA ACTIVO, AGREGAMOS EL BOTON */}
+                  {cobroAutomatico && (
+                    <button 
+                      onClick={() => { setMetodoPago("mercadopago"); setErrores({...errores, montoAbona: null}); }}
+                      className="flex-1 py-2.5 rounded-xl text-sm font-bold transition-all border-2 cursor-pointer"
+                      style={{
+                        backgroundColor: metodoPago === "mercadopago" ? "#009EE3" : "transparent",
+                        color: metodoPago === "mercadopago" ? "#ffffff" : tema.colorTexto,
+                        borderColor: metodoPago === "mercadopago" ? "#009EE3" : tema.colorTexto + '30'
+                      }}
+                    >Mercado Pago</button>
+                  )}
+
                   <button 
                     onClick={() => { setMetodoPago("efectivo"); setErrores({...errores, montoAbona: null}); }}
                     className="flex-1 py-2.5 rounded-xl text-sm font-bold transition-all border-2 cursor-pointer"
@@ -309,6 +380,7 @@ ${mensajeProductos}
                       borderColor: metodoPago === "efectivo" ? tema.colorPrimario : tema.colorTexto + '30'
                     }}
                   >Efectivo</button>
+
                   <button 
                     onClick={() => { setMetodoPago("transferencia"); setErrores({...errores, montoAbona: null}); }}
                     className="flex-1 py-2.5 rounded-xl text-sm font-bold transition-all border-2 cursor-pointer"
@@ -354,7 +426,7 @@ ${mensajeProductos}
                     Quitar
                   </button>
                 </div>
-              ) : (
+               ) : (
                 <div className="flex gap-2">
                   <input 
                     type="text" 
@@ -372,13 +444,13 @@ ${mensajeProductos}
                     Aplicar
                   </button>
                 </div>
-              )}
+               )}
               {estadoCupon.mensaje && (
                 <p className={`text-[11px] mt-1.5 px-2 font-semibold ${estadoCupon.tipo === 'error' ? 'text-[#ef4444]' : 'text-emerald-500'}`}>
                   {estadoCupon.mensaje}
                 </p>
               )}
-            </div>
+             </div>
 
           </div>
 
@@ -399,11 +471,19 @@ ${mensajeProductos}
             <div className="flex justify-between items-center font-semibold text-2xl pt-1">
               <span>Total</span>
               <span style={{ color: tema.colorPrimario, fontFamily: "Poppins" }}>${totalDinero}</span>
-            </div>
+             </div>
           </div>
 
-          <button onClick={procesarPedido} className="w-full mt-5 py-3.5 rounded-xl font-bold text-lg shadow-md hover:brightness-110 active:scale-[0.98] transition-all cursor-pointer" style={{ backgroundColor: "#1BA64A", color: "#ffffff" }}>
-            Pedir por WhatsApp
+          <button 
+            onClick={procesarPedido} 
+            disabled={cargandoPago}
+            className="w-full mt-5 py-3.5 rounded-xl font-bold text-lg shadow-md hover:brightness-110 active:scale-[0.98] transition-all cursor-pointer disabled:opacity-70" 
+            style={{ 
+              backgroundColor: metodoPago === "mercadopago" ? "#009EE3" : "#1BA64A", 
+              color: "#ffffff" 
+            }}
+          >
+            {cargandoPago ? "Procesando..." : (metodoPago === "mercadopago" ? "Pagar con Mercado Pago" : "Pedir por WhatsApp")}
           </button>
         </div>
       </div>

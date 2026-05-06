@@ -62,7 +62,7 @@ export const useCart = (slug) => {
 
   // SECCIÓN: Cálculos de totales
   const totalItems = carrito.reduce((acc, p) => acc + p.cantidad, 0);
-  
+
   const subtotal = carrito.reduce((acc, item) => {
     const hayDescuento = item.descuento > 0;
     const precioVenta = hayDescuento ? item.precio - (item.precio * item.descuento / 100) : item.precio;

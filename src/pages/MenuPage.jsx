@@ -18,7 +18,6 @@ function MenuPage() {
   const [mostrarCarrito, setMostrarCarrito] = useState(false);
   const [errorLocal, setErrorLocal] = useState(false);
 
-  // ACÁ ESTÁ EL CAMBIO: Extraemos TODAS las funciones del useCart, incluidas las de cupones
   const { 
     carrito, 
     agregarAlCarrito, 
@@ -52,7 +51,7 @@ function MenuPage() {
           if (cat.productos) {
             cat.productos.forEach(p => {
               if (p.activo !== false && p.eliminado !== true && !p.nombre.toUpperCase().includes("(ELIMINADO)")) {
-                idsValidos.push(p.id);
+                 idsValidos.push(p.id);
               }
             });
           }
@@ -78,11 +77,10 @@ function MenuPage() {
           const tieneProductos = cat.productos && cat.productos.some(p => p.activo !== false && !p.nombre.toUpperCase().includes("(ELIMINADO)"));
           return tieneProductos; 
         });
-
         setCategorias(cats);
         
         if (cats.length > 0) {
-          setCategoriaActiva(cats[0].id); 
+          setCategoriaActiva(cats[0].id);
         }
         
       } catch (error) {
@@ -99,7 +97,7 @@ function MenuPage() {
     else current.scrollLeft += 300;
   };
 
- if (errorLocal) {
+  if (errorLocal) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-white" style={{ fontFamily: "'Poppins', sans-serif" }}>
         <h1 className="text-xs font-bold text-gray-800 uppercase tracking-widest">Local no disponible</h1>
@@ -112,10 +110,9 @@ function MenuPage() {
       <span className="text-[1.1rem] opacity-50 tracking-wider">cargando menú...</span>
     </div>
   );
-
+  
   const { colorFondo, colorTexto, colorPrimario, colorSecundario, fuente, imagenPortada, logoUrl, colorCarrito } = menu.tema;
   const { whatsapp, instagramUrl, direccionMapaEmbed} = menu;
-
   const productosAMostrar = (menu.categorias?.find(c => c.id === categoriaActiva)?.productos || [])
     .filter(prod => prod.eliminado !== true && !prod.nombre.toUpperCase().includes("(ELIMINADO)"));
 
@@ -186,7 +183,7 @@ function MenuPage() {
                 href={`/${sucursal.slug}`} 
                 className="px-3 py-1.5 rounded-full text-[0.75rem] font-bold border transition-all hover:-translate-y-0.5 active:scale-95 shadow-sm"
                 style={{ 
-                  borderColor: colorPrimario, 
+                   borderColor: colorPrimario, 
                   color: colorPrimario, 
                   backgroundColor: `${colorPrimario}10` 
                 }}
@@ -257,7 +254,8 @@ function MenuPage() {
 
      {/* PRODUCTOS */}
      <div className="pt-6 px-4 max-w-160 mx-auto grid gap-3">
-        {productosAMostrar.length > 0 ? (
+        {productosAMostrar.length > 0 ?
+        (
           productosAMostrar.map((prod, i) => {
             const itemEnCarrito = carrito.find(p => p.id === prod.id);
             const cantidad = itemEnCarrito ? itemEnCarrito.cantidad : 0;
@@ -278,13 +276,15 @@ function MenuPage() {
                 }}
               >
                 {/* ETIQUETAS SUPERIORES */}
-                {!estaActivo ? (
+                {!estaActivo ?
+                (
                    <div 
                     className="absolute top-0 left-0 px-3 py-1.5 font-black text-[11px] shadow-md z-10 rounded-br-xl uppercase tracking-widest bg-gray-800 text-white"
                    >
                      Agotado
                    </div>
-                ) : hayDescuento ? (
+                ) : hayDescuento ?
+                (
                   <div 
                     className="absolute top-0 left-0 px-3 py-1.5 font-black text-[11px] shadow-md z-10 rounded-br-xl uppercase tracking-widest"
                     style={{ backgroundColor: colorSecundario, color: colorFondo }}
@@ -342,11 +342,11 @@ function MenuPage() {
 
                 {/* IMAGEN */}
                 {prod.imagenUrl && (
-                  <img src={prod.imagenUrl} alt={prod.nombre} className="w-22 h-22 rounded-lg object-cover self-center shrink-0" />
+                 <img src={prod.imagenUrl} alt={prod.nombre} className="w-22 h-22 rounded-lg object-cover self-center shrink-0" />
                 )}
               </div>
             );
-          })
+        })
         ) : (
           <div className="text-center mt-12 opacity-50"><p>Sin productos.</p></div>
         )}
@@ -455,20 +455,22 @@ function MenuPage() {
         cuponAplicado={cuponAplicado}
         aplicarCupon={aplicarCupon}
         removerCupon={removerCupon}
+        localId={menu.id}
+        cobroAutomatico={menu.cobroAutomatico}
       />
       <footer className="py-8 text-center opacity-60">
-  <p className="text-xs font-medium">
-    Desarrollado por{" "}
-    <a 
-      href="https://pedialgoar.com" 
-      target="_blank" 
-      rel="noreferrer"
-      className="font-bold hover:text-orange-500 transition-colors"
-    >
-      pedialgoar.com
-    </a>
-  </p>
-</footer>
+        <p className="text-xs font-medium">
+          Desarrollado por{" "}
+          <a 
+            href="https://pedialgoar.com" 
+            target="_blank" 
+            rel="noreferrer"
+            className="font-bold hover:text-orange-500 transition-colors"
+          >
+            pedialgoar.com
+          </a>
+        </p>
+      </footer>
     </div>
   );
 }
