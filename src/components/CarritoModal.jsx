@@ -5,7 +5,6 @@ function CarritoModal({ mostrar, onClose, carrito, agregarAlCarrito, quitarDelCa
   const [metodoEntrega, setMetodoEntrega] = useState("delivery");
   const [metodoPago, setMetodoPago] = useState(cobroAutomatico ? "mercadopago" : "efectivo");
   const [cargandoPago, setCargandoPago] = useState(false);
-  
   const [cliente, setCliente] = useState({
     nombre: "",
     telefono: "",
@@ -14,11 +13,10 @@ function CarritoModal({ mostrar, onClose, carrito, agregarAlCarrito, quitarDelCa
     notas: "",
     montoAbona: ""
   });
-
   const [errores, setErrores] = useState({});
   const [inputCupon, setInputCupon] = useState("");
   const [estadoCupon, setEstadoCupon] = useState({ mensaje: "", tipo: "" });
-
+  
   if (!mostrar) return null;
 
   const handleChange = (e) => {
@@ -93,30 +91,30 @@ function CarritoModal({ mostrar, onClose, carrito, agregarAlCarrito, quitarDelCa
           nombreCliente: cliente.nombre,
           telefono: cliente.telefono,
           emailCliente: cliente.email, 
-          direccion: metodoEntrega === "delivery" ? cliente.direccion : "Retiro en local",
+          direccion: metodoEntrega === "delivery" ?
+            cliente.direccion : "Retiro en local",
           metodoPago: metodoPago, 
           montoAbona: null, 
-          codigoCupon: cuponAplicado ? cuponAplicado.codigo : null,
+          codigoCupon: cuponAplicado ?
+            cuponAplicado.codigo : null,
           items: carrito.map(item => ({
             productoId: item.id,
             cantidad: item.cantidad
           }))
         };
-
         const responsePedido = await fetch(`${API_URL}/public/locales/${slug}/pedidos`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload)
         });
-
         if (!responsePedido.ok) {
           throw new Error("No se pudo guardar el pedido pre-pago");
         }
 
         const pedidoCreado = await responsePedido.json();
-
-        // 2. CON EL ID CREADO, VAMOS A MERCADO PAGO
-        const resMP = await fetch(`${API_URL}/api/v1/public/pagos/pedido/crear-preferencia`, {
+        
+        // 2. CON EL ID CREADO, VAMOS A MERCADO PAGO (Ruta corregida aquí)
+        const resMP = await fetch(`${API_URL}/public/pagos/pedido/crear-preferencia`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -126,7 +124,6 @@ function CarritoModal({ mostrar, onClose, carrito, agregarAlCarrito, quitarDelCa
             pedidoId: pedidoCreado.id // ACÁ INYECTAMOS EL ID PARA EL BACKEND
           })
         });
-        
         const dataMP = await resMP.json();
         
         if (dataMP.initPoint) {
@@ -149,44 +146,43 @@ function CarritoModal({ mostrar, onClose, carrito, agregarAlCarrito, quitarDelCa
       nombreCliente: cliente.nombre,
       telefono: cliente.telefono,
       emailCliente: cliente.email, 
-      direccion: metodoEntrega === "delivery" ? cliente.direccion : "Retiro en local",
+      direccion: metodoEntrega === "delivery" ?
+        cliente.direccion : "Retiro en local",
       metodoPago: metodoPago, 
-      montoAbona: metodoPago === "efectivo" ? parseInt(cliente.montoAbona) : null, 
-      codigoCupon: cuponAplicado ? cuponAplicado.codigo : null,
+      montoAbona: metodoPago === "efectivo" ?
+        parseInt(cliente.montoAbona) : null, 
+      codigoCupon: cuponAplicado ?
+        cuponAplicado.codigo : null,
       items: carrito.map(item => ({
         productoId: item.id,
         cantidad: item.cantidad
       }))
     };
-
     try {
       const response = await fetch(`${API_URL}/public/locales/${slug}/pedidos`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)
       });
-
       if (!response.ok) {
         throw new Error("No se pudo guardar el pedido en el servidor");
       }
 
       const pedidoCreado = await response.json();
       const pedidoId = pedidoCreado.id;
-
+      
       let mensajeProductos = carrito.map(item => {
         const hayDescuento = item.descuento > 0;
         const precioVenta = hayDescuento ? item.precio - (item.precio * item.descuento / 100) : item.precio;
         return ` ${item.cantidad}x ${item.nombre} ($${precioVenta * item.cantidad})`;
       }).join("\n");
-
-      const metodoTexto = metodoEntrega === "delivery" ? " ENVIO A DOMICILIO" : " RETIRO EN LOCAL";
       
+      const metodoTexto = metodoEntrega === "delivery" ? " ENVIO A DOMICILIO" : " RETIRO EN LOCAL";
       const pagoTexto = metodoPago === "efectivo" 
         ? ` Efectivo (Abona con $${cliente.montoAbona} - Vuelto: $${parseInt(cliente.montoAbona) - totalDinero})` 
         : ` Transferencia (CBU/Alias)`;
-
       const cuponTexto = cuponAplicado ? `\n *Cupón Aplicado:* ${cuponAplicado.codigo} (-$${cuponAplicado.descuentoFijo})` : "";
-
+      
       const mensajeFinal = `
 *NUEVO PEDIDO N°${pedidoId} - ${nombreLocal}* -----------------------------------
 *Datos del Cliente:*
@@ -204,7 +200,7 @@ ${mensajeProductos}
  *TOTAL A PAGAR: $${totalDinero}*
  *PAGO:* ${pagoTexto}
       `.trim();
-
+      
       const url = `https://wa.me/${numeroWhatsApp}?text=${encodeURIComponent(mensajeFinal)}`;
       window.open(url, "_blank");
       vaciarCarrito();
@@ -426,7 +422,7 @@ ${mensajeProductos}
                     Quitar
                   </button>
                 </div>
-               ) : (
+              ) : (
                 <div className="flex gap-2">
                   <input 
                     type="text" 
@@ -444,13 +440,13 @@ ${mensajeProductos}
                     Aplicar
                   </button>
                 </div>
-               )}
+              )}
               {estadoCupon.mensaje && (
                 <p className={`text-[11px] mt-1.5 px-2 font-semibold ${estadoCupon.tipo === 'error' ? 'text-[#ef4444]' : 'text-emerald-500'}`}>
                   {estadoCupon.mensaje}
                 </p>
               )}
-             </div>
+            </div>
 
           </div>
 
@@ -471,7 +467,7 @@ ${mensajeProductos}
             <div className="flex justify-between items-center font-semibold text-2xl pt-1">
               <span>Total</span>
               <span style={{ color: tema.colorPrimario, fontFamily: "Poppins" }}>${totalDinero}</span>
-             </div>
+            </div>
           </div>
 
           <button 
