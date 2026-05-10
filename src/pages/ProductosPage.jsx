@@ -8,7 +8,7 @@ const API_URL = import.meta.env.VITE_API_URL;
 
 function ProductosPage() {
   const COLOR_PRIMARIO = "#F1A139";
-  
+
   const localActivo = JSON.parse(localStorage.getItem("localActivo")) || {};
   const localId = localActivo.id;
 
@@ -17,14 +17,14 @@ function ProductosPage() {
   const [categorias, setCategorias] = useState([]);
   const [cargando, setCargando] = useState(true);
   const [busqueda, setBusqueda] = useState("");
-  
+
   // ESTADO PARA EL MENÚ DE LOS 3 PUNTITOS
   const [menuAbiertoId, setMenuAbiertoId] = useState(null);
-  
+
   // ESTADOS DEL MODAL ABM
   const [modalAbierto, setModalAbierto] = useState(false);
   const [productoEditando, setProductoEditando] = useState(null);
-  
+
   // CAMPOS DEL FORMULARIO
   const [nombre, setNombre] = useState("");
   const [descripcion, setDescripcion] = useState("");
@@ -50,7 +50,7 @@ function ProductosPage() {
     setNotificacion({ visible: true, mensaje, tipo });
     const id = setTimeout(() => {
       setNotificacion({ visible: false, mensaje: "", tipo: "exito" });
-    }, 5000); 
+    }, 5000);
     setTimeoutId(id);
   };
 
@@ -77,7 +77,7 @@ function ProductosPage() {
         const prodData = await resProd.json();
         setProductos(prodData);
       } else {
-        setProductos([]); 
+        setProductos([]);
       }
 
     } catch (error) {
@@ -95,11 +95,13 @@ function ProductosPage() {
 
     setGuardando(true);
 
+    // ACÁ ESTÁ LA CORRECCIÓN: Se envía categoriaId al backend
     const payload = { 
       nombre, 
       descripcion, 
       precio: parseFloat(precio), 
-      imagenUrl: archivoImagen ? "" : previewUrl 
+      imagenUrl: archivoImagen ? "" : previewUrl,
+      categoriaId: parseInt(categoriaId) 
     };
 
     try {
@@ -135,10 +137,9 @@ function ProductosPage() {
              "Authorization": `Bearer ${token}` 
           }
         });
-        
         if (resImg.ok) {
           const nuevaUrl = await resImg.text();
-          productoGuardado.imagenUrl = nuevaUrl; 
+          productoGuardado.imagenUrl = nuevaUrl;
         } else {
           mostrarNotificacion("Texto guardado, pero hubo un error con la imagen.", "error");
         }
@@ -152,7 +153,7 @@ function ProductosPage() {
         }
         
         mostrarNotificacion("Guardado exitosamente.", "exito");
-        cerrarModal(); 
+        cerrarModal();
       }
 
     } catch (error) {
@@ -173,13 +174,11 @@ function ProductosPage() {
     const prod = modalEliminar.producto;
     setModalEliminar({ abierto: false, producto: null });
     setProductos(prev => prev.filter(p => p.id !== prod.id));
-
     try {
       const catId = prod.categoriaId || (categorias.length > 0 ? categorias[0].id : 0);
       const res = await fetchPrivado(`/admin/locales/${localId}/categorias/${catId}/productos/${prod.id}`, {
         method: "DELETE"
       });
-
       if (res.ok || res.status === 204) {
         mostrarNotificacion("Producto eliminado correctamente.");
       } else {
@@ -196,7 +195,6 @@ function ProductosPage() {
     setMenuAbiertoId(null);
     const endpointAccion = prod.destacado ? "quitar-destacado" : "destacar";
     setProductos(productos.map(p => p.id === prod.id ? { ...p, destacado: !prod.destacado } : p));
-
     try {
       const res = await fetchPrivado(`/admin/locales/${localId}/categorias/${prod.categoriaId}/productos/${prod.id}/${endpointAccion}`, {
         method: "PATCH"
@@ -211,11 +209,10 @@ function ProductosPage() {
 
   const handleToggleDisponibilidad = async (prod) => {
     setMenuAbiertoId(null);
-    const estaActivo = prod.activo !== false; 
+    const estaActivo = prod.activo !== false;
     const endpointAccion = estaActivo ? "desactivar" : "activar";
     
     setProductos(productos.map(p => p.id === prod.id ? { ...p, activo: !estaActivo } : p));
-
     try {
       const res = await fetchPrivado(`/admin/locales/${localId}/categorias/${prod.categoriaId}/productos/${prod.id}/${endpointAccion}`, {
         method: "PATCH"
@@ -229,7 +226,7 @@ function ProductosPage() {
   };
 
   const abrirModalDescuento = (prod) => {
-    setMenuAbiertoId(null); 
+    setMenuAbiertoId(null);
     setModalDescuento({ 
       abierto: true, 
       producto: prod, 
@@ -248,12 +245,10 @@ function ProductosPage() {
     }
 
     setModalDescuento({ abierto: false, producto: null, valor: "" });
-
     try {
       const res = await fetchPrivado(`/admin/locales/${localId}/categorias/${producto.categoriaId}/productos/${producto.id}/descuento?descuento=${numDesc}`, {
         method: "PATCH"
       });
-
       if (res.ok) {
         setProductos(productos.map(p => p.id === producto.id ? { ...p, descuento: numDesc } : p));
         mostrarNotificacion(numDesc === 0 ? "Descuento eliminado." : `Descuento del ${numDesc}% aplicado.`);
@@ -285,7 +280,6 @@ function ProductosPage() {
     setDescripcion(""); 
     setPrecio(""); 
     setCategoriaId(categorias.length > 0 ? categorias[0].id : "");
-    
     setArchivoImagen(null);
     setPreviewUrl("");
     setModalAbierto(true);
@@ -301,7 +295,7 @@ function ProductosPage() {
     }
   };
 
-const productosFiltrados = productos.filter(p => {
+  const productosFiltrados = productos.filter(p => {
     const noEstaEliminado = p.nombre && !p.nombre.toUpperCase().includes("(ELIMINADO)");
     const coincideBusqueda = p.nombre.toLowerCase().includes(busqueda.toLowerCase()) || p.id.toString().includes(busqueda);
     return noEstaEliminado && coincideBusqueda;
@@ -402,14 +396,14 @@ const productosFiltrados = productos.filter(p => {
                               {prod.descuento > 0 ? `Ajustar Descuento (${prod.descuento}%)` : '% Aplicar Descuento'}
                             </button>
                             <button onClick={() => abrirModalEditar(prod)} className="w-full text-left px-5 py-3 hover:bg-blue-50 text-blue-600 font-medium transition-colors cursor-pointer border-b border-gray-50">
-                              Editar Información
+                               Editar Información
                             </button>
                             <button onClick={() => confirmarEliminar(prod)} className="w-full text-left px-5 py-3 hover:bg-red-50 text-red-600 font-medium transition-colors cursor-pointer">
                               Eliminar Producto
                             </button>
                           </div>
                         )}
-                      </div>
+                       </div>
                     </div>
                   </div>
 
@@ -424,6 +418,7 @@ const productosFiltrados = productos.filter(p => {
       {modalAbierto && (
         <div className="fixed inset-0 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm overflow-y-auto animate-fade-in" style={{ fontFamily: "'Poppins', sans-serif", zIndex: 9999 }}>
           <div className="bg-white rounded-2xl shadow-xl w-full max-w-lg my-8 overflow-hidden flex flex-col">
+            
             <div className="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50 shrink-0">
               <h2 className="text-lg font-bold text-gray-900">{productoEditando ? "Editar Producto" : "Nuevo Producto"}</h2>
               <button onClick={cerrarModal} className="text-gray-400 hover:text-gray-700 text-3xl leading-none cursor-pointer">×</button>
@@ -489,7 +484,7 @@ const productosFiltrados = productos.filter(p => {
 
       {/* MODAL: CONFIRMAR ELIMINAR */}
       {modalEliminar.abierto && modalEliminar.producto && (
-        <div className="fixed inset-0 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm animate-fade-in" style={{ zIndex: 9999 }}>
+         <div className="fixed inset-0 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm animate-fade-in" style={{ zIndex: 9999 }}>
           <div className="bg-white rounded-2xl shadow-xl w-full max-w-sm p-6 text-center border border-gray-100">
             <h2 className="text-lg font-black text-gray-900 mb-2">Eliminar Producto</h2>
             <p className="text-sm text-gray-500 mb-6">
