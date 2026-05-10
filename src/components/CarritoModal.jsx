@@ -201,7 +201,10 @@ ${mensajeProductos}
  *PAGO:* ${pagoTexto}
       `.trim();
       
-      const url = `https://wa.me/${numeroWhatsApp}?text=${encodeURIComponent(mensajeFinal)}`;
+      // ACÁ ESTÁ LA CORRECCIÓN: Limpiamos los símbolos del número antes de abrir el enlace
+      const numeroLimpio = numeroWhatsApp ? String(numeroWhatsApp).replace(/[^0-9]/g, "") : "";
+      const url = `https://wa.me/${numeroLimpio}?text=${encodeURIComponent(mensajeFinal)}`;
+      
       window.open(url, "_blank");
       vaciarCarrito();
       onClose();
@@ -473,7 +476,7 @@ ${mensajeProductos}
           {metodoPago === "mercadopago" && (
             <div className="mt-3 flex items-start gap-2 p-3 rounded-xl border" style={{ backgroundColor: "#009EE310", borderColor: "#009EE330", color: tema.colorTexto }}>
               <p className="text-xs font-medium opacity-80 leading-snug">
-                Pagos 100% seguros. Podés pagar con <b className="text-[#009EE3]">tarjeta de débito, crédito o saldo</b> a través de Mercado Pago. Nosotros no guardamos tus datos.
+                 Pagos 100% seguros. Podés pagar con <b className="text-[#009EE3]">tarjeta de débito, crédito o saldo</b> a través de Mercado Pago. Nosotros no guardamos tus datos.
               </p>
             </div>
           )}
@@ -483,7 +486,7 @@ ${mensajeProductos}
             disabled={cargandoPago}
             className="w-full mt-4 py-3.5 rounded-xl font-bold text-lg shadow-md hover:brightness-110 active:scale-[0.98] transition-all cursor-pointer disabled:opacity-70" 
             style={{ 
-              backgroundColor: metodoPago === "mercadopago" ? "#009EE3" : "#1BA64A", 
+               backgroundColor: metodoPago === "mercadopago" ? "#009EE3" : "#1BA64A", 
               color: "#ffffff" 
             }}
           >
