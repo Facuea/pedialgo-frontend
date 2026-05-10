@@ -16,7 +16,7 @@ function CarritoModal({ mostrar, onClose, carrito, agregarAlCarrito, quitarDelCa
   const [errores, setErrores] = useState({});
   const [inputCupon, setInputCupon] = useState("");
   const [estadoCupon, setEstadoCupon] = useState({ mensaje: "", tipo: "" });
-  
+
   if (!mostrar) return null;
 
   const handleChange = (e) => {
@@ -113,7 +113,7 @@ function CarritoModal({ mostrar, onClose, carrito, agregarAlCarrito, quitarDelCa
 
         const pedidoCreado = await responsePedido.json();
         
-        // 2. CON EL ID CREADO, VAMOS A MERCADO PAGO (Ruta corregida aquí)
+        // 2. CON EL ID CREADO, VAMOS A MERCADO PAGO
         const resMP = await fetch(`${API_URL}/public/pagos/pedido/crear-preferencia`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -121,7 +121,7 @@ function CarritoModal({ mostrar, onClose, carrito, agregarAlCarrito, quitarDelCa
             localId: localId,
             slug: slug,
             total: totalDinero,
-            pedidoId: pedidoCreado.id // ACÁ INYECTAMOS EL ID PARA EL BACKEND
+            pedidoId: pedidoCreado.id
           })
         });
         const dataMP = await resMP.json();
@@ -138,7 +138,7 @@ function CarritoModal({ mostrar, onClose, carrito, agregarAlCarrito, quitarDelCa
       } finally {
         setCargandoPago(false);
       }
-      return; // Cortamos acá para no ir a WhatsApp
+      return;
     }
 
     // RUTA 2: TU CÓDIGO ORIGINAL PARA WHATSAPP
@@ -354,7 +354,7 @@ ${mensajeProductos}
                 <p className="font-semibold text-sm mb-3 opacity-80">¿Cómo vas a pagar?</p>
                 <div className="flex gap-2 mb-3">
                   
-                  {/* SI EL COBRO AUTOMATICO ESTA ACTIVO, AGREGAMOS EL BOTON */}
+                  {/* SI EL COBRO AUTOMATICO ESTA ACTIVO, AGREGAMOS EL BOTON MODIFICADO */}
                   {cobroAutomatico && (
                     <button 
                       onClick={() => { setMetodoPago("mercadopago"); setErrores({...errores, montoAbona: null}); }}
@@ -364,7 +364,7 @@ ${mensajeProductos}
                         color: metodoPago === "mercadopago" ? "#ffffff" : tema.colorTexto,
                         borderColor: metodoPago === "mercadopago" ? "#009EE3" : tema.colorTexto + '30'
                       }}
-                    >Mercado Pago</button>
+                    >Tarjetas / Mercado Pago</button>
                   )}
 
                   <button 
@@ -422,7 +422,7 @@ ${mensajeProductos}
                     Quitar
                   </button>
                 </div>
-              ) : (
+               ) : (
                 <div className="flex gap-2">
                   <input 
                     type="text" 
@@ -440,13 +440,13 @@ ${mensajeProductos}
                     Aplicar
                   </button>
                 </div>
-              )}
+               )}
               {estadoCupon.mensaje && (
                 <p className={`text-[11px] mt-1.5 px-2 font-semibold ${estadoCupon.tipo === 'error' ? 'text-[#ef4444]' : 'text-emerald-500'}`}>
                   {estadoCupon.mensaje}
                 </p>
               )}
-            </div>
+             </div>
 
           </div>
 
@@ -467,7 +467,7 @@ ${mensajeProductos}
             <div className="flex justify-between items-center font-semibold text-2xl pt-1">
               <span>Total</span>
               <span style={{ color: tema.colorPrimario, fontFamily: "Poppins" }}>${totalDinero}</span>
-            </div>
+             </div>
           </div>
 
           <button 
@@ -479,7 +479,7 @@ ${mensajeProductos}
               color: "#ffffff" 
             }}
           >
-            {cargandoPago ? "Procesando..." : (metodoPago === "mercadopago" ? "Pagar con Mercado Pago" : "Pedir por WhatsApp")}
+            {cargandoPago ? "Procesando..." : (metodoPago === "mercadopago" ? "Pagar online (Tarjetas o MP)" : "Pedir por WhatsApp")}
           </button>
         </div>
       </div>
