@@ -354,7 +354,6 @@ ${mensajeProductos}
                 <p className="font-semibold text-sm mb-3 opacity-80">¿Cómo vas a pagar?</p>
                 <div className="flex gap-2 mb-3">
                   
-                  {/* SI EL COBRO AUTOMATICO ESTA ACTIVO, AGREGAMOS EL BOTON MODIFICADO */}
                   {cobroAutomatico && (
                     <button 
                       onClick={() => { setMetodoPago("mercadopago"); setErrores({...errores, montoAbona: null}); }}
@@ -467,13 +466,23 @@ ${mensajeProductos}
             <div className="flex justify-between items-center font-semibold text-2xl pt-1">
               <span>Total</span>
               <span style={{ color: tema.colorPrimario, fontFamily: "Poppins" }}>${totalDinero}</span>
-             </div>
+            </div>
           </div>
+
+          {/* SECCIÓN NUEVA: MENSAJE DE SEGURIDAD MERCADO PAGO */}
+          {metodoPago === "mercadopago" && (
+            <div className="mt-3 flex items-start gap-2 p-3 rounded-xl border" style={{ backgroundColor: "#009EE310", borderColor: "#009EE330", color: tema.colorTexto }}>
+              <span className="text-[#009EE3] text-lg leading-none">🔒</span>
+              <p className="text-xs font-medium opacity-80 leading-snug">
+                Pagos 100% seguros. Podés pagar con <b className="text-[#009EE3]">tarjeta de débito, crédito o saldo</b> a través de Mercado Pago. Nosotros no guardamos tus datos.
+              </p>
+            </div>
+          )}
 
           <button 
             onClick={procesarPedido} 
             disabled={cargandoPago}
-            className="w-full mt-5 py-3.5 rounded-xl font-bold text-lg shadow-md hover:brightness-110 active:scale-[0.98] transition-all cursor-pointer disabled:opacity-70" 
+            className="w-full mt-4 py-3.5 rounded-xl font-bold text-lg shadow-md hover:brightness-110 active:scale-[0.98] transition-all cursor-pointer disabled:opacity-70" 
             style={{ 
               backgroundColor: metodoPago === "mercadopago" ? "#009EE3" : "#1BA64A", 
               color: "#ffffff" 
