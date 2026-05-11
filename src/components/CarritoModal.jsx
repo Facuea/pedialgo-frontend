@@ -201,10 +201,15 @@ ${mensajeProductos}
  *PAGO:* ${pagoTexto}
       `.trim();
       
-      // ACÁ ESTÁ LA CORRECCIÓN: Limpiamos los símbolos del número antes de abrir el enlace
-      const numeroLimpio = numeroWhatsApp ? String(numeroWhatsApp).replace(/[^0-9]/g, "") : "";
-      const url = `https://wa.me/${numeroLimpio}?text=${encodeURIComponent(mensajeFinal)}`;
+      // ACÁ ESTÁ LA CORRECCIÓN: Filtro que limpia espacios y el símbolo +
+      let numeroLimpio = numeroWhatsApp ? String(numeroWhatsApp).replace(/[^0-9]/g, "") : "";
       
+      // Si el número quedó de 10 dígitos (ej: 3586540569), le forzamos el 549 adelante.
+      if (numeroLimpio.length === 10) {
+        numeroLimpio = "549" + numeroLimpio;
+      }
+      
+      const url = `https://wa.me/${numeroLimpio}?text=${encodeURIComponent(mensajeFinal)}`;
       window.open(url, "_blank");
       vaciarCarrito();
       onClose();
@@ -475,6 +480,7 @@ ${mensajeProductos}
           {/* SECCIÓN NUEVA: MENSAJE DE SEGURIDAD MERCADO PAGO */}
           {metodoPago === "mercadopago" && (
             <div className="mt-3 flex items-start gap-2 p-3 rounded-xl border" style={{ backgroundColor: "#009EE310", borderColor: "#009EE330", color: tema.colorTexto }}>
+              <span className="text-[#009EE3] text-lg leading-none">🔒</span>
               <p className="text-xs font-medium opacity-80 leading-snug">
                  Pagos 100% seguros. Podés pagar con <b className="text-[#009EE3]">tarjeta de débito, crédito o saldo</b> a través de Mercado Pago. Nosotros no guardamos tus datos.
               </p>
