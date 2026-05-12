@@ -13,6 +13,7 @@ function AjustesPage() {
   const localActivo = JSON.parse(localStorage.getItem("localActivo")) || {};
   const localId = localActivo.id;
   const slug = localActivo.slug;
+  const tieneDisenoVIP = Boolean(localActivo.disenoExclusivo);
 
   const [tabActiva, setTabActiva] = useState("APARIENCIA");
   const [cargando, setCargando] = useState(false);
@@ -20,7 +21,6 @@ function AjustesPage() {
 
   // --- SECCIÓN: CONFIGURACIÓN LOCAL (IMPRESORA) ---
   const [anchoTicket, setAnchoTicket] = useState(localStorage.getItem("anchoTicketImpresion") || "80mm");
-
   const [notificacion, setNotificacion] = useState({ visible: false, mensaje: "", tipo: "exito" });
   const [timeoutId, setTimeoutId] = useState(null);
 
@@ -60,25 +60,22 @@ function AjustesPage() {
     setNotificacion({ visible: true, mensaje, tipo });
     const id = setTimeout(() => {
       setNotificacion({ visible: false, mensaje: "", tipo: "exito" });
-    }, 5000); 
+    }, 5000);
     setTimeoutId(id);
   };
 
   const [infoLocal, setInfoLocal] = useState({ nombre: "", descripcion: "", fechaVencimiento: "", estadoSuscripcion: "" });
-  
   const [tema, setTema] = useState({
     colorPrimario: "#E63946", colorSecundario: "#F1A139", colorFondo: "#FFFFFF",
     colorTexto: "#1A1A1A", fuente: "Poppins", logoUrl: "", imagenPortada: "",
     colorCarrito: "BLANCO" 
   });
-
   const [redes, setRedes] = useState({ facebookUrl: "", instagramUrl: "", direccionMapaEmbed: "", whatsapp: "+54 9 " });
-
   const [usuarios, setUsuarios] = useState([]);
   const [menuUsuarioAbiertoId, setMenuUsuarioAbiertoId] = useState(null);
   
   const [modalInfoUsuario, setModalInfoUsuario] = useState({ abierto: false, usuario: null });
-  const [modalPassword, setModalPassword] = useState({ abierto: false, usuarioId: null, email: "", passwordActual: "", passwordNueva: "", error: "" }); 
+  const [modalPassword, setModalPassword] = useState({ abierto: false, usuarioId: null, email: "", passwordActual: "", passwordNueva: "", error: "" });
   const [modalConfirmacionRol, setModalConfirmacionRol] = useState({
     abierto: false, usuarioId: null, email: "", nuevoRol: "", rolAnterior: ""
   });
@@ -167,7 +164,6 @@ function AjustesPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ localId: localId })
       });
-      
       const data = await response.json();
 
       if (data.initPoint) {
@@ -185,7 +181,6 @@ function AjustesPage() {
 
   const handlePagoManual = () => {
     const mensaje = `Hola! Quiero pagar el mes de suscripción para mi local: ${infoLocal.nombre || "mi local"}.`;
-    
     const urlWa = `https://wa.me/5493585148782?text=${encodeURIComponent(mensaje)}`;
     window.open(urlWa, '_blank');
   };
@@ -210,7 +205,7 @@ function AjustesPage() {
         })
       });
       mostrarNotificacion("Configuración de pagos guardada con éxito.");
-      setMpToken(""); // Limpiamos el token por seguridad visual
+      setMpToken("");
     } catch (error) {
       mostrarNotificacion("Error al guardar la configuración de pagos.", "error");
     } finally {
@@ -227,7 +222,6 @@ function AjustesPage() {
     setGuardandoImagenes(true);
     try {
       await delay(2000);
-
       if (archivoLogo) {
         const formData = new FormData();
         formData.append("file", archivoLogo);
@@ -271,7 +265,7 @@ function AjustesPage() {
     }
     setGuardandoTema(true);
     try {
-      await delay(2000); 
+      await delay(2000);
       const res = await fetchPrivado(`/admin/locales/${slug}/tema`, {
         method: "PATCH", body: JSON.stringify(tema)
       });
@@ -302,9 +296,7 @@ function AjustesPage() {
 
   const handleGuardarRedesEInfo = async () => {
     const nuevosErrores = {};
-
     if (!infoLocal.nombre.trim()) nuevosErrores.nombre = "El nombre del local es obligatorio.";
-    
     if (redes.whatsapp === "+54 9 " || redes.whatsapp.length < 13) {
       nuevosErrores.whatsapp = "Ingresá un WhatsApp válido.";
     }
@@ -329,7 +321,6 @@ function AjustesPage() {
       await fetchPrivado(`/admin/locales/${slug}/redes`, {
         method: "PATCH", body: JSON.stringify({ facebookUrl: redes.facebookUrl, instagramUrl: redes.instagramUrl })
       });
-      
       if (redes.direccionMapaEmbed !== undefined) {
         await fetchPrivado(`/admin/locales/${slug}/mapa`, {
           method: "PATCH", body: JSON.stringify({ direccionMapaEmbed: redes.direccionMapaEmbed })
@@ -339,15 +330,12 @@ function AjustesPage() {
       await fetchPrivado(`/admin/locales/${localId}/descripcion`, {
           method: "PATCH", body: JSON.stringify({ descripcion: infoLocal.descripcion })
       });
-
       await fetchPrivado(`/admin/locales/${localId}/nombre`, {
           method: "PATCH", body: JSON.stringify({ nombre: infoLocal.nombre })
       });
-      
       await fetchPrivado(`/admin/locales/${localId}/whatsapp`, {
           method: "PATCH", body: JSON.stringify({ whatsapp: redes.whatsapp })
       });
-
       setInfoLocalOriginal(infoLocal);
       setRedesOriginal(redes);
       
@@ -365,7 +353,7 @@ function AjustesPage() {
   const hayCambiosImagenes = !!archivoLogo || !!archivoPortada;
   const hayCambiosTema = JSON.stringify(tema) !== JSON.stringify(temaOriginal);
   const hayCambiosInfo = JSON.stringify(infoLocal.nombre) !== JSON.stringify(infoLocalOriginal.nombre) || JSON.stringify(infoLocal.descripcion) !== JSON.stringify(infoLocalOriginal.descripcion) || JSON.stringify(redes) !== JSON.stringify(redesOriginal);
-
+  
   const handleCambiarEstadoUsuario = async (userId, estadoActual) => {
     setMenuUsuarioAbiertoId(null);
     const nuevoEstado = !estadoActual;
@@ -413,14 +401,13 @@ function AjustesPage() {
     setModalPassword(prev => ({ ...prev, error: "" })); 
     setGuardandoPassword(true);
     try {
-      await delay(2000); 
+      await delay(2000);
       const res = await fetchPrivado(`/admin/locales/${localId}/usuarios/${modalPassword.usuarioId}/password`, {
         method: "PATCH",
         body: JSON.stringify({ passwordActual: modalPassword.passwordActual, passwordNueva: modalPassword.passwordNueva })
       });
       if (res.ok) {
         const usuarioLogueadoId = JSON.parse(localStorage.getItem("usuario"))?.id;
-
         if (modalPassword.usuarioId === usuarioLogueadoId) {
             mostrarNotificacion("Contraseña actualizada. Cerrando sesión por seguridad...");
             setTimeout(() => {
@@ -433,10 +420,10 @@ function AjustesPage() {
             setModalPassword({ abierto: false, usuarioId: null, email: "", passwordActual: "", passwordNueva: "", error: "" });
         }
       } else {
-        setModalPassword(prev => ({ ...prev, error: "La contraseña actual es incorrecta." })); 
+        setModalPassword(prev => ({ ...prev, error: "La contraseña actual es incorrecta." }));
       }
     } catch (error) { 
-        mostrarNotificacion("Error de conexión al cambiar la contraseña.", "error"); 
+        mostrarNotificacion("Error de conexión al cambiar la contraseña.", "error");
     } finally {
         setGuardandoPassword(false);
     }
@@ -528,7 +515,8 @@ function AjustesPage() {
                   className="w-full p-3 rounded-xl border border-gray-300 text-sm font-mono text-gray-700 outline-none focus:ring-1 focus:border-orange-400 focus:ring-orange-400" 
                 />
                 <p className="text-[10px] text-gray-400 mt-2 font-medium">
-                  Dejá este campo vacío si ya lo configuraste antes y solo querés prender/apagar el botón de arriba. Para obtener tu token, creá una aplicación en el panel de Mercado Pago Developers.
+                   Dejá este campo vacío si ya lo configuraste antes y solo querés prender/apagar el botón de arriba.
+                   Para obtener tu token, creá una aplicación en el panel de Mercado Pago Developers.
                 </p>
               </div>
             </div>
@@ -570,7 +558,7 @@ function AjustesPage() {
                   onClick={handlePagoManual} 
                   className="w-full py-3 bg-white border-2 border-gray-200 text-gray-700 hover:bg-gray-100 font-bold rounded-xl text-sm cursor-pointer transition-all"
                 >
-                  Notificar por WhatsApp
+                   Notificar por WhatsApp
                 </button>
               </div>
             </div>
@@ -622,97 +610,99 @@ function AjustesPage() {
               </div>
             </div>
 
-            <div className="bg-white p-6 md:p-8 rounded-2xl border border-gray-200 shadow-sm">
-              <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
-                <h2 className="text-lg font-bold text-gray-800">Colores Hexadecimales, Iconos y Tipografía</h2>
+            {!tieneDisenoVIP && (
+              <div className="bg-white p-6 md:p-8 rounded-2xl border border-gray-200 shadow-sm">
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+                  <h2 className="text-lg font-bold text-gray-800">Colores Hexadecimales, Iconos y Tipografía</h2>
+                  
+                  <div className="flex items-center gap-3 w-full md:w-auto">
+                    <button 
+                      onClick={handleRestaurarTema}
+                      className="flex-1 md:flex-none px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-600 border border-gray-300 text-xs font-bold rounded-lg cursor-pointer transition-all"
+                    >
+                       Restaurar por Defecto
+                    </button>
+                    <button 
+                      onClick={handleGuardarTema} 
+                      disabled={guardandoTema || !hayCambiosTema} 
+                      className={`flex-1 md:flex-none px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white text-xs font-bold rounded-lg cursor-pointer shadow-sm transition-all ${(guardandoTema || !hayCambiosTema) ? 'opacity-50 cursor-not-allowed' : ''}`}
+                    >
+                      {guardandoTema ? "Guardando..." : "Guardar Apariencia"}
+                    </button>
+                  </div>
+                </div>
                 
-                <div className="flex items-center gap-3 w-full md:w-auto">
-                  <button 
-                    onClick={handleRestaurarTema}
-                    className="flex-1 md:flex-none px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-600 border border-gray-300 text-xs font-bold rounded-lg cursor-pointer transition-all"
-                  >
-                    Restaurar por Defecto
-                  </button>
-                  <button 
-                    onClick={handleGuardarTema} 
-                    disabled={guardandoTema || !hayCambiosTema} 
-                    className={`flex-1 md:flex-none px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white text-xs font-bold rounded-lg cursor-pointer shadow-sm transition-all ${(guardandoTema || !hayCambiosTema) ? 'opacity-50 cursor-not-allowed' : ''}`}
-                  >
-                    {guardandoTema ? "Guardando..." : "Guardar Apariencia"}
-                  </button>
-                </div>
-              </div>
-              
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-                <div>
-                  <label className="block text-[11px] font-bold text-gray-500 uppercase tracking-widest mb-2">Primario</label>
-                  <div className="flex items-center gap-3 border border-gray-200 rounded-lg p-1.5 focus-within:border-orange-400 focus-within:ring-1 focus-within:ring-orange-400">
-                    <div className="w-6 h-6 rounded shrink-0" style={{ backgroundColor: tema.colorPrimario || "#E63946" }}></div>
-                    <input type="text" maxLength={7} value={tema.colorPrimario} onChange={(e) => setTema({...tema, colorPrimario: e.target.value.toUpperCase()})} className="w-full text-xs font-mono text-gray-700 outline-none bg-transparent" />
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+                  <div>
+                    <label className="block text-[11px] font-bold text-gray-500 uppercase tracking-widest mb-2">Primario</label>
+                    <div className="flex items-center gap-3 border border-gray-200 rounded-lg p-1.5 focus-within:border-orange-400 focus-within:ring-1 focus-within:ring-orange-400">
+                      <div className="w-6 h-6 rounded shrink-0" style={{ backgroundColor: tema.colorPrimario || "#E63946" }}></div>
+                      <input type="text" maxLength={7} value={tema.colorPrimario} onChange={(e) => setTema({...tema, colorPrimario: e.target.value.toUpperCase()})} className="w-full text-xs font-mono text-gray-700 outline-none bg-transparent" />
+                    </div>
+                    <p className="text-[10px] text-gray-400 mt-1.5 leading-tight">Botones principales y precio.</p>
                   </div>
-                  <p className="text-[10px] text-gray-400 mt-1.5 leading-tight">Botones principales y precio.</p>
-                </div>
-                <div>
-                  <label className="block text-[11px] font-bold text-gray-500 uppercase tracking-widest mb-2">Secundario</label>
-                  <div className="flex items-center gap-3 border border-gray-200 rounded-lg p-1.5 focus-within:border-orange-400 focus-within:ring-1 focus-within:ring-orange-400">
-                    <div className="w-6 h-6 rounded shrink-0" style={{ backgroundColor: tema.colorSecundario || "#F1A139" }}></div>
-                    <input type="text" maxLength={7} value={tema.colorSecundario} onChange={(e) => setTema({...tema, colorSecundario: e.target.value.toUpperCase()})} className="w-full text-xs font-mono text-gray-700 outline-none bg-transparent" />
+                  <div>
+                    <label className="block text-[11px] font-bold text-gray-500 uppercase tracking-widest mb-2">Secundario</label>
+                    <div className="flex items-center gap-3 border border-gray-200 rounded-lg p-1.5 focus-within:border-orange-400 focus-within:ring-1 focus-within:ring-orange-400">
+                      <div className="w-6 h-6 rounded shrink-0" style={{ backgroundColor: tema.colorSecundario || "#F1A139" }}></div>
+                      <input type="text" maxLength={7} value={tema.colorSecundario} onChange={(e) => setTema({...tema, colorSecundario: e.target.value.toUpperCase()})} className="w-full text-xs font-mono text-gray-700 outline-none bg-transparent" />
+                    </div>
+                    <p className="text-[10px] text-gray-400 mt-1.5 leading-tight">Etiquetas de descuentos.</p>
                   </div>
-                  <p className="text-[10px] text-gray-400 mt-1.5 leading-tight">Etiquetas de descuentos.</p>
-                </div>
-                <div>
-                  <label className="block text-[11px] font-bold text-gray-500 uppercase tracking-widest mb-2">Fondo App</label>
-                  <div className="flex items-center gap-3 border border-gray-200 rounded-lg p-1.5 focus-within:border-orange-400 focus-within:ring-1 focus-within:ring-orange-400">
-                    <div className="w-6 h-6 rounded shrink-0" style={{ backgroundColor: tema.colorFondo || "#FFFFFF" }}></div>
-                    <input type="text" maxLength={7} value={tema.colorFondo} onChange={(e) => setTema({...tema, colorFondo: e.target.value.toUpperCase()})} className="w-full text-xs font-mono text-gray-700 outline-none bg-transparent" />
+                  <div>
+                    <label className="block text-[11px] font-bold text-gray-500 uppercase tracking-widest mb-2">Fondo App</label>
+                    <div className="flex items-center gap-3 border border-gray-200 rounded-lg p-1.5 focus-within:border-orange-400 focus-within:ring-1 focus-within:ring-orange-400">
+                      <div className="w-6 h-6 rounded shrink-0" style={{ backgroundColor: tema.colorFondo || "#FFFFFF" }}></div>
+                      <input type="text" maxLength={7} value={tema.colorFondo} onChange={(e) => setTema({...tema, colorFondo: e.target.value.toUpperCase()})} className="w-full text-xs font-mono text-gray-700 outline-none bg-transparent" />
+                    </div>
+                    <p className="text-[10px] text-gray-400 mt-1.5 leading-tight">Color base de toda la pantalla.</p>
                   </div>
-                  <p className="text-[10px] text-gray-400 mt-1.5 leading-tight">Color base de toda la pantalla.</p>
-                </div>
-                <div>
-                  <label className="block text-[11px] font-bold text-gray-500 uppercase tracking-widest mb-2">Color Texto</label>
-                  <div className="flex items-center gap-3 border border-gray-200 rounded-lg p-1.5 focus-within:border-orange-400 focus-within:ring-1 focus-within:ring-orange-400">
-                    <div className="w-6 h-6 rounded shrink-0" style={{ backgroundColor: tema.colorTexto || "#1A1A1A" }}></div>
-                    <input type="text" maxLength={7} value={tema.colorTexto} onChange={(e) => setTema({...tema, colorTexto: e.target.value.toUpperCase()})} className="w-full text-xs font-mono text-gray-700 outline-none bg-transparent" />
+                  <div>
+                    <label className="block text-[11px] font-bold text-gray-500 uppercase tracking-widest mb-2">Color Texto</label>
+                    <div className="flex items-center gap-3 border border-gray-200 rounded-lg p-1.5 focus-within:border-orange-400 focus-within:ring-1 focus-within:ring-orange-400">
+                      <div className="w-6 h-6 rounded shrink-0" style={{ backgroundColor: tema.colorTexto || "#1A1A1A" }}></div>
+                      <input type="text" maxLength={7} value={tema.colorTexto} onChange={(e) => setTema({...tema, colorTexto: e.target.value.toUpperCase()})} className="w-full text-xs font-mono text-gray-700 outline-none bg-transparent" />
+                    </div>
+                    <p className="text-[10px] text-gray-400 mt-1.5 leading-tight">Títulos y descripciones.</p>
                   </div>
-                  <p className="text-[10px] text-gray-400 mt-1.5 leading-tight">Títulos y descripciones.</p>
-                </div>
-              </div>
-
-              <div className="mt-6 pt-6 border-t border-gray-100 flex flex-col md:flex-row gap-8">
-                <div className="flex-1">
-                  <label className="block text-[11px] font-bold text-gray-500 uppercase tracking-widest mb-1">Tipografía del Menú (Google Fonts)</label>
-                  <p className="text-[10px] text-gray-400 mb-2">Busca tu fuente favorita por <a href="https://fonts.google.com/" target="_blank" rel="noreferrer" className="text-orange-500 hover:underline font-bold">aquí</a>.</p>
-                  <input type="text" value={tema.fuente || ""} onChange={(e) => setTema({...tema, fuente: e.target.value})} placeholder="Ej: Montserrat, Oswald, Roboto..." className="w-full p-2.5 rounded-lg border border-gray-200 text-sm font-bold text-gray-700 outline-none focus:border-orange-400 focus:ring-1 focus:ring-orange-400 bg-gray-50" />
                 </div>
 
-                <div className="flex-1 border-t md:border-t-0 md:border-l border-gray-100 md:pl-8 pt-6 md:pt-0">
-                  <label className="block text-[11px] font-bold text-gray-500 uppercase tracking-widest mb-3">Color del Icono del Carrito</label>
-                  <div className="flex gap-4">
-                    <button
-                      type="button"
-                      onClick={() => setTema({...tema, colorCarrito: "BLANCO"})}
-                      className={`flex flex-1 items-center gap-3 px-4 py-2 rounded-xl border-2 transition-all cursor-pointer ${tema.colorCarrito === "BLANCO" ? 'border-orange-500 bg-orange-50' : 'border-gray-200 bg-white hover:bg-gray-50'}`}
-                    >
-                      <div className="w-10 h-10 bg-neutral-800 rounded-lg flex items-center justify-center p-1.5 shrink-0 shadow-inner">
-                        <img src={CARRITO_BLANCO_URL} alt="Blanco" className="w-full h-full object-contain" />
-                      </div>
-                      <span className="text-sm font-bold text-gray-800">Blanco</span>
-                    </button>
-                    
-                    <button
-                      type="button"
-                      onClick={() => setTema({...tema, colorCarrito: "NEGRO"})}
-                      className={`flex flex-1 items-center gap-3 px-4 py-2 rounded-xl border-2 transition-all cursor-pointer ${tema.colorCarrito === "NEGRO" ? 'border-orange-500 bg-orange-50' : 'border-gray-200 bg-white hover:bg-gray-50'}`}
-                    >
-                      <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center p-1.5 shrink-0 border border-gray-200 shadow-inner">
-                        <img src={CARRITO_NEGRO_URL} alt="Negro" className="w-full h-full object-contain" />
-                      </div>
-                      <span className="text-sm font-bold text-gray-800">Negro</span>
-                    </button>
+                <div className="mt-6 pt-6 border-t border-gray-100 flex flex-col md:flex-row gap-8">
+                  <div className="flex-1">
+                    <label className="block text-[11px] font-bold text-gray-500 uppercase tracking-widest mb-1">Tipografía del Menú (Google Fonts)</label>
+                    <p className="text-[10px] text-gray-400 mb-2">Busca tu fuente favorita por <a href="https://fonts.google.com/" target="_blank" rel="noreferrer" className="text-orange-500 hover:underline font-bold">aquí</a>.</p>
+                    <input type="text" value={tema.fuente || ""} onChange={(e) => setTema({...tema, fuente: e.target.value})} placeholder="Ej: Montserrat, Oswald, Roboto..." className="w-full p-2.5 rounded-lg border border-gray-200 text-sm font-bold text-gray-700 outline-none focus:border-orange-400 focus:ring-1 focus:ring-orange-400 bg-gray-50" />
+                  </div>
+
+                  <div className="flex-1 border-t md:border-t-0 md:border-l border-gray-100 md:pl-8 pt-6 md:pt-0">
+                    <label className="block text-[11px] font-bold text-gray-500 uppercase tracking-widest mb-3">Color del Icono del Carrito</label>
+                    <div className="flex gap-4">
+                      <button
+                        type="button"
+                        onClick={() => setTema({...tema, colorCarrito: "BLANCO"})}
+                        className={`flex flex-1 items-center gap-3 px-4 py-2 rounded-xl border-2 transition-all cursor-pointer ${tema.colorCarrito === "BLANCO" ? 'border-orange-500 bg-orange-50' : 'border-gray-200 bg-white hover:bg-gray-50'}`}
+                      >
+                        <div className="w-10 h-10 bg-neutral-800 rounded-lg flex items-center justify-center p-1.5 shrink-0 shadow-inner">
+                          <img src={CARRITO_BLANCO_URL} alt="Blanco" className="w-full h-full object-contain" />
+                        </div>
+                        <span className="text-sm font-bold text-gray-800">Blanco</span>
+                      </button>
+                      
+                      <button
+                        type="button"
+                        onClick={() => setTema({...tema, colorCarrito: "NEGRO"})}
+                        className={`flex flex-1 items-center gap-3 px-4 py-2 rounded-xl border-2 transition-all cursor-pointer ${tema.colorCarrito === "NEGRO" ? 'border-orange-500 bg-orange-50' : 'border-gray-200 bg-white hover:bg-gray-50'}`}
+                      >
+                        <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center p-1.5 shrink-0 border border-gray-200 shadow-inner">
+                          <img src={CARRITO_NEGRO_URL} alt="Negro" className="w-full h-full object-contain" />
+                        </div>
+                        <span className="text-sm font-bold text-gray-800">Negro</span>
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
+            )}
           </div>
         )}
 
