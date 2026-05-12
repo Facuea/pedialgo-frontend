@@ -13,18 +13,15 @@ function AjustesPage() {
   const localActivo = JSON.parse(localStorage.getItem("localActivo")) || {};
   const localId = localActivo.id;
   const slug = localActivo.slug;
-  const tieneDisenoVIP = Boolean(localActivo.disenoExclusivo);
 
   const [tabActiva, setTabActiva] = useState("APARIENCIA");
   const [cargando, setCargando] = useState(false);
   const [busqueda, setBusqueda] = useState("");
 
-  // --- SECCIÓN: CONFIGURACIÓN LOCAL (IMPRESORA) ---
   const [anchoTicket, setAnchoTicket] = useState(localStorage.getItem("anchoTicketImpresion") || "80mm");
   const [notificacion, setNotificacion] = useState({ visible: false, mensaje: "", tipo: "exito" });
   const [timeoutId, setTimeoutId] = useState(null);
 
-  // ESTADOS DE CARGA
   const [guardandoImagenes, setGuardandoImagenes] = useState(false);
   const [guardandoTema, setGuardandoTema] = useState(false);
   const [guardandoInfo, setGuardandoInfo] = useState(false);
@@ -32,21 +29,17 @@ function AjustesPage() {
   const [procesandoPago, setProcesandoPago] = useState(false);
   const [guardandoPagos, setGuardandoPagos] = useState(false);
 
-  // ESTADO DE ERRORES PARA CONTACTO E INFO
   const [erroresInfo, setErroresInfo] = useState({});
 
-  // ESTADOS DE IMÁGENES
   const [archivoLogo, setArchivoLogo] = useState(null);
   const [previewLogo, setPreviewLogo] = useState("");
   const [archivoPortada, setArchivoPortada] = useState(null);
   const [previewPortada, setPreviewPortada] = useState("");
 
-  // --- ESTADOS PARA DETECTAR CAMBIOS ---
   const [temaOriginal, setTemaOriginal] = useState({});
   const [infoLocalOriginal, setInfoLocalOriginal] = useState({});
   const [redesOriginal, setRedesOriginal] = useState({});
 
-  // --- ESTADOS DE PAGOS AUTOMÁTICOS ---
   const [cobroAutomatico, setCobroAutomatico] = useState(false);
   const [mpToken, setMpToken] = useState("");
 
@@ -64,7 +57,9 @@ function AjustesPage() {
     setTimeoutId(id);
   };
 
-  const [infoLocal, setInfoLocal] = useState({ nombre: "", descripcion: "", fechaVencimiento: "", estadoSuscripcion: "" });
+  // CORRECCIÓN CLAVE: Agregamos disenoExclusivo directo a la info viva del local
+  const [infoLocal, setInfoLocal] = useState({ nombre: "", descripcion: "", fechaVencimiento: "", estadoSuscripcion: "", disenoExclusivo: null });
+  
   const [tema, setTema] = useState({
     colorPrimario: "#E63946", colorSecundario: "#F1A139", colorFondo: "#FFFFFF",
     colorTexto: "#1A1A1A", fuente: "Poppins", logoUrl: "", imagenPortada: "",
@@ -101,13 +96,16 @@ function AjustesPage() {
       const resLocal = await fetchPrivado(`/admin/locales/${localId}`);
       if (resLocal.ok) {
         const dataLocal = await resLocal.json();
-        console.log("DATOS DEL LOCAL:", dataLocal);
+        
+        // Cargamos el diseño exclusivo junto con el resto de la info viva
         const infoData = { 
           nombre: dataLocal.nombre || "", 
           descripcion: dataLocal.descripcion || "",
           fechaVencimiento: dataLocal.fechaVencimiento,
-          estadoSuscripcion: dataLocal.estadoSuscripcion
+          estadoSuscripcion: dataLocal.estadoSuscripcion,
+          disenoExclusivo: dataLocal.disenoExclusivo
         };
+        
         const redesData = {
           facebookUrl: dataLocal.facebookUrl || "",
           instagramUrl: dataLocal.instagramUrl || "",
@@ -156,7 +154,6 @@ function AjustesPage() {
 
   const delay = (ms) => new Promise(res => setTimeout(res, ms));
 
-  // --- LÓGICA DE SUSCRIPCIÓN CON MERCADO PAGO AUTOMATIZADO ---
   const handlePagoOnline = async () => {
     setProcesandoPago(true);
     try {
@@ -186,7 +183,6 @@ function AjustesPage() {
     window.open(urlWa, '_blank');
   };
 
-  // --- SECCIÓN: HANDLER PARA CAMBIAR TAMAÑO DE TICKET ---
   const handleCambioTicket = (e) => {
     const nuevoAncho = e.target.value;
     setAnchoTicket(nuevoAncho);
@@ -194,7 +190,6 @@ function AjustesPage() {
     mostrarNotificacion(`Ancho de ticket actualizado a ${nuevoAncho} en este dispositivo.`);
   };
 
-  // --- SECCIÓN: GUARDAR CONFIGURACIÓN DE PAGOS ---
   const handleGuardarPagos = async () => {
     setGuardandoPagos(true);
     try {
@@ -206,7 +201,7 @@ function AjustesPage() {
         })
       });
       mostrarNotificacion("Configuración de pagos guardada con éxito.");
-      setMpToken("");
+      setMpToken(""); 
     } catch (error) {
       mostrarNotificacion("Error al guardar la configuración de pagos.", "error");
     } finally {
@@ -611,7 +606,8 @@ function AjustesPage() {
               </div>
             </div>
 
-            {!tieneDisenoVIP && (
+            {/* OCULTAMOS SI infoLocal.disenoExclusivo TIENE ALGO ADENTRO */}
+            {!infoLocal.disenoExclusivo && (
               <div className="bg-white p-6 md:p-8 rounded-2xl border border-gray-200 shadow-sm">
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
                   <h2 className="text-lg font-bold text-gray-800">Colores Hexadecimales, Iconos y Tipografía</h2>
