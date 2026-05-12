@@ -57,7 +57,6 @@ function AjustesPage() {
     setTimeoutId(id);
   };
 
-  // CORRECCIÓN CLAVE: Agregamos disenoExclusivo directo a la info viva del local
   const [infoLocal, setInfoLocal] = useState({ nombre: "", descripcion: "", fechaVencimiento: "", estadoSuscripcion: "", disenoExclusivo: null });
   
   const [tema, setTema] = useState({
@@ -97,7 +96,6 @@ function AjustesPage() {
       if (resLocal.ok) {
         const dataLocal = await resLocal.json();
         
-        // Cargamos el diseño exclusivo junto con el resto de la info viva
         const infoData = { 
           nombre: dataLocal.nombre || "", 
           descripcion: dataLocal.descripcion || "",
@@ -563,114 +561,121 @@ function AjustesPage() {
 
         {tabActiva === "APARIENCIA" && (
           <div className="space-y-8">
-            <div className="bg-white p-6 md:p-8 rounded-2xl border border-gray-200 shadow-sm">
-              <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
-                <div>
-                  <h2 className="text-lg font-bold text-gray-800">Imágenes del Menú</h2>
-                  <p className="text-xs text-gray-500 mt-1">Máximo 5MB por imagen.</p>
-                </div>
-                <button 
-                   onClick={handleGuardarImagenes} 
-                   disabled={guardandoImagenes || !hayCambiosImagenes} 
-                   className={`px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white text-xs font-bold rounded-lg cursor-pointer shadow-sm transition-all ${(guardandoImagenes || !hayCambiosImagenes) ? 'opacity-50 cursor-not-allowed' : ''}`}
-                >
-                  {guardandoImagenes ? "Guardando..." : "Guardar Imágenes"}
-                </button>
-              </div>
-
-              <div className="flex flex-col md:flex-row gap-8">
-                <div className="flex-1">
-                  <p className="text-[11px] font-bold text-gray-500 uppercase tracking-widest mb-3">Logo del Local</p>
-                  <div className="flex items-center gap-4">
-                    <div className="w-20 h-20 bg-white border border-gray-200 rounded-xl overflow-hidden flex items-center justify-center shrink-0 p-1">
-                      {previewLogo ? <img src={previewLogo} alt="Preview Logo" className="w-full h-full object-contain" /> : tema.logoUrl ? <img src={tema.logoUrl} alt="Logo" className="w-full h-full object-contain" /> : <img src={IMAGEN_PLACEHOLDER} alt="Sin logo" className="w-full h-full object-contain opacity-50 p-2" />}
-                    </div>
-                    <div>
-                      <input type="file" id="logoUpload" hidden accept="image/*" onChange={handleSeleccionarLogo} />
-                      <label htmlFor="logoUpload" className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-bold rounded-lg cursor-pointer transition-colors border border-gray-300 inline-block mb-1">Seleccionar Archivo</label>
-                    </div>
-                  </div>
-                </div>
-                <div className="flex-1">
-                  <p className="text-[11px] font-bold text-gray-500 uppercase tracking-widest mb-3">Portada (Banner)</p>
-                  <div className="flex flex-col items-start gap-3">
-                    <div className="w-full h-24 bg-white border border-gray-200 rounded-xl overflow-hidden flex items-center justify-center shrink-0">
-                      {previewPortada ? <img src={previewPortada} alt="Preview Portada" className="w-full h-full object-cover" /> : tema.imagenPortada ? <img src={tema.imagenPortada} alt="Portada" className="w-full h-full object-cover" /> : <img src={IMAGEN_PLACEHOLDER} alt="Sin portada" className="w-full h-full object-contain opacity-30 p-2" />}
-                    </div>
-                    <div>
-                      <input type="file" id="portadaUpload" hidden accept="image/*" onChange={handleSeleccionarPortada} />
-                      <label htmlFor="portadaUpload" className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-bold rounded-lg cursor-pointer transition-colors border border-gray-300 inline-block">Cambiar Portada</label>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* OCULTAMOS SI infoLocal.disenoExclusivo TIENE ALGO ADENTRO */}
+            
+            {/* OCULTAMOS LAS IMÁGENES SI EL LOCAL ES VIP */}
             {!infoLocal.disenoExclusivo && (
               <div className="bg-white p-6 md:p-8 rounded-2xl border border-gray-200 shadow-sm">
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
-                  <h2 className="text-lg font-bold text-gray-800">Colores Hexadecimales, Iconos y Tipografía</h2>
-                  
-                  <div className="flex items-center gap-3 w-full md:w-auto">
-                    <button 
-                      onClick={handleRestaurarTema}
-                      className="flex-1 md:flex-none px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-600 border border-gray-300 text-xs font-bold rounded-lg cursor-pointer transition-all"
-                    >
-                       Restaurar por Defecto
-                    </button>
-                    <button 
-                      onClick={handleGuardarTema} 
-                      disabled={guardandoTema || !hayCambiosTema} 
-                      className={`flex-1 md:flex-none px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white text-xs font-bold rounded-lg cursor-pointer shadow-sm transition-all ${(guardandoTema || !hayCambiosTema) ? 'opacity-50 cursor-not-allowed' : ''}`}
-                    >
-                      {guardandoTema ? "Guardando..." : "Guardar Apariencia"}
-                    </button>
-                  </div>
-                </div>
-                
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
                   <div>
-                    <label className="block text-[11px] font-bold text-gray-500 uppercase tracking-widest mb-2">Primario</label>
-                    <div className="flex items-center gap-3 border border-gray-200 rounded-lg p-1.5 focus-within:border-orange-400 focus-within:ring-1 focus-within:ring-orange-400">
-                      <div className="w-6 h-6 rounded shrink-0" style={{ backgroundColor: tema.colorPrimario || "#E63946" }}></div>
-                      <input type="text" maxLength={7} value={tema.colorPrimario} onChange={(e) => setTema({...tema, colorPrimario: e.target.value.toUpperCase()})} className="w-full text-xs font-mono text-gray-700 outline-none bg-transparent" />
-                    </div>
-                    <p className="text-[10px] text-gray-400 mt-1.5 leading-tight">Botones principales y precio.</p>
+                    <h2 className="text-lg font-bold text-gray-800">Imágenes del Menú</h2>
+                    <p className="text-xs text-gray-500 mt-1">Máximo 5MB por imagen.</p>
                   </div>
-                  <div>
-                    <label className="block text-[11px] font-bold text-gray-500 uppercase tracking-widest mb-2">Secundario</label>
-                    <div className="flex items-center gap-3 border border-gray-200 rounded-lg p-1.5 focus-within:border-orange-400 focus-within:ring-1 focus-within:ring-orange-400">
-                      <div className="w-6 h-6 rounded shrink-0" style={{ backgroundColor: tema.colorSecundario || "#F1A139" }}></div>
-                      <input type="text" maxLength={7} value={tema.colorSecundario} onChange={(e) => setTema({...tema, colorSecundario: e.target.value.toUpperCase()})} className="w-full text-xs font-mono text-gray-700 outline-none bg-transparent" />
-                    </div>
-                    <p className="text-[10px] text-gray-400 mt-1.5 leading-tight">Etiquetas de descuentos.</p>
-                  </div>
-                  <div>
-                    <label className="block text-[11px] font-bold text-gray-500 uppercase tracking-widest mb-2">Fondo App</label>
-                    <div className="flex items-center gap-3 border border-gray-200 rounded-lg p-1.5 focus-within:border-orange-400 focus-within:ring-1 focus-within:ring-orange-400">
-                      <div className="w-6 h-6 rounded shrink-0" style={{ backgroundColor: tema.colorFondo || "#FFFFFF" }}></div>
-                      <input type="text" maxLength={7} value={tema.colorFondo} onChange={(e) => setTema({...tema, colorFondo: e.target.value.toUpperCase()})} className="w-full text-xs font-mono text-gray-700 outline-none bg-transparent" />
-                    </div>
-                    <p className="text-[10px] text-gray-400 mt-1.5 leading-tight">Color base de toda la pantalla.</p>
-                  </div>
-                  <div>
-                    <label className="block text-[11px] font-bold text-gray-500 uppercase tracking-widest mb-2">Color Texto</label>
-                    <div className="flex items-center gap-3 border border-gray-200 rounded-lg p-1.5 focus-within:border-orange-400 focus-within:ring-1 focus-within:ring-orange-400">
-                      <div className="w-6 h-6 rounded shrink-0" style={{ backgroundColor: tema.colorTexto || "#1A1A1A" }}></div>
-                      <input type="text" maxLength={7} value={tema.colorTexto} onChange={(e) => setTema({...tema, colorTexto: e.target.value.toUpperCase()})} className="w-full text-xs font-mono text-gray-700 outline-none bg-transparent" />
-                    </div>
-                    <p className="text-[10px] text-gray-400 mt-1.5 leading-tight">Títulos y descripciones.</p>
-                  </div>
+                  <button 
+                     onClick={handleGuardarImagenes} 
+                     disabled={guardandoImagenes || !hayCambiosImagenes} 
+                     className={`px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white text-xs font-bold rounded-lg cursor-pointer shadow-sm transition-all ${(guardandoImagenes || !hayCambiosImagenes) ? 'opacity-50 cursor-not-allowed' : ''}`}
+                  >
+                    {guardandoImagenes ? "Guardando..." : "Guardar Imágenes"}
+                  </button>
                 </div>
 
-                <div className="mt-6 pt-6 border-t border-gray-100 flex flex-col md:flex-row gap-8">
+                <div className="flex flex-col md:flex-row gap-8">
                   <div className="flex-1">
-                    <label className="block text-[11px] font-bold text-gray-500 uppercase tracking-widest mb-1">Tipografía del Menú (Google Fonts)</label>
-                    <p className="text-[10px] text-gray-400 mb-2">Busca tu fuente favorita por <a href="https://fonts.google.com/" target="_blank" rel="noreferrer" className="text-orange-500 hover:underline font-bold">aquí</a>.</p>
-                    <input type="text" value={tema.fuente || ""} onChange={(e) => setTema({...tema, fuente: e.target.value})} placeholder="Ej: Montserrat, Oswald, Roboto..." className="w-full p-2.5 rounded-lg border border-gray-200 text-sm font-bold text-gray-700 outline-none focus:border-orange-400 focus:ring-1 focus:ring-orange-400 bg-gray-50" />
+                    <p className="text-[11px] font-bold text-gray-500 uppercase tracking-widest mb-3">Logo del Local</p>
+                    <div className="flex items-center gap-4">
+                      <div className="w-20 h-20 bg-white border border-gray-200 rounded-xl overflow-hidden flex items-center justify-center shrink-0 p-1">
+                        {previewLogo ? <img src={previewLogo} alt="Preview Logo" className="w-full h-full object-contain" /> : tema.logoUrl ? <img src={tema.logoUrl} alt="Logo" className="w-full h-full object-contain" /> : <img src={IMAGEN_PLACEHOLDER} alt="Sin logo" className="w-full h-full object-contain opacity-50 p-2" />}
+                      </div>
+                      <div>
+                        <input type="file" id="logoUpload" hidden accept="image/*" onChange={handleSeleccionarLogo} />
+                        <label htmlFor="logoUpload" className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-bold rounded-lg cursor-pointer transition-colors border border-gray-300 inline-block mb-1">Seleccionar Archivo</label>
+                      </div>
+                    </div>
                   </div>
+                  <div className="flex-1">
+                    <p className="text-[11px] font-bold text-gray-500 uppercase tracking-widest mb-3">Portada (Banner)</p>
+                    <div className="flex flex-col items-start gap-3">
+                      <div className="w-full h-24 bg-white border border-gray-200 rounded-xl overflow-hidden flex items-center justify-center shrink-0">
+                        {previewPortada ? <img src={previewPortada} alt="Preview Portada" className="w-full h-full object-cover" /> : tema.imagenPortada ? <img src={tema.imagenPortada} alt="Portada" className="w-full h-full object-cover" /> : <img src={IMAGEN_PLACEHOLDER} alt="Sin portada" className="w-full h-full object-contain opacity-30 p-2" />}
+                      </div>
+                      <div>
+                        <input type="file" id="portadaUpload" hidden accept="image/*" onChange={handleSeleccionarPortada} />
+                        <label htmlFor="portadaUpload" className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-bold rounded-lg cursor-pointer transition-colors border border-gray-300 inline-block">Cambiar Portada</label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
 
+            {/* SECCIÓN COLORES Y FUENTE: SIEMPRE VISIBLE */}
+            <div className="bg-white p-6 md:p-8 rounded-2xl border border-gray-200 shadow-sm">
+              <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+                <h2 className="text-lg font-bold text-gray-800">
+                  {infoLocal.disenoExclusivo ? "Colores Hexadecimales y Tipografía" : "Colores Hexadecimales, Iconos y Tipografía"}
+                </h2>
+                
+                <div className="flex items-center gap-3 w-full md:w-auto">
+                  <button 
+                    onClick={handleRestaurarTema}
+                    className="flex-1 md:flex-none px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-600 border border-gray-300 text-xs font-bold rounded-lg cursor-pointer transition-all"
+                  >
+                     Restaurar por Defecto
+                  </button>
+                  <button 
+                    onClick={handleGuardarTema} 
+                    disabled={guardandoTema || !hayCambiosTema} 
+                    className={`flex-1 md:flex-none px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white text-xs font-bold rounded-lg cursor-pointer shadow-sm transition-all ${(guardandoTema || !hayCambiosTema) ? 'opacity-50 cursor-not-allowed' : ''}`}
+                  >
+                    {guardandoTema ? "Guardando..." : "Guardar Apariencia"}
+                  </button>
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+                <div>
+                  <label className="block text-[11px] font-bold text-gray-500 uppercase tracking-widest mb-2">Primario</label>
+                  <div className="flex items-center gap-3 border border-gray-200 rounded-lg p-1.5 focus-within:border-orange-400 focus-within:ring-1 focus-within:ring-orange-400">
+                    <div className="w-6 h-6 rounded shrink-0" style={{ backgroundColor: tema.colorPrimario || "#E63946" }}></div>
+                    <input type="text" maxLength={7} value={tema.colorPrimario} onChange={(e) => setTema({...tema, colorPrimario: e.target.value.toUpperCase()})} className="w-full text-xs font-mono text-gray-700 outline-none bg-transparent" />
+                  </div>
+                  <p className="text-[10px] text-gray-400 mt-1.5 leading-tight">Botones principales y precio.</p>
+                </div>
+                <div>
+                  <label className="block text-[11px] font-bold text-gray-500 uppercase tracking-widest mb-2">Secundario</label>
+                  <div className="flex items-center gap-3 border border-gray-200 rounded-lg p-1.5 focus-within:border-orange-400 focus-within:ring-1 focus-within:ring-orange-400">
+                    <div className="w-6 h-6 rounded shrink-0" style={{ backgroundColor: tema.colorSecundario || "#F1A139" }}></div>
+                    <input type="text" maxLength={7} value={tema.colorSecundario} onChange={(e) => setTema({...tema, colorSecundario: e.target.value.toUpperCase()})} className="w-full text-xs font-mono text-gray-700 outline-none bg-transparent" />
+                  </div>
+                  <p className="text-[10px] text-gray-400 mt-1.5 leading-tight">Etiquetas de descuentos.</p>
+                </div>
+                <div>
+                  <label className="block text-[11px] font-bold text-gray-500 uppercase tracking-widest mb-2">Fondo App</label>
+                  <div className="flex items-center gap-3 border border-gray-200 rounded-lg p-1.5 focus-within:border-orange-400 focus-within:ring-1 focus-within:ring-orange-400">
+                    <div className="w-6 h-6 rounded shrink-0" style={{ backgroundColor: tema.colorFondo || "#FFFFFF" }}></div>
+                    <input type="text" maxLength={7} value={tema.colorFondo} onChange={(e) => setTema({...tema, colorFondo: e.target.value.toUpperCase()})} className="w-full text-xs font-mono text-gray-700 outline-none bg-transparent" />
+                  </div>
+                  <p className="text-[10px] text-gray-400 mt-1.5 leading-tight">Color base de toda la pantalla.</p>
+                </div>
+                <div>
+                  <label className="block text-[11px] font-bold text-gray-500 uppercase tracking-widest mb-2">Color Texto</label>
+                  <div className="flex items-center gap-3 border border-gray-200 rounded-lg p-1.5 focus-within:border-orange-400 focus-within:ring-1 focus-within:ring-orange-400">
+                    <div className="w-6 h-6 rounded shrink-0" style={{ backgroundColor: tema.colorTexto || "#1A1A1A" }}></div>
+                    <input type="text" maxLength={7} value={tema.colorTexto} onChange={(e) => setTema({...tema, colorTexto: e.target.value.toUpperCase()})} className="w-full text-xs font-mono text-gray-700 outline-none bg-transparent" />
+                  </div>
+                  <p className="text-[10px] text-gray-400 mt-1.5 leading-tight">Títulos y descripciones.</p>
+                </div>
+              </div>
+
+              <div className="mt-6 pt-6 border-t border-gray-100 flex flex-col md:flex-row gap-8">
+                <div className="flex-1">
+                  <label className="block text-[11px] font-bold text-gray-500 uppercase tracking-widest mb-1">Tipografía del Menú (Google Fonts)</label>
+                  <p className="text-[10px] text-gray-400 mb-2">Busca tu fuente favorita por <a href="https://fonts.google.com/" target="_blank" rel="noreferrer" className="text-orange-500 hover:underline font-bold">aquí</a>.</p>
+                  <input type="text" value={tema.fuente || ""} onChange={(e) => setTema({...tema, fuente: e.target.value})} placeholder="Ej: Montserrat, Oswald, Roboto..." className="w-full p-2.5 rounded-lg border border-gray-200 text-sm font-bold text-gray-700 outline-none focus:border-orange-400 focus:ring-1 focus:ring-orange-400 bg-gray-50" />
+                </div>
+
+                {/* OCULTAMOS EL ICONO DEL CARRITO SI EL LOCAL ES VIP */}
+                {!infoLocal.disenoExclusivo && (
                   <div className="flex-1 border-t md:border-t-0 md:border-l border-gray-100 md:pl-8 pt-6 md:pt-0">
                     <label className="block text-[11px] font-bold text-gray-500 uppercase tracking-widest mb-3">Color del Icono del Carrito</label>
                     <div className="flex gap-4">
@@ -697,9 +702,10 @@ function AjustesPage() {
                       </button>
                     </div>
                   </div>
-                </div>
+                )}
               </div>
-            )}
+            </div>
+
           </div>
         )}
 
