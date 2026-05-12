@@ -101,6 +101,7 @@ function AjustesPage() {
       const resLocal = await fetchPrivado(`/admin/locales/${localId}`);
       if (resLocal.ok) {
         const dataLocal = await resLocal.json();
+        console.log("DATOS DEL LOCAL:", dataLocal);
         const infoData = { 
           nombre: dataLocal.nombre || "", 
           descripcion: dataLocal.descripcion || "",
