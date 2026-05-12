@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, Suspense, lazy } from "react";
 import { useParams } from "react-router-dom";
 import { obtenerMenu } from "../services/menuService";
 import { useCart } from "../hooks/useCart";
@@ -9,6 +9,21 @@ const CARRITO_BLANCO_URL = "https://res.cloudinary.com/dca2psqfg/image/upload/q_
 const CARRITO_NEGRO_URL = "https://res.cloudinary.com/dca2psqfg/image/upload/q_auto/f_auto/v1774753114/carrito-negro_kkrw7t.png";
 const API_URL = import.meta.env.VITE_API_URL;
 
+// --- IMPORTADOR DINÁMICO PARA MENÚS VIP (LAZY LOADING) ---
+const cargarMenuVip = (nombreDiseno) => lazy(() => 
+  import(`../menus_exclusivos/${nombreDiseno}.jsx`)
+  .catch(() => ({ 
+    default: () => (
+      <div className="min-h-screen flex items-center justify-center flex-col gap-2 p-6 text-center bg-white">
+        <h2 className="text-xl font-bold text-red-500">Error de Diseño Exclusivo</h2>
+        <p className="text-gray-700">El sistema intentó cargar el diseño <b>"{nombreDiseno}"</b> pero no encontró el archivo <b>{nombreDiseno}.jsx</b> en la carpeta <b>src/menus_exclusivos/</b>.</p>
+        <p className="text-sm opacity-70 mt-2 text-gray-500">Por favor, revisá que el nombre del archivo coincida exactamente con la base de datos.</p>
+        <button onClick={() => window.location.reload()} className="mt-4 px-6 py-2 bg-gray-900 text-white rounded-lg font-bold shadow-md cursor-pointer hover:bg-black transition-colors">Reintentar</button>
+      </div>
+    ) 
+  }))
+);
+
 function MenuPage() {
   const { slug } = useParams();
   const [menu, setMenu] = useState(null);
@@ -17,6 +32,9 @@ function MenuPage() {
   const scrollRef = useRef(null);
   const [mostrarCarrito, setMostrarCarrito] = useState(false);
   const [errorLocal, setErrorLocal] = useState(false);
+  
+  // NUEVO: ESTADO PARA GUARDAR EL COMPONENTE VIP EN MEMORIA
+  const [MenuVIP, setMenuVIP] = useState(null);
 
   const { 
     carrito, 
@@ -44,6 +62,11 @@ function MenuPage() {
 
         setMenu(data);
         
+        // --- MAGIA VIP: SI TIENE DISEÑO, PREPARAMOS LA DESCARGA EN SEGUNDO PLANO ---
+        if (data.disenoExclusivo) {
+          setMenuVIP(() => cargarMenuVip(data.disenoExclusivo));
+        }
+        
         const todasLasCategorias = data.categoriasMenu || data.categorias || []; 
         const idsValidos = [];
         
@@ -62,6 +85,7 @@ function MenuPage() {
         if (data.tema?.fuente) {
           const fuenteURL = data?.tema?.fuente?.replace(/\s+/g, "+");
           const linkId = "font-dinamica";
+   
           let link = document.getElementById(linkId);
           if (!link) {
             link = document.createElement("link");
@@ -77,6 +101,7 @@ function MenuPage() {
           const tieneProductos = cat.productos && cat.productos.some(p => p.activo !== false && !p.nombre.toUpperCase().includes("(ELIMINADO)"));
           return tieneProductos; 
         });
+        
         setCategorias(cats);
         
         if (cats.length > 0) {
@@ -110,7 +135,38 @@ function MenuPage() {
       <span className="text-[1.1rem] opacity-50 tracking-wider">cargando menú...</span>
     </div>
   );
-  
+
+  // ---------------------------------------------------------
+  // RUTA VIP: SI EL LOCAL TIENE DISEÑO, SE MUESTRA ESE ARCHIVO
+  // ---------------------------------------------------------
+  if (menu.disenoExclusivo && MenuVIP) {
+    return (
+      <Suspense fallback={
+        <div className="min-h-screen flex items-center justify-center">
+          <span className="text-[1.1rem] opacity-50 tracking-wider font-bold animate-pulse">Cargando experiencia exclusiva...</span>
+        </div>
+      }>
+        {/* Le pasamos TODA la información y poderes de tu sistema a tu diseño a medida */}
+        <MenuVIP 
+          menu={menu}
+          categorias={categorias}
+          carrito={carrito}
+          agregarAlCarrito={agregarAlCarrito}
+          quitarDelCarrito={quitarDelCarrito}
+          vaciarCarrito={vaciarCarrito}
+          totalItems={totalItems}
+          totalDinero={totalDinero}
+          subtotal={subtotal}
+          cuponAplicado={cuponAplicado}
+          aplicarCupon={aplicarCupon}
+          removerCupon={removerCupon}
+          slug={slug}
+        />
+      </Suspense>
+    );
+  }
+  // ---------------------------------------------------------
+
   const { colorFondo, colorTexto, colorPrimario, colorSecundario, fuente, imagenPortada, logoUrl, colorCarrito } = menu.tema;
   const { whatsapp, instagramUrl, direccionMapaEmbed} = menu;
   const productosAMostrar = (menu.categorias?.find(c => c.id === categoriaActiva)?.productos || [])
@@ -183,7 +239,7 @@ function MenuPage() {
                 href={`/${sucursal.slug}`} 
                 className="px-3 py-1.5 rounded-full text-[0.75rem] font-bold border transition-all hover:-translate-y-0.5 active:scale-95 shadow-sm"
                 style={{ 
-                   borderColor: colorPrimario, 
+                  borderColor: colorPrimario, 
                   color: colorPrimario, 
                   backgroundColor: `${colorPrimario}10` 
                 }}
@@ -194,6 +250,7 @@ function MenuPage() {
           </div>
         )}
       </div>
+
       {/* DIVIDER DECORATIVO */}
       <div className="flex items-center gap-3 my-7 mx-auto max-w-85 px-6">
         <div className="flex-1 h-px opacity-20" style={{ backgroundColor: colorTexto }} />
@@ -254,8 +311,7 @@ function MenuPage() {
 
      {/* PRODUCTOS */}
      <div className="pt-6 px-4 max-w-160 mx-auto grid gap-3">
-        {productosAMostrar.length > 0 ?
-        (
+        {productosAMostrar.length > 0 ? (
           productosAMostrar.map((prod, i) => {
             const itemEnCarrito = carrito.find(p => p.id === prod.id);
             const cantidad = itemEnCarrito ? itemEnCarrito.cantidad : 0;
@@ -276,20 +332,18 @@ function MenuPage() {
                 }}
               >
                 {/* ETIQUETAS SUPERIORES */}
-                {!estaActivo ?
-                (
+                {!estaActivo ? (
                    <div 
                     className="absolute top-0 left-0 px-3 py-1.5 font-black text-[11px] shadow-md z-10 rounded-br-xl uppercase tracking-widest bg-gray-800 text-white"
                    >
                      Agotado
                    </div>
-                ) : hayDescuento ?
-                (
+                ) : hayDescuento ? (
                   <div 
                     className="absolute top-0 left-0 px-3 py-1.5 font-black text-[11px] shadow-md z-10 rounded-br-xl uppercase tracking-widest"
                     style={{ backgroundColor: colorSecundario, color: colorFondo }}
                   >
-                    {prod.descuento}% OFF
+                     {prod.descuento}% OFF
                   </div>
                 ) : null}
 
@@ -342,11 +396,11 @@ function MenuPage() {
 
                 {/* IMAGEN */}
                 {prod.imagenUrl && (
-                 <img src={prod.imagenUrl} alt={prod.nombre} className="w-22 h-22 rounded-lg object-cover self-center shrink-0" />
+                  <img src={prod.imagenUrl} alt={prod.nombre} className="w-22 h-22 rounded-lg object-cover self-center shrink-0" />
                 )}
               </div>
             );
-        })
+          })
         ) : (
           <div className="text-center mt-12 opacity-50"><p>Sin productos.</p></div>
         )}
@@ -385,7 +439,7 @@ function MenuPage() {
                   className="transition-transform hover:-translate-y-1 active:scale-95 drop-shadow-sm flex items-center justify-center rounded-full w-16 h-16 border-2"
                   style={{ borderColor: colorSecundario }}
                 >
-                  <img 
+                   <img 
                     src="https://res.cloudinary.com/dca2psqfg/image/upload/v1774564000/instagram-logo-instagram-icon-transparent-free-png_mnlash.png" 
                     alt="Instagram" 
                     className="w-12 h-12 object-contain"
@@ -450,7 +504,6 @@ function MenuPage() {
         nombreLocal={menu.nombre}
         numeroWhatsApp={whatsapp}
         slug={slug}
-        // ACÁ ESTÁ EL CAMBIO: Le pasamos las nuevas variables al modal
         subtotal={subtotal}
         cuponAplicado={cuponAplicado}
         aplicarCupon={aplicarCupon}
@@ -458,6 +511,7 @@ function MenuPage() {
         localId={menu.id}
         cobroAutomatico={menu.cobroAutomatico}
       />
+ 
       <footer className="py-8 text-center opacity-60">
         <p className="text-xs font-medium">
           Desarrollado por{" "}
