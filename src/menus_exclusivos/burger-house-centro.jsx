@@ -10,13 +10,15 @@ const IMAGEN_TEXTO_LATERAL = "/disenos_sushi_house/e4a83fe3-b3f9-4d24-bbd1-af358
 
 function BurgerHouseCentro({ 
   menu, categorias, carrito, agregarAlCarrito, quitarDelCarrito, vaciarCarrito, 
-  totalItems, totalDinero, subtotal, cuponAplicado, aplicarCupon, removerCupon, slug 
+  totalItems, totalDinero, subtotal, cuponAplicado, aplicarCupon, removerCupon, slug,
+  redes = {} // Agregamos la prop de redes para el footer
 }) {
   
   const [categoriaActiva, setCategoriaActiva] = useState(null);
   const [mostrarCarrito, setMostrarCarrito] = useState(false);
 
-  const { colorPrimario, colorTexto, fuente } = menu.tema;
+  // Colores dinámicos del backend
+  const { colorPrimario, colorTexto } = menu.tema || { colorPrimario: "#fdeaaa", colorTexto: "#ffffff" };
 
   useEffect(() => {
     if (categorias && categorias.length > 0 && !categoriaActiva) {
@@ -41,41 +43,42 @@ function BurgerHouseCentro({
         .no-scrollbar { -ms-overflow-style: none !important; scrollbar-width: none !important; }
       `}</style>
 
-      {/* ELEMENTOS DE FONDO */}
-      <img src={IMAGEN_TEXTO_LATERAL} alt="" className="absolute left-2 top-[30%] h-64 w-auto object-contain z-0 opacity-30 pointer-events-none" />
-      <img src={IMAGEN_ESQUINA_SUP_IZQ} alt="" className="absolute top-0 left-0 w-40 z-0 pointer-events-none" />
-      <img src={IMAGEN_ESQUINA_INF_DER} alt="" className="absolute bottom-0 right-0 w-40 z-0 pointer-events-none" />
-      <img src={IMAGEN_MANO_SUP_DER} alt="" className="absolute top-[280px] right-0 w-48 object-contain z-0 pointer-events-none opacity-70" />
+      {/* ELEMENTOS DE FONDO (Con tamaños ajustados para PC y Celular) */}
+      <img src={IMAGEN_TEXTO_LATERAL} alt="" className="absolute left-2 md:left-6 lg:left-12 top-[30%] h-64 md:h-96 lg:h-125 w-auto object-contain z-0 opacity-30 pointer-events-none" />
+      <img src={IMAGEN_ESQUINA_SUP_IZQ} alt="" className="absolute top-0 left-0 w-40 md:w-72 lg:w-96 z-0 pointer-events-none" />
+      <img src={IMAGEN_ESQUINA_INF_DER} alt="" className="absolute bottom-0 right-0 w-40 md:w-72 lg:w-96 z-0 pointer-events-none" />
+      <img src={IMAGEN_MANO_SUP_DER} alt="" className="absolute top-70 md:top-50 lg:top-37.5 right-0 w-48 md:w-80 lg:w-112.5 object-contain z-0 pointer-events-none opacity-70" />
 
       <div className="relative z-10 pt-16">
         
         {/* CABECERA */}
-        <div className="text-center px-4 mb-6">
-          <h1 className="text-5xl font-oriental text-white mb-2">
+        <div className="text-center px-4 mb-8">
+          <h1 className="text-5xl md:text-7xl font-oriental text-white mb-2">
             Sushi House
           </h1>
-          <p className="text-lg font-oriental text-neutral-400">
+          <p className="text-lg md:text-xl font-oriental text-neutral-400">
             {menu.descripcion}
           </p>
         </div>
 
         {/* CATEGORÍAS 100% TRANSPARENTES */}
         <div className="sticky top-0 z-30 bg-transparent py-4">
-          <div className="flex overflow-x-auto gap-3 px-6 no-scrollbar max-w-4xl mx-auto justify-center">
+          <div className="flex overflow-x-auto gap-3 px-6 no-scrollbar max-w-5xl mx-auto justify-center">
             {categorias.map((cat) => {
               const isActivo = categoriaActiva === cat.id;
               return (
                 <button
                   key={cat.id}
                   onClick={() => setCategoriaActiva(cat.id)}
-                  className={`px-5 py-2 rounded-full font-bold text-[10px] tracking-widest uppercase transition-all duration-300 ${
+                  className={`px-5 py-2.5 rounded-full font-bold text-[11px] md:text-xs tracking-widest uppercase transition-all duration-300 ${
                     isActivo 
                       ? "shadow-lg scale-105" 
                       : "text-neutral-500 hover:text-white"
                   }`}
                   style={{ 
                     backgroundColor: isActivo ? colorPrimario : 'transparent',
-                    color: isActivo ? '#2e2725' : undefined
+                    color: isActivo ? '#2e2725' : undefined,
+                    border: isActivo ? 'none' : '1px solid rgba(255,255,255,0.1)'
                   }}
                 >
                   {cat.nombre}
@@ -85,8 +88,8 @@ function BurgerHouseCentro({
           </div>
         </div>
 
-        {/* LISTADO DE PRODUCTOS MÁS PEQUEÑOS */}
-        <div className="max-w-2xl mx-auto px-4 pt-4 pb-32 flex flex-col gap-5">
+        {/* LISTADO DE PRODUCTOS MÁS GRANDES */}
+        <div className="max-w-4xl mx-auto px-4 pt-8 flex flex-col gap-8">
           {productosAMostrar.map((prod, i) => {
             const itemEnCarrito = carrito.find(p => p.id === prod.id);
             const cantidad = itemEnCarrito ? itemEnCarrito.cantidad : 0;
@@ -96,41 +99,41 @@ function BurgerHouseCentro({
             return (
               <div 
                 key={prod.id} 
-                className={`flex items-center gap-4 bg-[#231e1c]/70 backdrop-blur-md rounded-2xl p-3 border border-white/5 ${esPar ? 'flex-row' : 'flex-row-reverse'}`}
+                className={`flex items-center gap-6 md:gap-8 bg-[#231e1c]/70 backdrop-blur-md rounded-3xl p-5 border border-white/5 ${esPar ? 'flex-row' : 'flex-row-reverse'}`}
               >
-                {/* Imagen más compacta */}
-                <div className="w-24 h-24 rounded-xl overflow-hidden shrink-0 border border-white/10">
+                {/* Imagen más grande */}
+                <div className="w-28 h-28 md:w-40 md:h-40 rounded-2xl overflow-hidden shrink-0 border border-white/10 shadow-lg">
                   <img 
                     src={prod.imagenUrl || IMAGEN_PLACEHOLDER} 
                     alt={prod.nombre} 
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
                   />
                 </div>
 
                 {/* Info y Controles */}
                 <div className={`flex-1 flex flex-col ${esPar ? 'text-left' : 'text-right'}`}>
-                  <h3 className="text-sm font-bold mb-0.5" style={{ color: colorTexto }}>{prod.nombre}</h3>
-                  <p className="text-[10px] text-neutral-400 line-clamp-2 mb-2 leading-snug">{prod.descripcion}</p>
+                  <h3 className="text-base md:text-xl font-bold mb-1" style={{ color: colorTexto }}>{prod.nombre}</h3>
+                  <p className="text-xs md:text-sm text-neutral-400 line-clamp-3 mb-3 md:mb-4 leading-relaxed">{prod.descripcion}</p>
                   
-                  <div className={`flex flex-col gap-1.5 ${esPar ? 'items-start' : 'items-end'}`}>
-                    <span className="text-lg font-black" style={{ color: colorPrimario }}>${precioVenta}</span>
+                  <div className={`flex flex-col gap-2 ${esPar ? 'items-start' : 'items-end'}`}>
+                    <span className="text-xl md:text-2xl font-black" style={{ color: colorPrimario }}>${precioVenta}</span>
                     
                     {prod.activo !== false ? (
-                      <div className="flex items-center bg-black/20 rounded-full p-0.5 border border-white/5">
+                      <div className="flex items-center bg-black/20 rounded-full p-1 border border-white/5 mt-1">
                         {cantidad > 0 && (
-                          <button onClick={() => quitarDelCarrito(prod)} className="w-6 h-6 rounded-full text-white font-bold cursor-pointer">-</button>
+                          <button onClick={() => quitarDelCarrito(prod)} className="w-8 h-8 md:w-10 md:h-10 rounded-full text-white font-bold cursor-pointer hover:bg-white/10 transition-colors">-</button>
                         )}
-                        {cantidad > 0 && <span className="px-2 text-xs font-bold">{cantidad}</span>}
+                        {cantidad > 0 && <span className="px-3 md:px-4 text-sm md:text-base font-bold">{cantidad}</span>}
                         <button 
                           onClick={() => agregarAlCarrito(prod)} 
-                          className="px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-wider hover:brightness-110 cursor-pointer"
+                          className="px-4 py-2 md:px-6 md:py-2.5 rounded-full text-[10px] md:text-xs font-black uppercase tracking-wider hover:brightness-110 cursor-pointer shadow-sm transition-all"
                           style={{ backgroundColor: colorPrimario, color: '#2e2725' }}
                         >
                           {cantidad > 0 ? "+" : "Agregar"}
                         </button>
                       </div>
                     ) : (
-                      <span className="text-[9px] uppercase font-bold text-red-400">Agotado</span>
+                      <span className="text-xs uppercase font-bold text-red-400 mt-2">Agotado</span>
                     )}
                   </div>
                 </div>
@@ -140,18 +143,59 @@ function BurgerHouseCentro({
         </div>
       </div>
 
+      {/* MAPA Y REDES SOCIALES (FOOTER VIP) */}
+      <div className="relative z-10 bg-black/30 backdrop-blur-md border-t border-white/5 mt-16 pt-16 pb-32 px-6">
+        <div className="max-w-4xl mx-auto flex flex-col md:flex-row gap-12 justify-between items-center md:items-start">
+          
+          {/* Redes e Info */}
+          <div className="text-center md:text-left flex-1">
+            <h2 className="text-4xl font-oriental mb-4 text-white">Sushi House</h2>
+            <p className="text-sm md:text-base text-neutral-400 mb-8 max-w-sm mx-auto md:mx-0 leading-relaxed">
+              Encontranos en nuestras redes sociales y enterate de todas las promociones y novedades exclusivas.
+            </p>
+            
+            <div className="flex justify-center md:justify-start gap-4">
+              {redes.instagramUrl && (
+                <a href={redes.instagramUrl} target="_blank" rel="noreferrer" className="w-14 h-14 rounded-full flex items-center justify-center bg-[#2e2725] border border-white/10 hover:scale-110 transition-transform shadow-lg" style={{ color: colorPrimario }}>
+                  <svg className="w-7 h-7" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"></path></svg>
+                </a>
+              )}
+              {redes.facebookUrl && (
+                <a href={redes.facebookUrl} target="_blank" rel="noreferrer" className="w-14 h-14 rounded-full flex items-center justify-center bg-[#2e2725] border border-white/10 hover:scale-110 transition-transform shadow-lg" style={{ color: colorPrimario }}>
+                  <svg className="w-7 h-7" fill="currentColor" viewBox="0 0 24 24"><path d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v3.385z"></path></svg>
+                </a>
+              )}
+            </div>
+          </div>
+
+          {/* Google Maps Embed */}
+          {redes.direccionMapaEmbed && (
+            <div className="w-full md:w-1/2 shrink-0 rounded-3xl overflow-hidden border-2 shadow-2xl" style={{ borderColor: `${colorPrimario}40` }}>
+              <div 
+                className="w-full h-56 md:h-72 [&>iframe]:w-full [&>iframe]:h-full [&>iframe]:border-0"
+                dangerouslySetInnerHTML={{ __html: redes.direccionMapaEmbed }}
+              />
+            </div>
+          )}
+        </div>
+        
+        <div className="max-w-4xl mx-auto mt-16 pt-8 border-t border-white/10 text-center text-xs text-neutral-500 font-medium tracking-wide">
+           &copy; {new Date().getFullYear()} {menu.nombre}. Todos los derechos reservados.
+        </div>
+      </div>
+
       {/* CARRITO FLOTANTE */}
       {totalItems > 0 && !mostrarCarrito && (
         <div
           onClick={() => setMostrarCarrito(true)}
-          className="fixed bottom-6 right-6 flex items-center gap-3 px-5 py-2.5 rounded-xl cursor-pointer z-50 transition-all hover:scale-105"
+          className="fixed bottom-6 right-6 flex items-center gap-4 px-6 py-3 rounded-2xl cursor-pointer z-50 transition-all hover:scale-105 shadow-2xl"
           style={{ backgroundColor: colorPrimario, color: '#2e2725' }}
         >
           <div className="flex flex-col">
-            <span className="text-[9px] font-black uppercase opacity-70">Total</span>
-            <span className="font-black text-lg">${totalDinero}</span>
+            <span className="text-[10px] font-black uppercase tracking-widest opacity-70">Pedido</span>
+            <span className="font-black text-xl">${totalDinero}</span>
           </div>
-          <div className="w-8 h-8 rounded-lg bg-[#2e2725] text-white flex items-center justify-center font-bold text-sm">
+          <div className="w-10 h-10 rounded-xl bg-[#2e2725] text-white flex items-center justify-center font-bold text-base shadow-inner">
             {totalItems}
           </div>
         </div>
@@ -166,7 +210,7 @@ function BurgerHouseCentro({
         vaciarCarrito={vaciarCarrito}
         totalDinero={totalDinero}
         tema={menu.tema}
-        nombreLocal="Sushi House"
+        nombreLocal={menu.nombre}
         numeroWhatsApp={menu.whatsapp}
         slug={slug}
         subtotal={subtotal}
