@@ -17,12 +17,11 @@ function BurgerHouseCentro({
   const [categoriaActiva, setCategoriaActiva] = useState(null);
   const [mostrarCarrito, setMostrarCarrito] = useState(false);
 
-  // Variables del Backend
-  const { colorPrimario, colorTexto, fuente } = menu.tema || { colorPrimario: "#fdeaaa", colorTexto: "#ffffff", fuente: "Montserrat" };
+  // Variables del Backend (Agregamos colorSecundario)
+  const { colorPrimario, colorSecundario = "#F1A139", colorTexto, fuente } = menu.tema || { colorPrimario: "#fdeaaa", colorTexto: "#ffffff", fuente: "Montserrat" };
   const fontName = fuente || 'Montserrat';
   const fontUrlSafe = fontName.replace(/ /g, '+');
 
-  // Sucursales de la franquicia
   const sucursales = menu.localesFranquicia || menu.sucursales || [];
 
   useEffect(() => {
@@ -37,11 +36,9 @@ function BurgerHouseCentro({
   const tieneRedes = redes.instagramUrl || redes.facebookUrl;
 
   return (
-    <div 
-      className="min-h-screen relative overflow-x-hidden"
-      style={{ backgroundColor: '#2e2725', color: colorTexto }}
-    >
-      {/* IMPORTAMOS LA FUENTE DEL BACKEND DE FORMA DINÁMICA */}
+    // CONTENEDOR MAESTRO
+    <div className="min-h-screen flex flex-col" style={{ backgroundColor: '#2e2725', color: colorTexto }}>
+      
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=${fontUrlSafe}:wght@400;600;700;900&family=Ma+Shan+Zheng&display=swap');
         * { font-family: '${fontName}', sans-serif; }
@@ -50,138 +47,141 @@ function BurgerHouseCentro({
         .no-scrollbar { -ms-overflow-style: none !important; scrollbar-width: none !important; }
       `}</style>
 
-      {/* ELEMENTOS DE FONDO */}
-      <img src={IMAGEN_TEXTO_LATERAL} alt="" className="absolute left-2 md:left-6 top-[30%] h-64 md:h-96 w-auto object-contain z-0 opacity-30 pointer-events-none" />
-      <img src={IMAGEN_ESQUINA_SUP_IZQ} alt="" className="absolute top-0 left-0 w-40 md:w-64 z-0 pointer-events-none" />
-      <img src={IMAGEN_ESQUINA_INF_DER} alt="" className="absolute bottom-0 right-0 w-40 md:w-64 z-0 pointer-events-none" />
-      <img src={IMAGEN_MANO_SUP_DER} alt="" className="absolute top-[350px] right-0 w-48 md:w-72 object-contain z-0 pointer-events-none opacity-70" />
-
-      <div className="relative z-10 pt-16">
+      {/* ==================================================== */}
+      {/* SECCIÓN 1: DISEÑO PRINCIPAL (HEADER + PRODUCTOS)     */}
+      {/* ==================================================== */}
+      <div className="relative overflow-hidden pb-16 flex-1">
         
-        {/* CABECERA */}
-        <div className="text-center px-4 mb-4">
-          <h1 className="text-5xl md:text-6xl font-oriental text-white mb-2">
-            Sushi House
-          </h1>
-          <p className="text-lg md:text-xl font-oriental text-neutral-400 mb-4">
-            {menu.descripcion}
-          </p>
-        </div>
+        {/* ELEMENTOS DE FONDO (Encapsulados solo en esta sección) */}
+        <img src={IMAGEN_TEXTO_LATERAL} alt="" className="absolute left-2 md:left-6 top-[30%] h-64 md:h-96 w-auto object-contain z-0 opacity-30 pointer-events-none" />
+        <img src={IMAGEN_ESQUINA_SUP_IZQ} alt="" className="absolute top-0 left-0 w-40 md:w-64 z-0 pointer-events-none" />
+        <img src={IMAGEN_ESQUINA_INF_DER} alt="" className="absolute bottom-0 right-0 w-40 md:w-64 z-0 pointer-events-none" />
+        <img src={IMAGEN_MANO_SUP_DER} alt="" className="absolute top-[350px] right-0 w-48 md:w-72 object-contain z-0 pointer-events-none opacity-70" />
 
-        {/* SELECTOR DE SUCURSALES CORREGIDO */}
-        {sucursales.length > 0 && (
-          <div className="flex flex-wrap items-center justify-center gap-3 mb-6 px-4 max-w-2xl mx-auto">
-            {sucursales.map(sucursal => {
-              // 1. Usamos SLUG para comparar, es infalible.
-              const isActivo = sucursal.slug === menu.slug;
-              
-              // 2. Salvavidas por si la variable viene vacía o con otro nombre
-              const nombreSucursal = sucursal.nombre || sucursal.nombreLocal || sucursal.slug || "Sucursal";
+        <div className="relative z-10 pt-16">
+          
+          {/* CABECERA */}
+          <div className="text-center px-4 mb-4">
+            <h1 className="text-5xl md:text-6xl font-oriental text-white mb-2">
+              Sushi House
+            </h1>
+            <p className="text-lg md:text-xl font-oriental text-neutral-400 mb-4">
+              {menu.descripcion}
+            </p>
+          </div>
+
+          {/* SELECTOR DE SUCURSALES (Usa colorSecundario y nombre real) */}
+          {sucursales.length > 0 && (
+            <div className="flex flex-wrap items-center justify-center gap-3 mb-6 px-4 max-w-2xl mx-auto">
+              {sucursales.map(sucursal => {
+                const isActivo = sucursal.slug === menu.slug;
+                return (
+                  <a
+                    key={sucursal.id}
+                    href={`/${sucursal.slug}`}
+                    className="px-4 py-2 rounded-full border text-[11px] md:text-xs font-bold transition-all whitespace-nowrap"
+                    style={{ 
+                      backgroundColor: isActivo ? colorSecundario : 'transparent',
+                      color: isActivo ? '#2e2725' : '#a3a3a3',
+                      borderColor: isActivo ? colorSecundario : 'rgba(255,255,255,0.15)'
+                    }}
+                  >
+                    {sucursal.nombre}
+                  </a>
+                );
+              })}
+            </div>
+          )}
+
+          {/* CATEGORÍAS */}
+          <div className="sticky top-0 z-30 bg-transparent py-4">
+            <div className="flex overflow-x-auto gap-3 px-6 no-scrollbar max-w-4xl mx-auto justify-center">
+              {categorias.map((cat) => {
+                const isActivo = categoriaActiva === cat.id;
+                return (
+                  <button
+                    key={cat.id}
+                    onClick={() => setCategoriaActiva(cat.id)}
+                    className={`px-5 py-2 rounded-full font-bold text-[10px] tracking-widest uppercase transition-all duration-300 ${
+                      isActivo ? "shadow-lg scale-105" : "text-neutral-500 hover:text-white"
+                    }`}
+                    style={{ 
+                      backgroundColor: isActivo ? colorPrimario : 'transparent',
+                      color: isActivo ? '#2e2725' : undefined,
+                      border: isActivo ? 'none' : '1px solid rgba(255,255,255,0.05)'
+                    }}
+                  >
+                    {cat.nombre}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* PRODUCTOS */}
+          <div className="max-w-xl mx-auto px-4 pt-4 flex flex-col gap-4">
+            {productosAMostrar.map((prod, i) => {
+              const itemEnCarrito = carrito.find(p => p.id === prod.id);
+              const cantidad = itemEnCarrito ? itemEnCarrito.cantidad : 0;
+              const precioVenta = prod.descuento > 0 ? prod.precio - (prod.precio * prod.descuento / 100) : prod.precio;
+              const esPar = i % 2 === 0;
 
               return (
-                <a
-                  key={sucursal.id || sucursal.slug}
-                  href={`/${sucursal.slug}`}
-                  className="px-4 py-2 rounded-full border text-[11px] md:text-xs font-bold transition-all whitespace-nowrap"
-                  style={{ 
-                    backgroundColor: isActivo ? colorPrimario : 'transparent',
-                    color: isActivo ? '#2e2725' : '#a3a3a3',
-                    borderColor: isActivo ? colorPrimario : 'rgba(255,255,255,0.15)'
-                  }}
+                <div 
+                  key={prod.id} 
+                  className={`flex items-center gap-4 bg-[#231e1c]/80 backdrop-blur-md rounded-2xl p-3 border border-white/5 shadow-md ${esPar ? 'flex-row' : 'flex-row-reverse'}`}
                 >
-                  {nombreSucursal}
-                </a>
-              );
-            })}
-          </div>
-        )}
+                  <div className="w-24 h-24 md:w-28 md:h-28 rounded-xl overflow-hidden shrink-0 border border-white/10">
+                    <img 
+                      src={prod.imagenUrl || IMAGEN_PLACEHOLDER} 
+                      alt={prod.nombre} 
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
 
-        {/* CATEGORÍAS 100% TRANSPARENTES */}
-        <div className="sticky top-0 z-30 bg-transparent py-4">
-          <div className="flex overflow-x-auto gap-3 px-6 no-scrollbar max-w-4xl mx-auto justify-center">
-            {categorias.map((cat) => {
-              const isActivo = categoriaActiva === cat.id;
-              return (
-                <button
-                  key={cat.id}
-                  onClick={() => setCategoriaActiva(cat.id)}
-                  className={`px-5 py-2 rounded-full font-bold text-[10px] tracking-widest uppercase transition-all duration-300 ${
-                    isActivo ? "shadow-lg scale-105" : "text-neutral-500 hover:text-white"
-                  }`}
-                  style={{ 
-                    backgroundColor: isActivo ? colorPrimario : 'transparent',
-                    color: isActivo ? '#2e2725' : undefined,
-                    border: isActivo ? 'none' : '1px solid rgba(255,255,255,0.05)'
-                  }}
-                >
-                  {cat.nombre}
-                </button>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* PRODUCTOS */}
-        <div className="max-w-xl mx-auto px-4 pt-4 pb-20 flex flex-col gap-4">
-          {productosAMostrar.map((prod, i) => {
-            const itemEnCarrito = carrito.find(p => p.id === prod.id);
-            const cantidad = itemEnCarrito ? itemEnCarrito.cantidad : 0;
-            const precioVenta = prod.descuento > 0 ? prod.precio - (prod.precio * prod.descuento / 100) : prod.precio;
-            const esPar = i % 2 === 0;
-
-            return (
-              <div 
-                key={prod.id} 
-                className={`flex items-center gap-4 bg-[#231e1c]/80 backdrop-blur-md rounded-2xl p-3 border border-white/5 shadow-md ${esPar ? 'flex-row' : 'flex-row-reverse'}`}
-              >
-                <div className="w-24 h-24 md:w-28 md:h-28 rounded-xl overflow-hidden shrink-0 border border-white/10">
-                  <img 
-                    src={prod.imagenUrl || IMAGEN_PLACEHOLDER} 
-                    alt={prod.nombre} 
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-
-                <div className={`flex-1 flex flex-col ${esPar ? 'text-left' : 'text-right'}`}>
-                  <h3 className="text-sm md:text-base font-bold mb-1 leading-tight" style={{ color: colorTexto }}>{prod.nombre}</h3>
-                  <p className="text-[10px] md:text-[11px] text-neutral-400 line-clamp-2 mb-2 leading-snug">{prod.descripcion}</p>
-                  
-                  <div className={`flex flex-col gap-1.5 ${esPar ? 'items-start' : 'items-end'}`}>
-                    <span className="text-lg md:text-xl font-black" style={{ color: colorPrimario }}>${precioVenta}</span>
+                  <div className={`flex-1 flex flex-col ${esPar ? 'text-left' : 'text-right'}`}>
+                    <h3 className="text-sm md:text-base font-bold mb-1 leading-tight" style={{ color: colorTexto }}>{prod.nombre}</h3>
+                    <p className="text-[10px] md:text-[11px] text-neutral-400 line-clamp-2 mb-2 leading-snug">{prod.descripcion}</p>
                     
-                    {prod.activo !== false ? (
-                      <div className="flex items-center bg-black/20 rounded-full p-0.5 border border-white/5">
-                        {cantidad > 0 && (
-                          <button onClick={() => quitarDelCarrito(prod)} className="w-6 h-6 md:w-7 md:h-7 rounded-full text-white font-bold cursor-pointer hover:bg-white/10 transition-colors">-</button>
-                        )}
-                        {cantidad > 0 && <span className="px-2 md:px-3 text-xs md:text-sm font-bold">{cantidad}</span>}
-                        <button 
-                          onClick={() => agregarAlCarrito(prod)} 
-                          className="px-3 py-1.5 md:px-4 md:py-1.5 rounded-full text-[9px] md:text-[10px] font-black uppercase tracking-wider hover:brightness-110 cursor-pointer transition-all"
-                          style={{ backgroundColor: colorPrimario, color: '#2e2725' }}
-                        >
-                          {cantidad > 0 ? "+" : "Agregar"}
-                        </button>
-                      </div>
-                    ) : (
-                      <span className="text-[9px] uppercase font-bold text-red-400 mt-1">Agotado</span>
-                    )}
+                    <div className={`flex flex-col gap-1.5 ${esPar ? 'items-start' : 'items-end'}`}>
+                      <span className="text-lg md:text-xl font-black" style={{ color: colorPrimario }}>${precioVenta}</span>
+                      
+                      {prod.activo !== false ? (
+                        <div className="flex items-center bg-black/20 rounded-full p-0.5 border border-white/5">
+                          {cantidad > 0 && (
+                            <button onClick={() => quitarDelCarrito(prod)} className="w-6 h-6 md:w-7 md:h-7 rounded-full text-white font-bold cursor-pointer hover:bg-white/10 transition-colors">-</button>
+                          )}
+                          {cantidad > 0 && <span className="px-2 md:px-3 text-xs md:text-sm font-bold">{cantidad}</span>}
+                          <button 
+                            onClick={() => agregarAlCarrito(prod)} 
+                            className="px-3 py-1.5 md:px-4 md:py-1.5 rounded-full text-[9px] md:text-[10px] font-black uppercase tracking-wider hover:brightness-110 cursor-pointer transition-all"
+                            style={{ backgroundColor: colorPrimario, color: '#2e2725' }}
+                          >
+                            {cantidad > 0 ? "+" : "Agregar"}
+                          </button>
+                        </div>
+                      ) : (
+                        <span className="text-[9px] uppercase font-bold text-red-400 mt-1">Agotado</span>
+                      )}
+                    </div>
                   </div>
                 </div>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
       </div>
 
-      {/* FOOTER Y REDES SOCIALES */}
-      <div className="relative z-20 bg-[#1a1614] border-t border-white/5 pt-12 pb-24 px-6 mt-8">
+      {/* ==================================================== */}
+      {/* SECCIÓN 2: FOOTER TOTALMENTE INDEPENDIENTE           */}
+      {/* ==================================================== */}
+      <div className="w-full bg-[#1a1614] border-t border-white/5 pt-12 pb-28 px-6">
         <div className="max-w-4xl mx-auto flex flex-col md:flex-row gap-10 items-center">
           
           {tieneRedes && (
             <div className="text-center md:text-left flex-1">
               <h2 className="text-3xl font-oriental mb-3 text-white">Sushi House</h2>
-              <p className="text-xs text-neutral-500 mb-6 max-w-sm leading-relaxed">
+              <p className="text-xs text-neutral-500 mb-6 max-w-sm leading-relaxed mx-auto md:mx-0">
                 Encontranos en nuestras redes sociales y enterate de todas las promociones y novedades exclusivas.
               </p>
               <div className="flex justify-center md:justify-start gap-3">
@@ -210,7 +210,7 @@ function BurgerHouseCentro({
         </div>
         
         {/* DESARROLLADO POR */}
-        <div className="max-w-4xl mx-auto mt-12 pt-8 border-t border-white/5 flex flex-col items-center justify-center gap-3 text-center">
+        <div className="max-w-4xl mx-auto mt-12 pt-8 border-t border-white/5 flex flex-col items-center justify-center gap-2 text-center">
           <p className="text-[11px] text-neutral-500 font-medium tracking-wide">
              &copy; {new Date().getFullYear()} {menu.nombre}. Todos los derechos reservados.
           </p>
@@ -225,7 +225,9 @@ function BurgerHouseCentro({
         </div>
       </div>
 
-      {/* CARRITO FLOTANTE */}
+      {/* ==================================================== */}
+      {/* ELEMENTOS FLOTANTES (CARRITO Y MODAL)                */}
+      {/* ==================================================== */}
       {totalItems > 0 && !mostrarCarrito && (
         <div
           onClick={() => setMostrarCarrito(true)}
