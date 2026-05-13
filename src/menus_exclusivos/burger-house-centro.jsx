@@ -22,7 +22,7 @@ function BurgerHouseCentro({
   const fontName = fuente || 'Montserrat';
   const fontUrlSafe = fontName.replace(/ /g, '+');
 
-  // Sucursales de la franquicia (Lógica de MenuPage)
+  // Sucursales de la franquicia
   const sucursales = menu.localesFranquicia || menu.sucursales || [];
 
   useEffect(() => {
@@ -63,19 +63,24 @@ function BurgerHouseCentro({
           <h1 className="text-5xl md:text-6xl font-oriental text-white mb-2">
             Sushi House
           </h1>
-          <p className="text-lg md:text-xl font-oriental text-neutral-400 mb-2">
+          <p className="text-lg md:text-xl font-oriental text-neutral-400 mb-4">
             {menu.descripcion}
           </p>
         </div>
 
-        {/* SELECTOR DE SUCURSALES (En fila, sin guiones) */}
+        {/* SELECTOR DE SUCURSALES CORREGIDO */}
         {sucursales.length > 0 && (
           <div className="flex flex-wrap items-center justify-center gap-3 mb-6 px-4 max-w-2xl mx-auto">
             {sucursales.map(sucursal => {
-              const isActivo = sucursal.id === menu.id;
+              // 1. Usamos SLUG para comparar, es infalible.
+              const isActivo = sucursal.slug === menu.slug;
+              
+              // 2. Salvavidas por si la variable viene vacía o con otro nombre
+              const nombreSucursal = sucursal.nombre || sucursal.nombreLocal || sucursal.slug || "Sucursal";
+
               return (
                 <a
-                  key={sucursal.id}
+                  key={sucursal.id || sucursal.slug}
                   href={`/${sucursal.slug}`}
                   className="px-4 py-2 rounded-full border text-[11px] md:text-xs font-bold transition-all whitespace-nowrap"
                   style={{ 
@@ -84,7 +89,7 @@ function BurgerHouseCentro({
                     borderColor: isActivo ? colorPrimario : 'rgba(255,255,255,0.15)'
                   }}
                 >
-                  {sucursal.nombre}
+                  {nombreSucursal}
                 </a>
               );
             })}
@@ -116,7 +121,7 @@ function BurgerHouseCentro({
           </div>
         </div>
 
-        {/* PRODUCTOS (Punto medio, estilo compacto como menú default) */}
+        {/* PRODUCTOS */}
         <div className="max-w-xl mx-auto px-4 pt-4 pb-20 flex flex-col gap-4">
           {productosAMostrar.map((prod, i) => {
             const itemEnCarrito = carrito.find(p => p.id === prod.id);
@@ -129,7 +134,6 @@ function BurgerHouseCentro({
                 key={prod.id} 
                 className={`flex items-center gap-4 bg-[#231e1c]/80 backdrop-blur-md rounded-2xl p-3 border border-white/5 shadow-md ${esPar ? 'flex-row' : 'flex-row-reverse'}`}
               >
-                {/* Imagen más compacta y proporcionada */}
                 <div className="w-24 h-24 md:w-28 md:h-28 rounded-xl overflow-hidden shrink-0 border border-white/10">
                   <img 
                     src={prod.imagenUrl || IMAGEN_PLACEHOLDER} 
@@ -205,7 +209,7 @@ function BurgerHouseCentro({
           )}
         </div>
         
-        {/* DESARROLLADO POR PediAlgo */}
+        {/* DESARROLLADO POR */}
         <div className="max-w-4xl mx-auto mt-12 pt-8 border-t border-white/5 flex flex-col items-center justify-center gap-3 text-center">
           <p className="text-[11px] text-neutral-500 font-medium tracking-wide">
              &copy; {new Date().getFullYear()} {menu.nombre}. Todos los derechos reservados.
