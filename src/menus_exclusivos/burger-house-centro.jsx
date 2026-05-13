@@ -3,10 +3,12 @@ import CarritoModal from "../components/CarritoModal";
 
 const IMAGEN_PLACEHOLDER = "https://res.cloudinary.com/dca2psqfg/image/upload/v1774931102/70144073-b918-4ef0-9b14-346e44f41f69_tla5uf.png";
 
+// REFERENCIAS A LAS IMÁGENES EN TU CARPETA PUBLIC
 const IMAGEN_ESQUINA_SUP_IZQ = "/disenos_sushi_house/9cbac6c8-d335-4ce7-9b0e-41f0c3f4615f.png";
 const IMAGEN_ESQUINA_INF_DER = "/disenos_sushi_house/f8a13bb8-5059-4841-a70c-f14c2eee70e9.png";
-const IMAGEN_MANO_SUP_DER = "/disenos_sushi_house/66f8a436-507c-4c4a-821f-4db7589b7377.png";
 const IMAGEN_TEXTO_LATERAL = "/disenos_sushi_house/e4a83fe3-b3f9-4d24-bbd1-af3582de7f34.png";
+// NUEVA IMAGEN QUE REEMPLAZA A LA MANO
+const IMAGEN_NUEVA_DECORACION = "/disenos_sushi_house/143eaea3-44c3-49d1-93ec-f1667326ca6e.png";
 
 function BurgerHouseCentro({ 
   menu, categorias, carrito, agregarAlCarrito, quitarDelCarrito, vaciarCarrito, 
@@ -50,11 +52,24 @@ function BurgerHouseCentro({
       {/* ==================================================== */}
       <div className="relative overflow-hidden pb-16 flex-1">
         
-        {/* ELEMENTOS DE FONDO */}
+        {/* --- ELEMENTOS DE FONDO CORREGIDOS --- */}
         <img src={IMAGEN_TEXTO_LATERAL} alt="" className="absolute left-2 md:left-6 top-[30%] h-64 md:h-96 w-auto object-contain z-0 opacity-30 pointer-events-none" />
         <img src={IMAGEN_ESQUINA_SUP_IZQ} alt="" className="absolute top-0 left-0 w-40 md:w-64 z-0 pointer-events-none" />
         <img src={IMAGEN_ESQUINA_INF_DER} alt="" className="absolute bottom-0 right-0 w-40 md:w-64 z-0 pointer-events-none" />
-        <img src={IMAGEN_MANO_SUP_DER} alt="" className="absolute top-[350px] right-0 w-48 md:w-72 object-contain z-0 pointer-events-none opacity-70" />
+        
+        {/* 1. NUEVA IMAGEN: ARRIBA A LA DERECHA (No en la esquina, con separación) */}
+        <img 
+          src={IMAGEN_NUEVA_DECORACION} 
+          alt="" 
+          className="absolute top-[150px] right-[50px] w-48 md:w-72 object-contain z-0 pointer-events-none opacity-80" 
+        />
+        
+        {/* 2. NUEVA IMAGEN: ABAJO A LA IZQUIERDA (Pegada en la esquina) */}
+        <img 
+          src={IMAGEN_NUEVA_DECORACION} 
+          alt="" 
+          className="absolute bottom-0 left-0 w-40 md:w-64 object-contain z-0 pointer-events-none opacity-80" 
+        />
 
         <div className="relative z-10 pt-20">
           
@@ -93,7 +108,7 @@ function BurgerHouseCentro({
             </div>
           </div>
 
-          {/* PRODUCTOS (Espaciado grande gap-6 y pt-8) */}
+          {/* PRODUCTOS */}
           <div className="max-w-2xl mx-auto px-4 pt-8 pb-16 flex flex-col gap-6 relative z-10">
             {productosAMostrar.map((prod, i) => {
               const itemEnCarrito = carrito.find(p => p.id === prod.id);
@@ -148,7 +163,7 @@ function BurgerHouseCentro({
       </div>
 
       {/* ==================================================== */}
-      {/* SECCIÓN 2: FOOTER INDEPENDIENTE Y ACHICADO           */}
+      {/* SECCIÓN 2: FOOTER INDEPENDIENTE                      */}
       {/* ==================================================== */}
       <div className="w-full bg-[#1a1614] border-t border-white/5 pt-8 pb-16 px-4">
         <div className="max-w-4xl mx-auto flex flex-col md:flex-row gap-8 items-center">
