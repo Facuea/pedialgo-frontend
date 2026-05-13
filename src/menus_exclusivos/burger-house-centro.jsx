@@ -3,8 +3,10 @@ import CarritoModal from "../components/CarritoModal";
 
 const IMAGEN_PLACEHOLDER = "https://res.cloudinary.com/dca2psqfg/image/upload/v1774931102/70144073-b918-4ef0-9b14-346e44f41f69_tla5uf.png";
 
-// REFERENCIA A LA IMAGEN EN TU CARPETA PUBLIC
-const IMAGEN_ESQUINA = "/disenos_sushi_house/9cbac6c8-d335-4ce7-9b0e-41f0c3f4615f.png";
+// REFERENCIAS A LAS IMÁGENES EN TU CARPETA PUBLIC
+const IMAGEN_ESQUINA_SUP_IZQ = "/disenos_sushi_house/9cbac6c8-d335-4ce7-9b0e-41f0c3f4615f.png";
+const IMAGEN_ESQUINA_INF_DER = "/disenos_sushi_house/f8a13bb8-5059-4841-a70c-f14c2eee70e9.png";
+const IMAGEN_MANO_SUP_DER = "/disenos_sushi_house/66f8a436-507c-4c4a-821f-4db7589b7377.png";
 
 function BurgerHouseCentro({ 
   menu, categorias, carrito, agregarAlCarrito, quitarDelCarrito, vaciarCarrito, 
@@ -24,27 +26,58 @@ function BurgerHouseCentro({
     .filter(prod => prod.eliminado !== true && !prod.nombre.toUpperCase().includes("(ELIMINADO)"));
 
   return (
-    // 1. FONDO COLOR #2e2725
+    // CONTENEDOR PRINCIPAL CON EL FONDO COLOR #2e2725
     <div 
       className="min-h-screen text-white font-sans selection:bg-orange-500 selection:text-white relative overflow-x-hidden"
       style={{ backgroundColor: '#2e2725' }}
     >
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap');
+        /* IMPORTAMOS FUENTE CHINESE-STYLE Y MONTSERRAT */
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Ma+Shan+Zheng&display=swap');
+        
         * { font-family: 'Montserrat', sans-serif; }
         .no-scrollbar::-webkit-scrollbar { display: none !important; }
         .no-scrollbar { -ms-overflow-style: none !important; scrollbar-width: none !important; }
         .neon-shadow { box-shadow: 0 0 15px rgba(249, 115, 22, 0.4); }
+        
+        /* ESTILO PARA EL TEXTO VERTICAL ORIENTAL */
+        .chinese-style-text {
+          font-family: 'Ma Shan Zheng', cursive;
+          writing-mode: vertical-rl;
+          text-orientation: upright;
+          letter-spacing: 0.5em; /* Espaciado entre letras */
+        }
       `}</style>
 
-      {/* 2. LA IMAGEN EN LA ESQUINA SUPERIOR IZQUIERDA (Pegada al borde) */}
+      {/* --- ELEMENTOS DE DISEÑO DE FONDO (z-0) --- */}
+
+      {/* 1. TEXTO VERTICAL "SUSHI MENÚ" EN EL LATERAL IZQUIERDO */}
+      <div className="fixed left-6 top-1/2 -translate-y-1/2 z-0 chinese-style-text text-white text-3xl font-bold opacity-30 pointer-events-none">
+        SUSHI MENÚ
+      </div>
+
+      {/* 2. IMAGEN ARRIBA A LA IZQUIERDA (Pegada al borde) */}
       <img 
-        src={IMAGEN_ESQUINA} 
+        src={IMAGEN_ESQUINA_SUP_IZQ} 
         alt="adorno" 
         className="absolute top-0 left-0 w-48 md:w-64 object-contain pointer-events-none z-0"
       />
 
-      {/* Contenido principal con z-index para estar sobre el adorno */}
+      {/* 3. IMAGEN ABAJO A LA DERECHA (Pegada al borde) */}
+      <img 
+        src={IMAGEN_ESQUINA_INF_DER} 
+        alt="adorno" 
+        className="absolute bottom-0 right-0 w-48 md:w-64 object-contain pointer-events-none z-0"
+      />
+
+      {/* 4. IMAGEN DE LA MANO ARRIBA A LA DERECHA (Un poco más abajo, no en la esquina) */}
+      <img 
+        src={IMAGEN_MANO_SUP_DER} 
+        alt="adorno" 
+        className="absolute top-[100px] right-0 w-64 md:w-96 object-contain pointer-events-none z-0"
+      />
+
+      {/* --- CONTENIDO PRINCIPAL (z-10) --- */}
       <div className="relative z-10 pt-16">
         
         {/* INFO DEL LOCAL */}
@@ -88,7 +121,7 @@ function BurgerHouseCentro({
         </div>
 
         {/* PRODUCTOS */}
-        <div className="max-w-5xl mx-auto px-6 pt-8 pb-32">
+        <div className="max-w-5xl mx-auto px-6 pt-8 pb-32 relative z-10">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {productosAMostrar.map((prod) => {
               const itemEnCarrito = carrito.find(p => p.id === prod.id);
@@ -100,7 +133,7 @@ function BurgerHouseCentro({
               return (
                 <div 
                   key={prod.id} 
-                  className={`bg-[#231e1c]/80 backdrop-blur-sm rounded-2xl overflow-hidden border transition-all duration-300 flex flex-col ${
+                  className={`bg-[#231e1c]/90 backdrop-blur-sm rounded-2xl overflow-hidden border transition-all duration-300 flex flex-col ${
                     !estaActivo ? "opacity-50 grayscale" : cantidad > 0 ? "border-orange-500/50 neon-shadow" : "border-orange-500/10 hover:border-orange-500/30"
                   }`}
                 >
