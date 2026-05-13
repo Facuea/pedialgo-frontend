@@ -58,7 +58,7 @@ export default function LandingPage() {
       
       <div className="bg-[#EFBF04]/60 pt-4 pb-16 px-6 lg:px-8 rounded-b-[2.5rem] shadow-md relative">
         
-        {/* --- NAVBAR COMPLETO --- */}
+        {/* --- NAVBAR --- */}
         <nav className="max-w-6xl mx-auto flex items-center justify-between mb-12 relative z-50">
           <img
             src="https://res.cloudinary.com/dca2psqfg/image/upload/q_auto/f_auto/v1776215308/LOGO12_smw0lx.png"
@@ -107,7 +107,6 @@ export default function LandingPage() {
           </button>
         </nav>
 
-        {/* --- MENÚ MÓVIL --- */}
         {isMobileMenuOpen && (
           <div className="md:hidden absolute top-20 left-6 right-6 bg-white rounded-2xl shadow-2xl z-50 p-6 flex flex-col gap-3 border border-slate-100 animate-in slide-in-from-top-4">
             <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">Servicios</p>
@@ -134,7 +133,6 @@ export default function LandingPage() {
           </div>
         )}
 
-        {/* --- HERO COMPLETO --- */}
         <div className="max-w-6xl mx-auto grid lg:grid-cols-[1.1fr_1fr] gap-10 items-center relative z-10">
           <div className="text-left">
             <h1
@@ -174,7 +172,7 @@ export default function LandingPage() {
         </div>
       </div>
 
-      {/* --- SECCIÓN 1: MENÚ DIGITAL + VIP --- */}
+      {/* --- SECCIÓN 1: MENÚ DIGITAL --- */}
       <section id="menu-digital" className="py-20 px-6 max-w-6xl mx-auto">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           <div className="order-1">
@@ -192,26 +190,24 @@ export default function LandingPage() {
             </div>
 
             <div className="flex flex-col gap-4">
-              {/* BLOQUE IDENTIDAD VIP */}
-              <div className="bg-slate-900 text-white rounded-2xl p-6 shadow-xl border-l-4 border-[#EFBF04]">
-                <h4 className="font-bold text-[#EFBF04] mb-2 flex items-center gap-2 text-lg">
-                  <Zap className="w-5 h-5" /> ¿Buscás algo único? (Identidad VIP)
-                </h4>
-                <p className="text-sm text-slate-300 font-medium leading-relaxed mb-4">
-                  Desarrollamos menús exclusivos con diseños de autor y animaciones a medida que rompen el molde tradicional.
+              {/* BLOQUE CARTA ÚNICA */}
+              <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+                <h4 className="font-bold text-slate-800 mb-2">¿Querés una carta única?</h4>
+                <p className="text-sm text-slate-600 font-medium leading-relaxed mb-4">
+                  Desarrollamos menús con diseños y animaciones personalizadas para locales que buscan distinguirse del resto.
                 </p>
-                <div className="flex items-center gap-3">
-                  <button 
+                <div className="flex flex-col gap-2">
+                  <button
                     onClick={() => window.open(SUSHI_DEMO_URL, '_blank')}
-                    className="text-xs font-black bg-[#EFBF04] text-black px-4 py-2 rounded-lg hover:scale-105 transition-transform"
+                    className="text-sm font-bold text-[#E43D4E] hover:text-[#c93442] items-center gap-1 transition-colors cursor-pointer inline-flex w-fit"
                   >
-                    VER DEMO VIP (SUSHI)
+                    Ver demo de carta única <ArrowRight className="w-4 h-4" />
                   </button>
-                  <button 
-                    onClick={() => handleWhatsApp('Hola, me interesa el diseño VIP personalizado.')}
-                    className="text-xs font-bold text-white underline decoration-[#EFBF04] hover:text-[#EFBF04]"
+                  <button
+                    onClick={() => handleWhatsApp('Hola, quiero consultar por una carta única personalizada.')}
+                    className="text-sm font-bold text-[#EFA02B] hover:text-[#d48c22] items-center gap-1 transition-colors cursor-pointer inline-flex w-fit"
                   >
-                    Consultar valor extra
+                    Consultar valor <ArrowRight className="w-4 h-4" />
                   </button>
                 </div>
               </div>
@@ -219,7 +215,7 @@ export default function LandingPage() {
               <div className="bg-slate-50 border border-slate-200 rounded-2xl p-6 shadow-sm">
                 <h4 className="font-bold text-slate-800 mb-2 flex items-center gap-2">Diseño a medida</h4>
                 <p className="text-sm text-slate-600 font-medium leading-relaxed mb-4">
-                  Si buscás que tu menú tenga una identidad visual completamente exclusiva, ofrecemos un servicio de desarrollo premium personalizado.
+                  Si buscás que tu menú tenga una identidad visual completamente exclusiva, ofrecemos un servicio de desarrollo personalizado.
                 </p>
                 <a
                   href="/planes"
@@ -250,44 +246,53 @@ export default function LandingPage() {
           </div>
           
           <div className="order-2 flex justify-center lg:justify-end">
-            <BlurredImageSlider image1="/persCart1.PNG" image2="/persCart2.PNG" />
+            <BlurredImageSlider 
+              image1="/persCart1.PNG" 
+              image2="/persCart2.PNG" 
+              image3="/persCart3.PNG" 
+            />
           </div>
         </div>
       </section>
 
-      {/* --- NUEVA SECCIÓN: MERCADO PAGO INTEGRADO --- */}
-      <section id="mercadopago" className="py-20 px-6 bg-slate-900 text-white overflow-hidden relative border-y border-white/5">
+      {/* --- SECCIÓN 2: MERCADO PAGO --- */}
+      <section id="mercadopago" className="py-20 px-6 bg-white border-y border-slate-100 relative">
         <div className="max-w-6xl mx-auto grid lg:grid-cols-2 gap-12 items-center">
           <div className="relative z-10">
-            <div className="inline-flex items-center gap-2 px-3 py-1 bg-blue-500/20 text-blue-400 rounded-full text-xs font-black uppercase tracking-tighter mb-4">
+            <div className="inline-flex items-center gap-2 px-3 py-1 bg-blue-100 text-blue-600 rounded-full text-xs font-black uppercase tracking-tighter mb-4">
               <CreditCard className="w-4 h-4" /> Cobros en Tiempo Real
             </div>
-            <h2 className="font-pedialgo text-4xl mb-6" style={{ fontFamily: 'FontPediAlgo' }}>Tu dinero, siempre con vos.</h2>
-            <p className="text-slate-400 mb-8 font-medium leading-relaxed">
-              Integramos tu propia cuenta de **Mercado Pago vía API**. Las ventas van directo de tu cliente a tu cuenta, sin intermediarios ni comisiones extras de nuestra parte.
+            <h2 className="font-pedialgo text-4xl mb-6 text-slate-800" style={{ fontFamily: 'FontPediAlgo' }}>Tu dinero, siempre con vos.</h2>
+            <p className="text-slate-600 mb-8 font-medium leading-relaxed">
+              Integramos tu propia cuenta de Mercado Pago. Las ventas van directo de tu cliente a tu cuenta, sin intermediarios ni comisiones extras de nuestra parte.
             </p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="bg-white/5 border border-white/10 p-5 rounded-2xl">
-                <p className="font-bold text-white mb-1">Cero Retenciones</p>
-                <p className="text-xs text-slate-400">Cobrás al instante en tu billetera de Mercado Pago.</p>
+              <div className="bg-slate-50 border border-slate-200 p-5 rounded-2xl">
+                <p className="font-bold text-slate-800 mb-1">Cero Retenciones</p>
+                <p className="text-xs text-slate-500">Cobrás al instante en tu billetera de Mercado Pago.</p>
               </div>
-              <div className="bg-white/5 border border-white/10 p-5 rounded-2xl">
-                <p className="font-bold text-white mb-1">Seguridad Total</p>
-                <p className="text-xs text-slate-400">Usamos el Checkout Pro oficial para máxima protección.</p>
+              <div className="bg-slate-50 border border-slate-200 p-5 rounded-2xl">
+                <p className="font-bold text-slate-800 mb-1">Seguridad Total</p>
+                <p className="text-xs text-slate-500">Usamos el sistema oficial para máxima protección.</p>
               </div>
             </div>
           </div>
           <div className="relative flex justify-center">
-            <div className="w-full max-w-sm aspect-[9/16] bg-slate-800 rounded-3xl border-4 border-slate-700 flex flex-col items-center justify-center text-center p-8 shadow-2xl relative overflow-hidden">
-               <div className="absolute inset-0 bg-blue-600/10 animate-pulse"></div>
-               <Zap className="text-white w-12 h-12 mb-4" />
-               <p className="text-xs font-black text-white uppercase tracking-widest">[ VIDEO: CLIENTE PAGANDO + NOTIFICACIÓN ]</p>
+            <div className="w-full max-w-sm aspect-[9/16] bg-slate-900 rounded-3xl border-[8px] border-slate-800 shadow-2xl relative overflow-hidden">
+               <video 
+                 src="/demostracionmp.mov" 
+                 autoPlay 
+                 loop 
+                 muted 
+                 playsInline 
+                 className="w-full h-full object-cover" 
+               />
             </div>
           </div>
         </div>
       </section>
 
-      {/* --- SECCIÓN 2: WHATSAPP --- */}
+      {/* --- SECCIÓN 3: WHATSAPP --- */}
       <section id="whatsapp" className="py-20 px-6 bg-white border-y border-slate-100">
         <div className="max-w-6xl mx-auto grid lg:grid-cols-2 gap-12 items-center">
           <div className="order-1 lg:order-2">
@@ -318,7 +323,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* --- SECCIÓN 3: MONITOR DE COCINA --- */}
+      {/* --- SECCIÓN 4: MONITOR DE COCINA --- */}
       <section id="monitor" className="py-20 px-6 max-w-6xl mx-auto">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           <div className="order-1">
@@ -357,7 +362,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* --- SECCIÓN 4: CONTROL FINANCIERO --- */}
+      {/* --- SECCIÓN 5: CONTROL FINANCIERO --- */}
       <section id="finanzas" className="py-20 px-6 bg-white border-y border-slate-100">
         <div className="max-w-6xl mx-auto grid lg:grid-cols-2 gap-12 items-center">
           <div className="order-1 lg:order-2">
@@ -373,7 +378,7 @@ export default function LandingPage() {
             </div>
             <a
               href="/planes"
-              className="text-sm font-bold text-emerald-600 hover:text-emerald-700  items-center gap-1 transition-colors cursor-pointer inline-flex"
+              className="text-sm font-bold text-emerald-600 hover:text-emerald-700 items-center gap-1 transition-colors cursor-pointer inline-flex"
             >
               Probar funciones gratis <ArrowRight className="w-4 h-4" />
             </a>
@@ -387,16 +392,13 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* --- SECCIÓN 5: IMPRESIÓN DE TICKETS + AUTOMATIZACIÓN --- */}
+      {/* --- SECCIÓN 6: IMPRESIÓN DE TICKETS --- */}
       <section id="tickets" className="py-20 px-6 bg-slate-50 border-b border-slate-100">
         <div className="max-w-6xl mx-auto grid lg:grid-cols-2 gap-12 items-center">
           <div className="order-1">
-            <div className="inline-flex items-center gap-2 px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-black mb-4">
-              <Zap className="w-3 h-3" /> Función Auto-Print
-            </div>
             <h2 className="font-pedialgo text-3xl text-[#1A1A1A] mb-4" style={{ fontFamily: 'FontPediAlgo' }}>Impresión automática.</h2>
             <p className="text-slate-600 mb-6 font-medium leading-relaxed">
-              Configurá el sistema para que, apenas entre un pedido o se confirme un pago, la ticketera **imprima automáticamente**.
+              Configurá el sistema para que, apenas entre un pedido o se confirme un pago, la ticketera imprima automáticamente.
               Ganá velocidad y evitá que los pedidos se acumulen en el monitor.
             </p>
             <div className="space-y-4 mb-8">
@@ -419,16 +421,11 @@ export default function LandingPage() {
                 <div className="flex justify-between pt-4 mt-4 border-t border-slate-200"><p className="font-bold text-black text-lg">TOTAL:</p><p className="font-bold text-black text-lg">$9000</p></div>
               </div>
             </div>
-            
-            <div className="w-full max-w-sm aspect-video bg-slate-200 rounded-2xl border-2 border-dashed border-slate-300 flex flex-col items-center justify-center text-center p-4">
-                <Printer className="w-8 h-8 text-slate-400 mb-2" />
-                <p className="text-[10px] font-bold text-slate-500 uppercase tracking-tighter">[ VIDEO: TICKET SALIENDO AUTOMÁTICAMENTE ]</p>
-            </div>
           </div>
         </div>
       </section>
 
-      {/* --- SECCIÓN 6: QR Y LINKS --- */}
+      {/* --- SECCIÓN 7: QR Y LINKS --- */}
       <section id="qr" className="py-20 px-6 max-w-6xl mx-auto">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           <div className="order-1 lg:order-2">
@@ -457,7 +454,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* --- RESUMEN DE SERVICIO (UN SOLO PLAN) --- */}
+      {/* --- RESUMEN DE SERVICIO --- */}
       <section className="py-24 px-6 bg-[#EFBF04] relative overflow-hidden">
         <div className="max-w-5xl mx-auto text-center relative z-10">
           <h2 className="font-pedialgo text-4xl lg:text-5xl text-[#1A1A1A] mb-6" style={{ fontFamily: 'FontPediAlgo' }}>Todo lo que tu local necesita.</h2>
@@ -466,7 +463,7 @@ export default function LandingPage() {
             Una plataforma integral diseñada para potenciar tus ventas sin comisiones.
             <br className="hidden md:block" />
             <strong className="font-black">Para que arranques hoy mismo, nosotros cargamos tu carta inicial por vos.</strong> <br />
-            <span className="font-bold underline">¿Querés un diseño exclusivo como el de Sushi House? Escribinos y coordinamos tu identidad VIP.</span>
+            <span className="font-bold underline">¿Querés un diseño único como el de Sushi House? Escribinos y coordinamos tu carta personalizada.</span>
           </p>
           
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-left mb-14">
@@ -539,7 +536,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* --- FOOTER COMPLETO --- */}
+      {/* --- FOOTER --- */}
       <footer className="bg-[#1A1A1A] pt-20 pb-10 px-6 border-t border-slate-800/50">
         <div className="max-w-6xl mx-auto flex flex-col items-center gap-8">
           <img
@@ -585,16 +582,20 @@ function BenefitItem({ text }) {
   );
 }
 
-function BlurredImageSlider({ image1, image2 }) {
-  const [showFirst, setShowFirst] = useState(true);
+function BlurredImageSlider({ image1, image2, image3 }) {
+  const [index, setIndex] = useState(0);
   useEffect(() => {
-    const interval = setInterval(() => { setShowFirst((prev) => !prev); }, 3500);
+    const interval = setInterval(() => {
+      setIndex((prev) => (prev + 1) % 3);
+    }, 3500);
     return () => clearInterval(interval);
   }, []);
+
   return (
     <div className="relative w-full max-w-70 lg:max-w-[320px] mx-auto aspect-1170/2327 rounded-[2.5rem] overflow-hidden shadow-2xl border-8 border-slate-900 bg-slate-100">
-      <img src={image1} className={`absolute inset-0 w-full h-full object-cover transition-all duration-1000 ${showFirst ? 'opacity-100 blur-0' : 'opacity-0 blur-md'}`} />
-      <img src={image2} className={`absolute inset-0 w-full h-full object-cover transition-all duration-1000 ${!showFirst ? 'opacity-100 blur-0' : 'opacity-0 blur-md'}`} />
+      <img src={image1} className={`absolute inset-0 w-full h-full object-cover transition-all duration-1000 ${index === 0 ? 'opacity-100 blur-0' : 'opacity-0 blur-md'}`} />
+      <img src={image2} className={`absolute inset-0 w-full h-full object-cover transition-all duration-1000 ${index === 1 ? 'opacity-100 blur-0' : 'opacity-0 blur-md'}`} />
+      <img src={image3} className={`absolute inset-0 w-full h-full object-cover transition-all duration-1000 ${index === 2 ? 'opacity-100 blur-0' : 'opacity-0 blur-md'}`} />
     </div>
   );
 }
