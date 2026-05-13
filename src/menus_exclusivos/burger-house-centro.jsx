@@ -34,7 +34,8 @@ function BurgerHouseCentro({
   const tieneRedes = redes.instagramUrl || redes.facebookUrl;
 
   return (
-    <div className="min-h-screen flex flex-col" style={{ backgroundColor: '#2e2725', color: colorTexto }}>
+    // CONTENEDOR MAESTRO (Con bloqueo estricto de scroll horizontal)
+    <div className="min-h-screen flex flex-col overflow-x-hidden w-full" style={{ backgroundColor: '#2e2725', color: colorTexto }}>
       
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=${fontUrlSafe}:wght@400;600;700;900&family=Ma+Shan+Zheng&display=swap');
@@ -47,24 +48,23 @@ function BurgerHouseCentro({
       {/* ==================================================== */}
       {/* SECCIÓN 1: DISEÑO PRINCIPAL (HEADER + PRODUCTOS)     */}
       {/* ==================================================== */}
-      <div className="relative overflow-hidden pb-16 flex-1">
+      <div className="relative pb-16 flex-1 w-full">
         
         {/* ELEMENTOS DE FONDO */}
         <img src={IMAGEN_TEXTO_LATERAL} alt="" className="absolute left-2 md:left-6 top-[30%] h-64 md:h-96 w-auto object-contain z-0 opacity-30 pointer-events-none" />
         <img src={IMAGEN_ESQUINA_SUP_IZQ} alt="" className="absolute top-0 left-0 w-40 md:w-64 z-0 pointer-events-none" />
         <img src={IMAGEN_ESQUINA_INF_DER} alt="" className="absolute bottom-0 right-0 w-40 md:w-64 z-0 pointer-events-none" />
         
-        {/* IMAGEN SUPERIOR CORREGIDA: MÁS A LA DERECHA */}
         <img 
           src={IMAGEN_NUEVA_DECORACION} 
           alt="" 
-          className="absolute top-[150px] right-[20px] md:right-[50px] w-48 md:w-72 object-contain z-0 pointer-events-none opacity-80" 
+          className="absolute top-[150px] right-[20px] md:right-[50px] w-48 md:w-72 object-contain z-0 pointer-events-none opacity-80 max-w-full" 
         />
         
         <img 
           src={IMAGEN_NUEVA_DECORACION} 
           alt="" 
-          className="absolute bottom-0 left-0 w-40 md:w-64 object-contain z-0 pointer-events-none opacity-80" 
+          className="absolute bottom-0 left-0 w-40 md:w-64 object-contain z-0 pointer-events-none opacity-80 max-w-full" 
         />
 
         <div className="relative z-10 pt-20">
@@ -79,11 +79,11 @@ function BurgerHouseCentro({
             </p>
           </div>
 
-          {/* LÍNEA SEPARADORA */}
+          {/* LÍNEA SEPARADORA (Solo arriba) */}
           <div className="w-2/3 max-w-md mx-auto border-t border-white/20 mb-6"></div>
 
-          {/* CATEGORÍAS (ANIMADAS Y 100% TRANSPARENTES) */}
-          <div className="sticky top-0 z-30 bg-transparent py-4 border-b border-white/5backdrop-blur-sm">
+          {/* CATEGORÍAS (Limpio, sin border bottom) */}
+          <div className="sticky top-0 z-30 bg-transparent py-4">
             <div className="flex overflow-x-auto gap-3 px-6 no-scrollbar max-w-4xl mx-auto justify-center">
               {categorias.map((cat) => {
                 const isActivo = categoriaActiva === cat.id;
@@ -107,7 +107,7 @@ function BurgerHouseCentro({
             </div>
           </div>
 
-          {/* PRODUCTOS (ANIMADOS) */}
+          {/* PRODUCTOS */}
           <div className="max-w-2xl mx-auto px-4 pt-8 pb-16 flex flex-col gap-6 relative z-10">
             {productosAMostrar.map((prod, i) => {
               const itemEnCarrito = carrito.find(p => p.id === prod.id);
@@ -143,7 +143,7 @@ function BurgerHouseCentro({
                           {cantidad > 0 && <span className="px-2 md:px-3 text-xs md:text-sm font-bold">{cantidad}</span>}
                           <button 
                             onClick={() => agregarAlCarrito(prod)} 
-                            className="px-3 py-1 rounded-full text-[9px] md:text-[10px] font-black uppercase tracking-wider hover:brightness-110 cursor-pointer transition-all duration-300 ${colorPrimario === '#fdeaaa' ? 'hover:bg-[#fdeaaa1a]' : 'hover:brightness-110'}"
+                            className="px-3 py-1 rounded-full text-[9px] md:text-[10px] font-black uppercase tracking-wider hover:brightness-110 cursor-pointer transition-all duration-300"
                             style={{ backgroundColor: colorPrimario, color: '#2e2725' }}
                           >
                             {cantidad > 0 ? "+" : "Agregar"}
@@ -214,7 +214,7 @@ function BurgerHouseCentro({
       </div>
 
       {/* ==================================================== */}
-      {/* ELEMENTOS FLOTANTES (CARRITO MÁS GRANDE Y MODAL)    */}
+      {/* ELEMENTOS FLOTANTES (CARRITO Y MODAL)                */}
       {/* ==================================================== */}
       {totalItems > 0 && !mostrarCarrito && (
         <div
