@@ -3,8 +3,8 @@ import CarritoModal from "../components/CarritoModal";
 
 const IMAGEN_PLACEHOLDER = "https://res.cloudinary.com/dca2psqfg/image/upload/v1774931102/70144073-b918-4ef0-9b14-346e44f41f69_tla5uf.png";
 
-// ACÁ VAMOS A PONER EL LINK DE TU IMAGEN CUANDO ME LO PASES
-const IMAGEN_ESQUINA_IZQ = "https://via.placeholder.com/300x300/444444/FFFFFF?text=Tu+Imagen+Aca"; 
+// REFERENCIA A LA IMAGEN EN TU CARPETA PUBLIC
+const IMAGEN_ESQUINA = "/disenos_sushi_house/9cbac6c8-d335-4ce7-9b0e-41f0c3f4615f.png";
 
 function BurgerHouseCentro({ 
   menu, categorias, carrito, agregarAlCarrito, quitarDelCarrito, vaciarCarrito, 
@@ -24,7 +24,7 @@ function BurgerHouseCentro({
     .filter(prod => prod.eliminado !== true && !prod.nombre.toUpperCase().includes("(ELIMINADO)"));
 
   return (
-    // 1. EL FONDO LISO COLOR #2e2725
+    // 1. FONDO COLOR #2e2725
     <div 
       className="min-h-screen text-white font-sans selection:bg-orange-500 selection:text-white relative overflow-x-hidden"
       style={{ backgroundColor: '#2e2725' }}
@@ -37,19 +37,19 @@ function BurgerHouseCentro({
         .neon-shadow { box-shadow: 0 0 15px rgba(249, 115, 22, 0.4); }
       `}</style>
 
-      {/* 2. LA IMAGEN ARRIBA A LA IZQUIERDA (Bien pegada a la esquina) */}
+      {/* 2. LA IMAGEN EN LA ESQUINA SUPERIOR IZQUIERDA (Pegada al borde) */}
       <img 
-        src={IMAGEN_ESQUINA_IZQ} 
-        alt="adorno esquina" 
-        className="absolute top-0 left-0 w-32 md:w-48 object-contain pointer-events-none z-0"
+        src={IMAGEN_ESQUINA} 
+        alt="adorno" 
+        className="absolute top-0 left-0 w-48 md:w-64 object-contain pointer-events-none z-0"
       />
 
-      {/* Contenido principal (con z-index para que quede por encima de los adornos de fondo) */}
-      <div className="relative z-10 pt-10">
+      {/* Contenido principal con z-index para estar sobre el adorno */}
+      <div className="relative z-10 pt-16">
         
         {/* INFO DEL LOCAL */}
         <div className="text-center px-4 flex flex-col items-center">
-          <div className="w-28 h-28 rounded-full p-1 bg-[#2e2725] neon-shadow mb-4 overflow-hidden border-2 border-orange-500/20">
+          <div className="w-32 h-32 rounded-full p-1 bg-[#2e2725] neon-shadow mb-4 overflow-hidden border-2 border-orange-500/20">
             <img 
               src={menu.tema?.logoUrl || IMAGEN_PLACEHOLDER} 
               alt="Logo" 
@@ -57,16 +57,16 @@ function BurgerHouseCentro({
             />
           </div>
           
-          <h1 className="text-3xl font-black uppercase tracking-tighter text-white drop-shadow-md">
-            {menu.nombre}
+          <h1 className="text-4xl font-black uppercase tracking-tighter text-white drop-shadow-lg">
+            Sushi House
           </h1>
           <p className="text-neutral-300 font-medium mt-1 max-w-md mx-auto text-sm">
-            {menu.descripcion}
+            {menu.descripcion || "Experiencia de sushi premium."}
           </p>
         </div>
 
         {/* CATEGORÍAS */}
-        <div className="sticky top-0 z-30 bg-[#2e2725]/90 backdrop-blur-md border-b border-orange-500/10 mt-8 py-4">
+        <div className="sticky top-0 z-30 bg-[#2e2725]/90 backdrop-blur-md border-b border-orange-500/10 mt-12 py-4">
           <div className="flex overflow-x-auto gap-3 px-6 no-scrollbar max-w-5xl mx-auto">
             {categorias.map((cat) => {
               const isActivo = categoriaActiva === cat.id;
@@ -100,11 +100,11 @@ function BurgerHouseCentro({
               return (
                 <div 
                   key={prod.id} 
-                  className={`bg-[#231e1c] rounded-2xl overflow-hidden border transition-all duration-300 flex flex-col ${
+                  className={`bg-[#231e1c]/80 backdrop-blur-sm rounded-2xl overflow-hidden border transition-all duration-300 flex flex-col ${
                     !estaActivo ? "opacity-50 grayscale" : cantidad > 0 ? "border-orange-500/50 neon-shadow" : "border-orange-500/10 hover:border-orange-500/30"
                   }`}
                 >
-                  <div className="relative h-40 w-full bg-neutral-900">
+                  <div className="relative h-44 w-full bg-neutral-900">
                     {!estaActivo && (
                       <div className="absolute top-3 left-3 bg-red-600 text-white text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-md z-10">
                         Agotado
@@ -129,7 +129,7 @@ function BurgerHouseCentro({
                     
                     <div className="flex items-center justify-between mt-auto pt-4 border-t border-orange-500/10">
                       <div>
-                        <p className="text-xl font-black text-orange-400" style={{fontFamily: 'Montserrat'}}>${precioVenta}</p>
+                        <p className="text-2xl font-black text-orange-400" style={{fontFamily: 'Montserrat'}}>${precioVenta}</p>
                         {hayDescuento && <p className="text-xs text-neutral-500 line-through">${prod.precio}</p>}
                       </div>
 
@@ -183,7 +183,7 @@ function BurgerHouseCentro({
         vaciarCarrito={vaciarCarrito}
         totalDinero={totalDinero}
         tema={menu.tema}
-        nombreLocal={menu.nombre}
+        nombreLocal="Sushi House"
         numeroWhatsApp={menu.whatsapp}
         slug={slug}
         subtotal={subtotal}
