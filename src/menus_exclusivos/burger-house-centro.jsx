@@ -7,6 +7,8 @@ const IMAGEN_PLACEHOLDER = "https://res.cloudinary.com/dca2psqfg/image/upload/v1
 const IMAGEN_ESQUINA_SUP_IZQ = "/disenos_sushi_house/9cbac6c8-d335-4ce7-9b0e-41f0c3f4615f.png";
 const IMAGEN_ESQUINA_INF_DER = "/disenos_sushi_house/f8a13bb8-5059-4841-a70c-f14c2eee70e9.png";
 const IMAGEN_MANO_SUP_DER = "/disenos_sushi_house/66f8a436-507c-4c4a-821f-4db7589b7377.png";
+// NUEVA IMAGEN VERTICAL DEL MENÚ IZQUIERDO
+const IMAGEN_TEXTO_LATERAL = "/disenos_sushi_house/e4a83fe3-b3f9-4d24-bbd1-af3582de7f34.png";
 
 function BurgerHouseCentro({ 
   menu, categorias, carrito, agregarAlCarrito, quitarDelCarrito, vaciarCarrito, 
@@ -32,29 +34,23 @@ function BurgerHouseCentro({
       style={{ backgroundColor: '#2e2725' }}
     >
       <style>{`
-        /* IMPORTAMOS FUENTE CHINESE-STYLE Y MONTSERRAT */
-        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Ma+Shan+Zheng&display=swap');
+        /* SOLO IMPORTAMOS MONTSERRAT, YA NO HACE FALTA LA FUENTE CHINA */
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap');
         
         * { font-family: 'Montserrat', sans-serif; }
         .no-scrollbar::-webkit-scrollbar { display: none !important; }
         .no-scrollbar { -ms-overflow-style: none !important; scrollbar-width: none !important; }
         .neon-shadow { box-shadow: 0 0 15px rgba(249, 115, 22, 0.4); }
-        
-        /* ESTILO PARA EL TEXTO VERTICAL ORIENTAL */
-        .chinese-style-text {
-          font-family: 'Ma Shan Zheng', cursive;
-          writing-mode: vertical-rl;
-          text-orientation: upright;
-          letter-spacing: 0.5em; /* Espaciado entre letras */
-        }
       `}</style>
 
       {/* --- ELEMENTOS DE DISEÑO DE FONDO (z-0) --- */}
 
-      {/* 1. TEXTO VERTICAL "SUSHI MENÚ" EN EL LATERAL IZQUIERDO */}
-      <div className="fixed left-6 top-1/2 -translate-y-1/2 z-0 chinese-style-text text-white text-3xl font-bold opacity-30 pointer-events-none">
-        SUSHI MENÚ
-      </div>
+      {/* 1. IMAGEN VERTICAL "SUSHI MENÚ" EN EL LATERAL IZQUIERDO */}
+      <img 
+        src={IMAGEN_TEXTO_LATERAL} 
+        alt="Sushi Menu" 
+        className="fixed left-2 md:left-6 top-1/2 -translate-y-1/2 h-64 md:h-96 w-auto object-contain pointer-events-none z-0 opacity-60"
+      />
 
       {/* 2. IMAGEN ARRIBA A LA IZQUIERDA (Pegada al borde) */}
       <img 
