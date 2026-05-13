@@ -18,11 +18,9 @@ function BurgerHouseCentro({
   const [mostrarCarrito, setMostrarCarrito] = useState(false);
 
   // Variables del Backend 
-  const { colorPrimario, colorSecundario = "#F1A139", colorTexto, fuente } = menu.tema || { colorPrimario: "#fdeaaa", colorTexto: "#ffffff", fuente: "Montserrat" };
+  const { colorPrimario, colorTexto, fuente } = menu.tema || { colorPrimario: "#fdeaaa", colorTexto: "#ffffff", fuente: "Montserrat" };
   const fontName = fuente || 'Montserrat';
   const fontUrlSafe = fontName.replace(/ /g, '+');
-
-  const sucursales = menu.localesFranquicia || menu.sucursales || [];
 
   useEffect(() => {
     if (categorias && categorias.length > 0 && !categoriaActiva) {
@@ -58,48 +56,20 @@ function BurgerHouseCentro({
         <img src={IMAGEN_ESQUINA_INF_DER} alt="" className="absolute bottom-0 right-0 w-40 md:w-64 z-0 pointer-events-none" />
         <img src={IMAGEN_MANO_SUP_DER} alt="" className="absolute top-[350px] right-0 w-48 md:w-72 object-contain z-0 pointer-events-none opacity-70" />
 
-        <div className="relative z-10 pt-16">
+        <div className="relative z-10 pt-20">
           
-          {/* CABECERA */}
-          <div className="text-center px-4 mb-4">
+          {/* CABECERA (Sushi House + Descripción) */}
+          <div className="text-center px-4 mb-8">
             <h1 className="text-5xl md:text-6xl font-oriental text-white mb-2">
               Sushi House
             </h1>
-            <p className="text-lg md:text-xl font-oriental text-neutral-400 mb-4">
+            <p className="text-lg md:text-xl font-oriental text-neutral-400">
               {menu.descripcion}
             </p>
           </div>
 
-          {/* SELECTOR DE SUCURSALES (CORREGIDO) */}
-          {sucursales.length > 0 && (
-            <div className="flex flex-wrap items-center justify-center gap-3 mb-6 px-4 max-w-2xl mx-auto">
-              {sucursales.map(sucursal => {
-                // Validación estricta usando ID o Slug
-                const isActivo = sucursal.id === menu.id || sucursal.slug === slug;
-                
-                // Salvavidas para asegurar que imprima un nombre real y no colapse
-                const nombreAMostrar = sucursal.nombre || sucursal.nombreLocal || "Sucursal";
-
-                return (
-                  <a
-                    key={sucursal.id || Math.random()}
-                    href={`/${sucursal.slug}`}
-                    className="px-4 py-2 rounded-full border text-[11px] md:text-xs font-bold transition-all whitespace-nowrap"
-                    style={{ 
-                      backgroundColor: isActivo ? colorSecundario : 'transparent',
-                      color: isActivo ? '#2e2725' : '#a3a3a3',
-                      borderColor: isActivo ? colorSecundario : 'rgba(255,255,255,0.15)'
-                    }}
-                  >
-                    {nombreAMostrar}
-                  </a>
-                );
-              })}
-            </div>
-          )}
-
           {/* CATEGORÍAS */}
-          <div className="sticky top-0 z-30 bg-transparent py-4">
+          <div className="sticky top-0 z-30 bg-transparent py-4 border-b border-white/5 backdrop-blur-sm">
             <div className="flex overflow-x-auto gap-3 px-6 no-scrollbar max-w-4xl mx-auto justify-center">
               {categorias.map((cat) => {
                 const isActivo = categoriaActiva === cat.id;
@@ -107,7 +77,7 @@ function BurgerHouseCentro({
                   <button
                     key={cat.id}
                     onClick={() => setCategoriaActiva(cat.id)}
-                    className={`px-5 py-2 rounded-full font-bold text-[10px] tracking-widest uppercase transition-all duration-300 ${
+                    className={`px-5 py-2.5 rounded-full font-bold text-[10px] tracking-widest uppercase transition-all duration-300 ${
                       isActivo ? "shadow-lg scale-105" : "text-neutral-500 hover:text-white"
                     }`}
                     style={{ 
@@ -123,8 +93,8 @@ function BurgerHouseCentro({
             </div>
           </div>
 
-          {/* PRODUCTOS */}
-          <div className="max-w-xl mx-auto px-4 pt-4 flex flex-col gap-4">
+          {/* PRODUCTOS (Espaciado grande gap-6 y pt-8) */}
+          <div className="max-w-2xl mx-auto px-4 pt-8 pb-16 flex flex-col gap-6 relative z-10">
             {productosAMostrar.map((prod, i) => {
               const itemEnCarrito = carrito.find(p => p.id === prod.id);
               const cantidad = itemEnCarrito ? itemEnCarrito.cantidad : 0;
@@ -134,7 +104,7 @@ function BurgerHouseCentro({
               return (
                 <div 
                   key={prod.id} 
-                  className={`flex items-center gap-4 bg-[#231e1c]/80 backdrop-blur-md rounded-2xl p-3 border border-white/5 shadow-md ${esPar ? 'flex-row' : 'flex-row-reverse'}`}
+                  className={`flex items-center gap-4 bg-[#231e1c]/80 backdrop-blur-md rounded-2xl p-3.5 border border-white/5 shadow-xl ${esPar ? 'flex-row' : 'flex-row-reverse'}`}
                 >
                   <div className="w-24 h-24 md:w-28 md:h-28 rounded-xl overflow-hidden shrink-0 border border-white/10">
                     <img 
@@ -159,7 +129,7 @@ function BurgerHouseCentro({
                           {cantidad > 0 && <span className="px-2 md:px-3 text-xs md:text-sm font-bold">{cantidad}</span>}
                           <button 
                             onClick={() => agregarAlCarrito(prod)} 
-                            className="px-3 py-1.5 md:px-4 md:py-1.5 rounded-full text-[9px] md:text-[10px] font-black uppercase tracking-wider hover:brightness-110 cursor-pointer transition-all"
+                            className="px-3 py-1 rounded-full text-[9px] md:text-[10px] font-black uppercase tracking-wider hover:brightness-110 cursor-pointer transition-all"
                             style={{ backgroundColor: colorPrimario, color: '#2e2725' }}
                           >
                             {cantidad > 0 ? "+" : "Agregar"}
@@ -178,25 +148,25 @@ function BurgerHouseCentro({
       </div>
 
       {/* ==================================================== */}
-      {/* SECCIÓN 2: FOOTER INDEPENDIENTE                      */}
+      {/* SECCIÓN 2: FOOTER INDEPENDIENTE Y ACHICADO           */}
       {/* ==================================================== */}
-      <div className="w-full bg-[#1a1614] border-t border-white/5 pt-12 pb-28 px-6">
-        <div className="max-w-4xl mx-auto flex flex-col md:flex-row gap-10 items-center">
+      <div className="w-full bg-[#1a1614] border-t border-white/5 pt-8 pb-16 px-4">
+        <div className="max-w-4xl mx-auto flex flex-col md:flex-row gap-8 items-center">
           
           {tieneRedes && (
             <div className="text-center md:text-left flex-1">
-              <h2 className="text-3xl font-oriental mb-3 text-white">Sushi House</h2>
-              <p className="text-xs text-neutral-500 mb-6 max-w-sm leading-relaxed mx-auto md:mx-0">
+              <h2 className="text-2xl font-oriental mb-2 text-white">Sushi House</h2>
+              <p className="text-[11px] text-neutral-500 mb-5 max-w-xs leading-relaxed mx-auto md:mx-0 opacity-80">
                 Encontranos en nuestras redes sociales y enterate de todas las promociones y novedades exclusivas.
               </p>
-              <div className="flex justify-center md:justify-start gap-3">
+              <div className="flex justify-center md:justify-start gap-2.5">
                 {redes.instagramUrl && (
-                  <a href={redes.instagramUrl} target="_blank" rel="noreferrer" className="w-12 h-12 rounded-full flex items-center justify-center bg-[#2e2725] border border-white/10 hover:scale-110 transition-transform" style={{ color: colorPrimario }}>
+                  <a href={redes.instagramUrl} target="_blank" rel="noreferrer" className="w-10 h-10 rounded-full flex items-center justify-center bg-[#2e2725] border border-white/10 hover:scale-110 transition-transform shadow-md" style={{ color: colorPrimario }}>
                     <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"></path></svg>
                   </a>
                 )}
                 {redes.facebookUrl && (
-                  <a href={redes.facebookUrl} target="_blank" rel="noreferrer" className="w-12 h-12 rounded-full flex items-center justify-center bg-[#2e2725] border border-white/10 hover:scale-110 transition-transform" style={{ color: colorPrimario }}>
+                  <a href={redes.facebookUrl} target="_blank" rel="noreferrer" className="w-10 h-10 rounded-full flex items-center justify-center bg-[#2e2725] border border-white/10 hover:scale-110 transition-transform shadow-md" style={{ color: colorPrimario }}>
                     <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v3.385z"></path></svg>
                   </a>
                 )}
@@ -207,23 +177,23 @@ function BurgerHouseCentro({
           {redes.direccionMapaEmbed && (
             <div className={`w-full ${tieneRedes ? 'md:w-1/2' : 'max-w-xl mx-auto'} rounded-2xl overflow-hidden border border-white/10 shadow-2xl`}>
               <div 
-                className="w-full h-48 md:h-56 [&>iframe]:w-full [&>iframe]:h-full [&>iframe]:border-0"
+                className="w-full h-48 md:h-52 [&>iframe]:w-full [&>iframe]:h-full [&>iframe]:border-0"
                 dangerouslySetInnerHTML={{ __html: redes.direccionMapaEmbed }}
               />
             </div>
           )}
         </div>
         
-        {/* DESARROLLADO POR */}
-        <div className="max-w-4xl mx-auto mt-12 pt-8 border-t border-white/5 flex flex-col items-center justify-center gap-2 text-center">
-          <p className="text-[11px] text-neutral-500 font-medium tracking-wide">
+        {/* DESARROLLADO POR PediAlgo */}
+        <div className="max-w-4xl mx-auto mt-8 pt-6 border-t border-white/5 flex flex-col items-center justify-center gap-2 text-center text-neutral-600 opacity-60">
+          <p className="text-[10px] font-medium tracking-wide">
              &copy; {new Date().getFullYear()} {menu.nombre}. Todos los derechos reservados.
           </p>
           <a 
             href="https://pedialgoar.com" 
             target="_blank" 
             rel="noreferrer" 
-            className="text-[9px] text-neutral-600 hover:text-white transition-colors font-bold uppercase tracking-widest"
+            className="text-[8px] font-bold uppercase tracking-widest hover:text-white transition-colors"
           >
             Desarrollado por pedialgoar.com
           </a>
@@ -243,7 +213,7 @@ function BurgerHouseCentro({
             <span className="text-[9px] font-black uppercase opacity-70">Total</span>
             <span className="font-black text-lg">${totalDinero}</span>
           </div>
-          <div className="w-8 h-8 rounded-lg bg-[#2e2725] text-white flex items-center justify-center font-bold text-sm">
+          <div className="w-8 h-8 rounded-lg bg-[#2e2725] text-white flex items-center justify-center font-bold text-sm shadow-inner">
             {totalItems}
           </div>
         </div>
