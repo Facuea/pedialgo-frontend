@@ -17,7 +17,7 @@ function BurgerHouseCentro({
   const [categoriaActiva, setCategoriaActiva] = useState(null);
   const [mostrarCarrito, setMostrarCarrito] = useState(false);
 
-  // Variables del Backend (Agregamos colorSecundario)
+  // Variables del Backend 
   const { colorPrimario, colorSecundario = "#F1A139", colorTexto, fuente } = menu.tema || { colorPrimario: "#fdeaaa", colorTexto: "#ffffff", fuente: "Montserrat" };
   const fontName = fuente || 'Montserrat';
   const fontUrlSafe = fontName.replace(/ /g, '+');
@@ -52,7 +52,7 @@ function BurgerHouseCentro({
       {/* ==================================================== */}
       <div className="relative overflow-hidden pb-16 flex-1">
         
-        {/* ELEMENTOS DE FONDO (Encapsulados solo en esta sección) */}
+        {/* ELEMENTOS DE FONDO */}
         <img src={IMAGEN_TEXTO_LATERAL} alt="" className="absolute left-2 md:left-6 top-[30%] h-64 md:h-96 w-auto object-contain z-0 opacity-30 pointer-events-none" />
         <img src={IMAGEN_ESQUINA_SUP_IZQ} alt="" className="absolute top-0 left-0 w-40 md:w-64 z-0 pointer-events-none" />
         <img src={IMAGEN_ESQUINA_INF_DER} alt="" className="absolute bottom-0 right-0 w-40 md:w-64 z-0 pointer-events-none" />
@@ -70,14 +70,19 @@ function BurgerHouseCentro({
             </p>
           </div>
 
-          {/* SELECTOR DE SUCURSALES (Usa colorSecundario y nombre real) */}
+          {/* SELECTOR DE SUCURSALES (CORREGIDO) */}
           {sucursales.length > 0 && (
             <div className="flex flex-wrap items-center justify-center gap-3 mb-6 px-4 max-w-2xl mx-auto">
               {sucursales.map(sucursal => {
-                const isActivo = sucursal.slug === menu.slug;
+                // Validación estricta usando ID o Slug
+                const isActivo = sucursal.id === menu.id || sucursal.slug === slug;
+                
+                // Salvavidas para asegurar que imprima un nombre real y no colapse
+                const nombreAMostrar = sucursal.nombre || sucursal.nombreLocal || "Sucursal";
+
                 return (
                   <a
-                    key={sucursal.id}
+                    key={sucursal.id || Math.random()}
                     href={`/${sucursal.slug}`}
                     className="px-4 py-2 rounded-full border text-[11px] md:text-xs font-bold transition-all whitespace-nowrap"
                     style={{ 
@@ -86,7 +91,7 @@ function BurgerHouseCentro({
                       borderColor: isActivo ? colorSecundario : 'rgba(255,255,255,0.15)'
                     }}
                   >
-                    {sucursal.nombre}
+                    {nombreAMostrar}
                   </a>
                 );
               })}
@@ -173,7 +178,7 @@ function BurgerHouseCentro({
       </div>
 
       {/* ==================================================== */}
-      {/* SECCIÓN 2: FOOTER TOTALMENTE INDEPENDIENTE           */}
+      {/* SECCIÓN 2: FOOTER INDEPENDIENTE                      */}
       {/* ==================================================== */}
       <div className="w-full bg-[#1a1614] border-t border-white/5 pt-12 pb-28 px-6">
         <div className="max-w-4xl mx-auto flex flex-col md:flex-row gap-10 items-center">
