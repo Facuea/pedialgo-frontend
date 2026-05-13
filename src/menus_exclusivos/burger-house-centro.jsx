@@ -54,10 +54,11 @@ function BurgerHouseCentro({
         <img src={IMAGEN_ESQUINA_SUP_IZQ} alt="" className="absolute top-0 left-0 w-40 md:w-64 z-0 pointer-events-none" />
         <img src={IMAGEN_ESQUINA_INF_DER} alt="" className="absolute bottom-0 right-0 w-40 md:w-64 z-0 pointer-events-none" />
         
+        {/* IMAGEN SUPERIOR CORREGIDA: MÁS A LA DERECHA */}
         <img 
           src={IMAGEN_NUEVA_DECORACION} 
           alt="" 
-          className="absolute top-[150px] right-[50px] w-48 md:w-72 object-contain z-0 pointer-events-none opacity-80" 
+          className="absolute top-[150px] right-[20px] md:right-[50px] w-48 md:w-72 object-contain z-0 pointer-events-none opacity-80" 
         />
         
         <img 
@@ -69,7 +70,7 @@ function BurgerHouseCentro({
         <div className="relative z-10 pt-20">
           
           {/* CABECERA */}
-          <div className="text-center px-4 mb-6">
+          <div className="text-center px-4 mb-6 relative">
             <h1 className="text-5xl md:text-6xl font-oriental text-white mb-2">
               Sushi House
             </h1>
@@ -81,8 +82,8 @@ function BurgerHouseCentro({
           {/* LÍNEA SEPARADORA */}
           <div className="w-2/3 max-w-md mx-auto border-t border-white/20 mb-6"></div>
 
-          {/* CATEGORÍAS (100% TRANSPARENTES, SIN BLUR) */}
-          <div className="sticky top-0 z-30 bg-transparent py-4">
+          {/* CATEGORÍAS (ANIMADAS Y 100% TRANSPARENTES) */}
+          <div className="sticky top-0 z-30 bg-transparent py-4 border-b border-white/5backdrop-blur-sm">
             <div className="flex overflow-x-auto gap-3 px-6 no-scrollbar max-w-4xl mx-auto justify-center">
               {categorias.map((cat) => {
                 const isActivo = categoriaActiva === cat.id;
@@ -106,7 +107,7 @@ function BurgerHouseCentro({
             </div>
           </div>
 
-          {/* PRODUCTOS */}
+          {/* PRODUCTOS (ANIMADOS) */}
           <div className="max-w-2xl mx-auto px-4 pt-8 pb-16 flex flex-col gap-6 relative z-10">
             {productosAMostrar.map((prod, i) => {
               const itemEnCarrito = carrito.find(p => p.id === prod.id);
@@ -117,7 +118,7 @@ function BurgerHouseCentro({
               return (
                 <div 
                   key={prod.id} 
-                  className={`flex items-center gap-4 bg-[#231e1c]/80 backdrop-blur-md rounded-2xl p-3.5 border border-white/5 shadow-xl ${esPar ? 'flex-row' : 'flex-row-reverse'}`}
+                  className={`flex items-center gap-4 bg-[#231e1c]/80 backdrop-blur-md rounded-2xl p-3.5 border border-white/5 shadow-xl transition-all duration-300 hover:scale-105 hover:bg-[#231e1c] ${esPar ? 'flex-row' : 'flex-row-reverse'}`}
                 >
                   <div className="w-24 h-24 md:w-28 md:h-28 rounded-xl overflow-hidden shrink-0 border border-white/10">
                     <img 
@@ -135,14 +136,14 @@ function BurgerHouseCentro({
                       <span className="text-lg md:text-xl font-black" style={{ color: colorPrimario }}>${precioVenta}</span>
                       
                       {prod.activo !== false ? (
-                        <div className="flex items-center bg-black/20 rounded-full p-0.5 border border-white/5">
+                        <div className="flex items-center bg-black/20 rounded-full p-0.5 border border-white/5 mt-1">
                           {cantidad > 0 && (
-                            <button onClick={() => quitarDelCarrito(prod)} className="w-6 h-6 md:w-7 md:h-7 rounded-full text-white font-bold cursor-pointer hover:bg-white/10 transition-colors">-</button>
+                            <button onClick={() => quitarDelCarrito(prod)} className="w-6 h-6 md:w-7 md:h-7 rounded-full text-white font-bold cursor-pointer transition-colors hover:bg-white/10">-</button>
                           )}
                           {cantidad > 0 && <span className="px-2 md:px-3 text-xs md:text-sm font-bold">{cantidad}</span>}
                           <button 
                             onClick={() => agregarAlCarrito(prod)} 
-                            className="px-3 py-1 rounded-full text-[9px] md:text-[10px] font-black uppercase tracking-wider hover:brightness-110 cursor-pointer transition-all"
+                            className="px-3 py-1 rounded-full text-[9px] md:text-[10px] font-black uppercase tracking-wider hover:brightness-110 cursor-pointer transition-all duration-300 ${colorPrimario === '#fdeaaa' ? 'hover:bg-[#fdeaaa1a]' : 'hover:brightness-110'}"
                             style={{ backgroundColor: colorPrimario, color: '#2e2725' }}
                           >
                             {cantidad > 0 ? "+" : "Agregar"}
@@ -213,19 +214,19 @@ function BurgerHouseCentro({
       </div>
 
       {/* ==================================================== */}
-      {/* ELEMENTOS FLOTANTES (CARRITO Y MODAL)                */}
+      {/* ELEMENTOS FLOTANTES (CARRITO MÁS GRANDE Y MODAL)    */}
       {/* ==================================================== */}
       {totalItems > 0 && !mostrarCarrito && (
         <div
           onClick={() => setMostrarCarrito(true)}
-          className="fixed bottom-6 right-6 flex items-center gap-3 px-5 py-2.5 rounded-xl cursor-pointer z-50 transition-all hover:scale-105 shadow-2xl"
+          className="fixed bottom-6 right-6 flex items-center gap-4 px-7 py-4 rounded-2xl cursor-pointer z-50 transition-all hover:scale-105 shadow-2xl"
           style={{ backgroundColor: colorPrimario, color: '#2e2725' }}
         >
           <div className="flex flex-col">
-            <span className="text-[9px] font-black uppercase opacity-70">Total</span>
-            <span className="font-black text-lg">${totalDinero}</span>
+            <span className="text-[10px] font-black uppercase opacity-70">Total</span>
+            <span className="font-black text-2xl">${totalDinero}</span>
           </div>
-          <div className="w-8 h-8 rounded-lg bg-[#2e2725] text-white flex items-center justify-center font-bold text-sm shadow-inner">
+          <div className="w-12 h-12 rounded-xl bg-[#2e2725] text-white flex items-center justify-center font-bold text-lg shadow-inner">
             {totalItems}
           </div>
         </div>
