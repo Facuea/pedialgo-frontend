@@ -3,11 +3,9 @@ import CarritoModal from "../components/CarritoModal";
 
 const IMAGEN_PLACEHOLDER = "https://res.cloudinary.com/dca2psqfg/image/upload/v1774931102/70144073-b918-4ef0-9b14-346e44f41f69_tla5uf.png";
 
-// REFERENCIAS A LAS IMÁGENES EN TU CARPETA PUBLIC
 const IMAGEN_ESQUINA_SUP_IZQ = "/disenos_sushi_house/9cbac6c8-d335-4ce7-9b0e-41f0c3f4615f.png";
 const IMAGEN_ESQUINA_INF_DER = "/disenos_sushi_house/f8a13bb8-5059-4841-a70c-f14c2eee70e9.png";
 const IMAGEN_TEXTO_LATERAL = "/disenos_sushi_house/e4a83fe3-b3f9-4d24-bbd1-af3582de7f34.png";
-// NUEVA IMAGEN QUE REEMPLAZA A LA MANO
 const IMAGEN_NUEVA_DECORACION = "/disenos_sushi_house/143eaea3-44c3-49d1-93ec-f1667326ca6e.png";
 
 function BurgerHouseCentro({ 
@@ -36,7 +34,6 @@ function BurgerHouseCentro({
   const tieneRedes = redes.instagramUrl || redes.facebookUrl;
 
   return (
-    // CONTENEDOR MAESTRO
     <div className="min-h-screen flex flex-col" style={{ backgroundColor: '#2e2725', color: colorTexto }}>
       
       <style>{`
@@ -52,19 +49,17 @@ function BurgerHouseCentro({
       {/* ==================================================== */}
       <div className="relative overflow-hidden pb-16 flex-1">
         
-        {/* --- ELEMENTOS DE FONDO CORREGIDOS --- */}
+        {/* ELEMENTOS DE FONDO */}
         <img src={IMAGEN_TEXTO_LATERAL} alt="" className="absolute left-2 md:left-6 top-[30%] h-64 md:h-96 w-auto object-contain z-0 opacity-30 pointer-events-none" />
         <img src={IMAGEN_ESQUINA_SUP_IZQ} alt="" className="absolute top-0 left-0 w-40 md:w-64 z-0 pointer-events-none" />
         <img src={IMAGEN_ESQUINA_INF_DER} alt="" className="absolute bottom-0 right-0 w-40 md:w-64 z-0 pointer-events-none" />
         
-        {/* 1. NUEVA IMAGEN: ARRIBA A LA DERECHA (No en la esquina, con separación) */}
         <img 
           src={IMAGEN_NUEVA_DECORACION} 
           alt="" 
           className="absolute top-[150px] right-[50px] w-48 md:w-72 object-contain z-0 pointer-events-none opacity-80" 
         />
         
-        {/* 2. NUEVA IMAGEN: ABAJO A LA IZQUIERDA (Pegada en la esquina) */}
         <img 
           src={IMAGEN_NUEVA_DECORACION} 
           alt="" 
@@ -73,8 +68,8 @@ function BurgerHouseCentro({
 
         <div className="relative z-10 pt-20">
           
-          {/* CABECERA (Sushi House + Descripción) */}
-          <div className="text-center px-4 mb-8">
+          {/* CABECERA */}
+          <div className="text-center px-4 mb-6">
             <h1 className="text-5xl md:text-6xl font-oriental text-white mb-2">
               Sushi House
             </h1>
@@ -83,8 +78,11 @@ function BurgerHouseCentro({
             </p>
           </div>
 
-          {/* CATEGORÍAS */}
-          <div className="sticky top-0 z-30 bg-transparent py-4 border-b border-white/5 backdrop-blur-sm">
+          {/* LÍNEA SEPARADORA */}
+          <div className="w-2/3 max-w-md mx-auto border-t border-white/20 mb-6"></div>
+
+          {/* CATEGORÍAS (100% TRANSPARENTES, SIN BLUR) */}
+          <div className="sticky top-0 z-30 bg-transparent py-4">
             <div className="flex overflow-x-auto gap-3 px-6 no-scrollbar max-w-4xl mx-auto justify-center">
               {categorias.map((cat) => {
                 const isActivo = categoriaActiva === cat.id;
@@ -199,7 +197,6 @@ function BurgerHouseCentro({
           )}
         </div>
         
-        {/* DESARROLLADO POR PediAlgo */}
         <div className="max-w-4xl mx-auto mt-8 pt-6 border-t border-white/5 flex flex-col items-center justify-center gap-2 text-center text-neutral-600 opacity-60">
           <p className="text-[10px] font-medium tracking-wide">
              &copy; {new Date().getFullYear()} {menu.nombre}. Todos los derechos reservados.
