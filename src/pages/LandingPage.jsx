@@ -58,7 +58,7 @@ export default function LandingPage() {
       
       <div className="bg-[#EFBF04]/60 pt-4 pb-16 px-6 lg:px-8 rounded-b-[2.5rem] shadow-md relative">
         
-        {/* --- NAVBAR --- */}
+        {/* --- HEADER --- */}
         <nav className="max-w-6xl mx-auto flex items-center justify-between mb-12 relative z-50">
           <img
             src="https://res.cloudinary.com/dca2psqfg/image/upload/q_auto/f_auto/v1776215308/LOGO12_smw0lx.png"
@@ -107,12 +107,12 @@ export default function LandingPage() {
           </button>
         </nav>
 
+        {/* --- MENÚ MÓVIL --- */}
         {isMobileMenuOpen && (
           <div className="md:hidden absolute top-20 left-6 right-6 bg-white rounded-2xl shadow-2xl z-50 p-6 flex flex-col gap-3 border border-slate-100 animate-in slide-in-from-top-4">
             <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">Servicios</p>
             <div className="flex flex-col gap-3 pl-2 border-l-2 border-slate-100 mb-2">
               <button onClick={() => scrollToSection('menu-digital')} className="text-left font-bold text-slate-700 text-sm">Menú Digital</button>
-              <button onClick={() => scrollToSection('mercadopago')} className="text-left font-bold text-slate-700 text-sm">Mercado Pago</button>
               <button onClick={() => scrollToSection('whatsapp')} className="text-left font-bold text-slate-700 text-sm">Pedidos WhatsApp</button>
               <button onClick={() => scrollToSection('monitor')} className="text-left font-bold text-slate-700 text-sm">Monitor de Cocina</button>
               <button onClick={() => scrollToSection('finanzas')} className="text-left font-bold text-slate-700 text-sm">Finanzas y Gastos</button>
@@ -278,9 +278,10 @@ export default function LandingPage() {
             </div>
           </div>
           <div className="relative flex justify-center">
-            <div className="w-full max-w-sm aspect-[9/16] bg-slate-900 rounded-3xl border-[8px] border-slate-800 shadow-2xl relative overflow-hidden">
+            {/* FRAME DE CELULAR AJUSTADO */}
+            <div className="w-[280px] aspect-[9/16] bg-slate-900 rounded-[3rem] border-[8px] border-slate-800 shadow-2xl relative overflow-hidden">
                <video 
-                 src="/demostracionmp.mov" 
+                 src="/demostracionmp.mp4" 
                  autoPlay 
                  loop 
                  muted 
