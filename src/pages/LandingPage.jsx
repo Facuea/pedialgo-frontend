@@ -58,7 +58,7 @@ export default function LandingPage() {
       
       <div className="bg-[#EFBF04]/60 pt-4 pb-16 px-6 lg:px-8 rounded-b-[2.5rem] shadow-md relative">
         
-        {/* --- HEADER --- */}
+        {/* --- NAVBAR --- */}
         <nav className="max-w-6xl mx-auto flex items-center justify-between mb-12 relative z-50">
           <img
             src="https://res.cloudinary.com/dca2psqfg/image/upload/q_auto/f_auto/v1776215308/LOGO12_smw0lx.png"
@@ -107,12 +107,12 @@ export default function LandingPage() {
           </button>
         </nav>
 
-        {/* --- MENÚ MÓVIL --- */}
         {isMobileMenuOpen && (
           <div className="md:hidden absolute top-20 left-6 right-6 bg-white rounded-2xl shadow-2xl z-50 p-6 flex flex-col gap-3 border border-slate-100 animate-in slide-in-from-top-4">
             <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">Servicios</p>
             <div className="flex flex-col gap-3 pl-2 border-l-2 border-slate-100 mb-2">
               <button onClick={() => scrollToSection('menu-digital')} className="text-left font-bold text-slate-700 text-sm">Menú Digital</button>
+              <button onClick={() => scrollToSection('mercadopago')} className="text-left font-bold text-slate-700 text-sm">Mercado Pago</button>
               <button onClick={() => scrollToSection('whatsapp')} className="text-left font-bold text-slate-700 text-sm">Pedidos WhatsApp</button>
               <button onClick={() => scrollToSection('monitor')} className="text-left font-bold text-slate-700 text-sm">Monitor de Cocina</button>
               <button onClick={() => scrollToSection('finanzas')} className="text-left font-bold text-slate-700 text-sm">Finanzas y Gastos</button>
@@ -190,7 +190,6 @@ export default function LandingPage() {
             </div>
 
             <div className="flex flex-col gap-4">
-              {/* BLOQUE CARTA ÚNICA */}
               <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
                 <h4 className="font-bold text-slate-800 mb-2">¿Querés una carta única?</h4>
                 <p className="text-sm text-slate-600 font-medium leading-relaxed mb-4">
@@ -278,14 +277,11 @@ export default function LandingPage() {
             </div>
           </div>
           <div className="relative flex justify-center">
-            {/* FRAME DE CELULAR AJUSTADO */}
-            <div className="w-[280px] aspect-[9/16] bg-slate-900 rounded-[3rem] border-[8px] border-slate-800 shadow-2xl relative overflow-hidden">
-               <video 
-                 src="/demostracionmp.mp4" 
-                 autoPlay 
-                 loop 
-                 muted 
-                 playsInline 
+            {/* FRAME DE CELULAR AJUSTADO PARA IMAGEN 1170x2532 */}
+            <div className="w-[320px] aspect-[1170/2532] bg-slate-900 rounded-[3.5rem] border-[10px] border-slate-800 shadow-2xl relative overflow-hidden">
+               <img 
+                 src="/demostracionmp.PNG" 
+                 alt="Muestra de Pago" 
                  className="w-full h-full object-cover" 
                />
             </div>
@@ -593,7 +589,7 @@ function BlurredImageSlider({ image1, image2, image3 }) {
   }, []);
 
   return (
-    <div className="relative w-full max-w-70 lg:max-w-[320px] mx-auto aspect-1170/2327 rounded-[2.5rem] overflow-hidden shadow-2xl border-8 border-slate-900 bg-slate-100">
+    <div className="relative w-full max-w-70 lg:max-w-[320px] mx-auto aspect-[1170/2532] rounded-[2.5rem] overflow-hidden shadow-2xl border-8 border-slate-900 bg-slate-100">
       <img src={image1} className={`absolute inset-0 w-full h-full object-cover transition-all duration-1000 ${index === 0 ? 'opacity-100 blur-0' : 'opacity-0 blur-md'}`} />
       <img src={image2} className={`absolute inset-0 w-full h-full object-cover transition-all duration-1000 ${index === 1 ? 'opacity-100 blur-0' : 'opacity-0 blur-md'}`} />
       <img src={image3} className={`absolute inset-0 w-full h-full object-cover transition-all duration-1000 ${index === 2 ? 'opacity-100 blur-0' : 'opacity-0 blur-md'}`} />
